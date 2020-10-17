@@ -435,7 +435,6 @@ def annotation_react_enact(
             ]
         )
 
-        #if 2 > 1:
         segimgpng = None
         try:
             dict_feature_opts = {

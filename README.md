@@ -1,6 +1,10 @@
 # dash_doodler
 Doodler, ported to Dash
 
+<!-- ![Labeler](https://github.com/UNCG-DAISY/Coastal-Image-Labeler/blob/master/docs/static/img/labeler.gif) -->
+
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler.gif)
+
 Install the requirements
 
 ```bash
