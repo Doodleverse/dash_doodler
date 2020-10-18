@@ -8,14 +8,14 @@
 > The Conditional Random Field (CRF) model used by this tool is described by [Buscombe and Ritchie (2018)](https://www.mdpi.com/2076-3263/8/7/244)
 
 
-Note this tool is still undere development. Please use the issues tab to report bugs and suggest improvements. Please get in touch if you're interested in helping improve this tool!
+Note this tool is still under development. Please use the issues tab to report bugs and suggest improvements. Please get in touch if you're interested in helping improve this tool!
 
 The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder
 
 ![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_preview.gif)
 
 
-Please go to the [project website](https://dbuscombe-usgs.github.io/dash_doodler/) for more details and documentation
+<!-- Please go to the [project website](https://dbuscombe-usgs.github.io/dash_doodler/) for more details and documentation -->
 
 ## Rationale
 There are many great tools for exhaustive (i.e. whole image) image labeling for segmentation tasks, using polygons. Examples include [makesense.ai](www.makesense.ai) and [cvat](https://cvat.org). However, for high-resolution imagery with large spatial footprints and complex scenes, such as aerial and satellite imagery, exhaustive labeling using polygonal tools can be prohibitively time-consuming. This is especially true of scenes with many classes of interest, and covering relatively small, spatially discontinuous regions of the image.
@@ -67,9 +67,9 @@ Label another image, view the resulting (and previous) label image in an image e
 #### Video 3
 Use a different image and class set, view the new 'classes.txt' file. Annotate an image with the new 5-class set. View the resulting label and annotation images. Annotate a second image
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_preview3.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_preview4.gif)
 
 
 ## Acknowledgements
 
-Based on [this plotly example](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) and the previous openCV baed implementation [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller)
+Based on [this plotly example](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) and the previous openCV based implementation [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller)
