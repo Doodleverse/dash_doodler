@@ -1,0 +1,4 @@
+deep
+white
+shallow
+dry

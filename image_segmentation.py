@@ -24,12 +24,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import itertools
 import numpy as np
 from skimage import filters, feature, img_as_float32
 from sklearn.ensemble import RandomForestClassifier
-from time import time
+import plotly.express as px
+from skimage.io import imsave#, imread
 
 import pydensecrf.densecrf as dcrf
 from pydensecrf.utils import create_pairwise_bilateral, unary_from_labels
@@ -37,6 +37,11 @@ from skimage.filters.rank import median
 from skimage.morphology import disk
 
 np.seterr(divide='ignore', invalid='ignore')
+
+##========================================================
+def fromhex(n):
+    """ hexadecimal to integer """
+    return int(n, base=16)
 
 ##========================================================
 def expand_img(img):
@@ -222,9 +227,42 @@ def extract_features(
         )
     return np.array(features)
 
+
+##========================================================
+def label_to_colors(
+    img,
+    colormap=px.colors.qualitative.G10,
+    color_class_offset=0
+):
+    """
+    Take MxN matrix containing integers representing labels and return an MxNx4
+    matrix where each label has been replaced by a color looked up in colormap.
+    colormap entries must be strings like plotly.express style colormaps.
+    alpha is the value of the 4th channel
+    color_class_offset allows adding a value to the color class index to force
+    use of a particular range of colors in the colormap. This is useful for
+    example if 0 means 'no class' but we want the color of class 1 to be
+    colormap[0].
+    """
+
+    colormap = [
+        tuple([fromhex(h[s : s + 2]) for s in range(0, len(h), 2)])
+        for h in [c.replace("#", "") for c in colormap]
+    ]
+
+    cimg = np.zeros(img.shape[:2] + (3,), dtype="uint8")
+    minc = np.min(img)
+    maxc = np.max(img)
+
+    for c in range(minc, maxc + 1):
+        cimg[img == c] = colormap[(c + color_class_offset) % len(colormap)]
+
+    return cimg
+
 ##========================================================
 def segmentation(
     img,
+    img_path,
     median_filter_value,
     mask=None,
     multichannel=True,
@@ -240,7 +278,7 @@ def segmentation(
     """
     Segmentation using labeled parts of the image and a random forest classifier.
     """
-    t1 = time()
+    # t1 = time()
     features = extract_features(
         img,
         multichannel=multichannel,
@@ -251,14 +289,14 @@ def segmentation(
         sigma_max=sigma_max,
     )
 
-    t2 = time()
+    # t2 = time()
     if clf is None:
         if mask is None:
             raise ValueError("If no classifier clf is passed, you must specify a mask.")
         training_data = features[:, mask > 0].T
         training_labels = mask[mask > 0].ravel()
         data = features[:, mask == 0].T
-        t3 = time()
+        # t3 = time()
         clf = RandomForestClassifier(n_estimators=100, n_jobs=-1)
         clf.fit(training_data[::downsample], training_labels[::downsample])
         result = np.copy(mask)
@@ -266,8 +304,8 @@ def segmentation(
     else:
         # we have to flatten all but the first dimension of features
         data = features.reshape((features.shape[0], np.product(features.shape[1:]))).T
-        t3 = time()
-    t4 = time()
+        # t3 = time()
+    # t4 = time()
 
     labels = clf.predict(data)
     if mask is None:
@@ -282,6 +320,15 @@ def segmentation(
         print("applying median filter:")
         result = median(result, disk(20)).astype(np.uint8)
 
-    t5 = time()
+
+    if type(img_path) is list:
+        imsave(img_path[0].replace('assets/','results/').replace('.jpg','_label.png'), label_to_colors(result-1)) #result)
+    else:
+        imsave(img_path.replace('assets/','results/').replace('.jpg','_label.png'), label_to_colors(result-1)) #result)
+
+    if type(img_path) is list:
+        imsave(img_path[0].replace('assets/','results/').replace('.jpg','_label_greyscale.png'), result)
+    else:
+        imsave(img_path.replace('assets/','results/').replace('.jpg','_label_greyscale.png'), result)
 
     return result, clf

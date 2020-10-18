@@ -47,14 +47,25 @@ DEFAULT_PEN_WIDTH = 2  # gives line width of 2^2 = 4
 SEG_FEATURE_TYPES = ["intensity", "edges", "texture"]
 
 # the number of different classes for labels
-NUM_LABEL_CLASSES = 4 #5
+
 DEFAULT_LABEL_CLASS = 0
 class_label_colormap = px.colors.qualitative.G10
 
-class_labels = list(range(NUM_LABEL_CLASSES))
-class_label_names = ['deep', 'white', 'shallow', 'dry']
+
+with open('classes.txt') as f:
+    classes = f.readlines()
+
+class_label_names = [c.strip() for c in classes]
+
+# class_label_names = ['deep', 'white', 'shallow', 'dry']
+
+NUM_LABEL_CLASSES = len(class_label_names)
+
 # we can't have less colors than classes
 assert NUM_LABEL_CLASSES <= len(class_label_colormap)
+
+class_labels = list(range(NUM_LABEL_CLASSES))
+
 
 ##========================================================
 def convert_integer_class_to_color(n):
@@ -271,30 +282,30 @@ app.layout = html.Div(
 
                         # We use this pattern because we want to be able to download the
                         # annotations by clicking on a button
-                        html.A(
-                            id="download",
-                            download="annotations-"+datetime.now().strftime("%d-%m-%Y-%H-%M")+".json",
-                            children=[
-                                html.Button(
-                                    "Download annotations", id="download-button"
-                                ),
-                                html.Span(
-                                    " ",
-                                    className="tooltiptext",
-                                ),
-                            ],
-                            className="tooltip",
-                        ),
-                        html.A(
-                            id="download-image",
-                            download="classified-image-"+datetime.now().strftime("%d-%m-%Y-%H-%M")+".png",
-                            children=[
-                                html.Button(
-                                    "Download classified image",
-                                    id="download-image-button",
-                                )
-                            ],
-                        ),
+                        # html.A(
+                        #     id="download",
+                        #     download="annotations-"+datetime.now().strftime("%d-%m-%Y-%H-%M")+".json",
+                        #     children=[
+                        #         html.Button(
+                        #             "Download annotations", id="download-button"
+                        #         ),
+                        #         html.Span(
+                        #             " ",
+                        #             className="tooltiptext",
+                        #         ),
+                        #     ],
+                        #     className="tooltip",
+                        # ),
+                        # html.A(
+                        #     id="download-image",
+                        #     download="classified-image-"+datetime.now().strftime("%d-%m-%Y-%H-%M")+".png",
+                        #     children=[
+                        #         html.Button(
+                        #             "Download classified image",
+                        #             id="download-image-button",
+                        #         )
+                        #     ],
+                        # ),
                     ],
                     className="four columns app-background",
                 ),

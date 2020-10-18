@@ -33,6 +33,8 @@ import skimage.color
 import io, utils
 from image_segmentation import segmentation
 import plotly.express as px
+from skimage.io import imsave#, imread
+
 
 ##========================================================
 def img_to_ubyte_array(img):
@@ -110,8 +112,10 @@ def compute_segmentations(
         shape_layers = [(n + 1) for n, _ in enumerate(shapes)]
     mask = utils.shapes_to_mask(shape_args, shape_layers)
 
+    imsave(img_path[0].replace('assets/','results/').replace('.jpg','_annotations.png'), label_to_colors(mask-1))
+
     # do segmentation and return this
-    seg, clf = segmentation(img, median_filter_value, mask, **segmenter_args)
+    seg, clf = segmentation(img, img_path, median_filter_value, mask, **segmenter_args)
     color_seg = label_to_colors(seg, **label_to_colors_args)
     # color_seg is a 3d tensor representing a colored image whereas seg is a
     # matrix whose entries represent the classes
