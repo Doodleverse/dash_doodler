@@ -92,7 +92,7 @@ def label_to_colors(
 
 ##========================================================
 def compute_segmentations(
-    shapes, median_filter_value,
+    shapes, median_filter_value,crf_theta_slider_value,crf_mu_slider_value,
     img_path="assets/dash-default.jpg",
     segmenter_args={},
     shape_layers=None,
@@ -115,7 +115,7 @@ def compute_segmentations(
     imsave(img_path[0].replace('assets/','results/').replace('.jpg','_annotations.png'), label_to_colors(mask-1))
 
     # do segmentation and return this
-    seg, clf = segmentation(img, img_path, median_filter_value, mask, **segmenter_args)
+    seg, clf = segmentation(img, img_path, median_filter_value, crf_theta_slider_value, crf_mu_slider_value, mask, **segmenter_args)
     color_seg = label_to_colors(seg, **label_to_colors_args)
     # color_seg is a 3d tensor representing a colored image whereas seg is a
     # matrix whose entries represent the classes

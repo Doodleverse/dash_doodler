@@ -35,6 +35,9 @@ import pydensecrf.densecrf as dcrf
 from pydensecrf.utils import create_pairwise_bilateral, unary_from_labels
 from skimage.filters.rank import median
 from skimage.morphology import disk
+from skimage.transform import resize
+# import dash_bootstrap_components as dbc
+
 
 np.seterr(divide='ignore', invalid='ignore')
 
@@ -88,7 +91,9 @@ def rescale(dat,
 
 ##========================================================
 def crf_refine(label,
-    img):
+    img,
+    crf_theta_slider_value,
+    crf_mu_slider_value):
     """
     "crf_refine(label, img)"
     This function refines a label image based on an input label image and the associated image
@@ -101,31 +106,46 @@ def crf_refine(label,
     OUTPUTS: label [ndarray]: label image 2D matrix of integers
     """
 
+    # l_unique = np.unique(label.flatten()).tolist()
+    Horig = label.shape[0]
+    Worig = label.shape[1]
+    fact = 10
+    # decimate by factor by taking only every other row and column
+    img = img[::fact,::fact, :]
+    # do the same for the label image
+    label = label[::fact,::fact]
+
     mn = np.min(np.array(label).flatten())
     mx = np.max(np.array(label).flatten())
+
+    #n = 1+len(np.unique(label))
+    n = 1+(mx-mn)
 
     label = rescale(np.array(label),mn,mx).astype(np.int)
 
     H = label.shape[0]
     W = label.shape[1]
-    U = unary_from_labels(label,1+(mx-mn),gt_prob=0.66)
-    d = dcrf.DenseCRF2D(H, W, 1+(mx-mn)) #5
+    U = unary_from_labels(label,n,gt_prob=0.81)
+    d = dcrf.DenseCRF2D(H, W, n)
     d.setUnaryEnergy(U)
 
     # to add the color-independent term, where features are the locations only:
-    d.addPairwiseGaussian(sxy=(13, 13),
-                 compat=130,
+    d.addPairwiseGaussian(sxy=(3, 3),
+                 compat=13,
                  kernel=dcrf.DIAG_KERNEL,
                  normalization=dcrf.NORMALIZE_SYMMETRIC)
     feats = create_pairwise_bilateral(
-                          sdims=(60, 60),
+                          sdims=(crf_theta_slider_value, crf_theta_slider_value), #(60, 60),
                           schan=(2,2,2,2,2,2),
                           img=img,
                           chdim=2)
 
-    d.addPairwiseEnergy(feats, compat=260,kernel=dcrf.DIAG_KERNEL,normalization=dcrf.NORMALIZE_SYMMETRIC)
+    d.addPairwiseEnergy(feats, compat=crf_mu_slider_value, kernel=dcrf.DIAG_KERNEL,normalization=dcrf.NORMALIZE_SYMMETRIC) #260
     Q = d.inference(10)
     result = np.argmax(Q, axis=0).reshape((H, W)).astype(np.uint8)
+
+    result = resize(result, (Horig, Worig), anti_aliasing=True)
+
     result = rescale(result, mn, mx).astype(np.uint8)
 
     print("CRF post-processing complete")
@@ -264,6 +284,8 @@ def segmentation(
     img,
     img_path,
     median_filter_value,
+    crf_theta_slider_value,
+    crf_mu_slider_value,
     mask=None,
     multichannel=True,
     intensity=True,
@@ -278,7 +300,6 @@ def segmentation(
     """
     Segmentation using labeled parts of the image and a random forest classifier.
     """
-    # t1 = time()
     features = extract_features(
         img,
         multichannel=multichannel,
@@ -289,7 +310,8 @@ def segmentation(
         sigma_max=sigma_max,
     )
 
-    # t2 = time()
+    #progress = dbc.Progress("Features extracted", value=25)
+
     if clf is None:
         if mask is None:
             raise ValueError("If no classifier clf is passed, you must specify a mask.")
@@ -297,15 +319,19 @@ def segmentation(
         training_labels = mask[mask > 0].ravel()
         data = features[:, mask == 0].T
         # t3 = time()
-        clf = RandomForestClassifier(n_estimators=100, n_jobs=-1)
+        clf = RandomForestClassifier(n_estimators=10, n_jobs=-1)
         clf.fit(training_data[::downsample], training_labels[::downsample])
         result = np.copy(mask)
 
     else:
         # we have to flatten all but the first dimension of features
         data = features.reshape((features.shape[0], np.product(features.shape[1:]))).T
-        # t3 = time()
-    # t4 = time()
+
+    print("Feature extraction and model fitting complete")
+
+    # Horig = img.shape[0]
+    # Worig = img.shape[1]
+    # data = resize(data, (Horig, Worig), anti_aliasing=True)
 
     labels = clf.predict(data)
     if mask is None:
@@ -314,12 +340,11 @@ def segmentation(
         result[mask == 0] = labels
 
     print("applying CRF refinement:")
-    result = crf_refine(result, expand_img(img))
+    result = crf_refine(result, expand_img(img), crf_theta_slider_value, crf_mu_slider_value)
 
-    if "Apply Median Filter" in median_filter_value:
+    if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
         print("applying median filter:")
-        result = median(result, disk(20)).astype(np.uint8)
-
+        result = median(result, disk(median_filter_value)).astype(np.uint8)
 
     if type(img_path) is list:
         imsave(img_path[0].replace('assets/','results/').replace('.jpg','_label.png'), label_to_colors(result-1)) #result)

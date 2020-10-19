@@ -10,9 +10,9 @@
 
 Note this tool is still under development. Please use the issues tab to report bugs and suggest improvements. Please get in touch if you're interested in helping improve this tool!
 
-The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder
+The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder. you can also download a version of it from your browser for quick viewing
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_preview.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_readme1.gif)
 
 
 <!-- Please go to the [project website](https://dbuscombe-usgs.github.io/dash_doodler/) for more details and documentation -->
@@ -55,19 +55,19 @@ Results (label images and annotation images) are saved to the `results/` folder.
 
 
 #### Video 1
-Uncheck median filter, wait for result. Select and annotate new image, and wait for result. Annotate more regions of the image, and recompute label image. Uncheck edges, alter blur parameter and recompute label image.
+Make a mistake, highlight and erase, then start labeling again. Check 'compute segmentation' and wait for the segmentation output. It needs improvement; uncheck 'compute segmentation', make more annotations and adjustments to parameters, then recompute segmentation.
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_preview2.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_readme2.gif)
 
 #### Video 2
-Label another image, view the resulting (and previous) label image in an image editor (GIMP), and finally touch up a label image manually in the image analysis software.
+Label an image, view the result. Make adjustments to parameters a few times, before sownloading the segmentation and viewing it in an image viewer.
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_preview3.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_readme3.gif)
 
 #### Video 3
-Use a different image and class set, view the new 'classes.txt' file. Annotate an image with the new 5-class set. View the resulting label and annotation images. Annotate a second image
+Use a different image and class set. Annotate an image with the new 6-class set. View the resulting label image in an image editor (GIMP), and finally touch up a label image manually in the image analysis software.
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_preview4.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_readme4.gif)
 
 
 ## Acknowledgements

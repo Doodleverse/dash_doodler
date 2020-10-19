@@ -38,11 +38,15 @@ from annotations_to_segmentations import (
 import io, base64, PIL.Image, json, shutil, os
 from glob import glob
 from datetime import datetime
+# import dash_bootstrap_components as dbc
 
 ##========================================================
 CURRENT_IMAGE = DEFAULT_IMAGE_PATH = "assets/dash-default.jpg"
 
 DEFAULT_PEN_WIDTH = 2  # gives line width of 2^2 = 4
+
+DEFAULT_CRF_THETA = 40
+DEFAULT_CRF_MU = 100
 
 SEG_FEATURE_TYPES = ["intensity", "edges", "texture"]
 
@@ -79,8 +83,10 @@ files = sorted(glob('assets/*.jpg'))
 
 files = [f for f in files if 'dash' not in f]
 
-app = dash.Dash(__name__)
+##========================================================
+app = dash.Dash(__name__) #, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
+
 
 ##========================================================
 def make_and_return_default_figure(
@@ -151,18 +157,18 @@ app.layout = html.Div(
             id="description",
             children=[
                 html.P(
-                    'Make some annotations on the picture using different colors each of the label classes present. '+
-                    'Then select "Show segmentation" to see the segmentation. Play with the features, median filter, and blurring parameter (if you like). '+
-                    'You may add more annotations to clarify where the classifier was in error. Each time you make a change, wait for the classification to update.',
-                    className="ten columns",
+                    'Make some annotations on the picture using different classes. '+
+                    'Select "Compute segmentation" to compute the segmentation. Play with feature types, median filter, and other parameters. '+
+                    'Add more annotations. Wait for updates.',
+                    className="twelve columns",
                 ),
-                html.Img(
-                    id="example-image",
-                    src="assets/dash-segmentation_img_example_marks.jpg",
-                    className="two columns",
-                ),
+                # html.Img(
+                #     id="example-image",
+                #     src="assets/dash-segmentation_img_example_marks.jpg",
+                #     className="two columns",
+                # ),
             ],
-            className="ten columns app-background",
+            className="twelve columns app-background",
         ),
         html.Div(
             id="main-content",
@@ -172,7 +178,7 @@ app.layout = html.Div(
                     children=[
                         dcc.Loading(
                             id="segmentations-loading",
-                            type="circle",
+                            type="cube",
                             children=[
                                 # Graph
                                 dcc.Graph(
@@ -189,7 +195,7 @@ app.layout = html.Div(
                             ],
                         )
                     ],
-                    className="eight columns app-background",
+                    className="ten columns app-background",
                 ),
 
                 html.Div(
@@ -242,7 +248,7 @@ app.layout = html.Div(
                             id="show-segmentation",
                             options=[
                                 {
-                                    "label": "Compute and show segmentation",
+                                    "label": "Compute segmentation",
                                     "value": "Show segmentation",
                                 }
                             ],
@@ -250,17 +256,26 @@ app.layout = html.Div(
                         ),
 
 
-                        dcc.Checklist(
-                            id="median-filter",
-                            options=[
-                                {
-                                    "label": "Apply median filter",
-                                    "value": "Apply Median Filter",
-                                }
-                            ],
-                            value=["Apply Median Filter"],
-                        ),
+                        # dcc.Checklist(
+                        #     id="median-filter",
+                        #     options=[
+                        #         {
+                        #             "label": "Apply median filter",
+                        #             "value": "Apply Median Filter",
+                        #         }
+                        #     ],
+                        #     value=["Apply Median Filter"],
+                        # ),
 
+                        html.H6("Median filter kernel radius:"),
+                        # Slider for specifying pen width
+                        dcc.Slider(
+                            id="median-filter",
+                            min=1,
+                            max=100,
+                            step=1,
+                            value=20,
+                        ),
 
                         html.H6("Image Feature Extraction:"),
                         dcc.Checklist(
@@ -270,14 +285,35 @@ app.layout = html.Div(
                                 for l in SEG_FEATURE_TYPES
                             ],
                             value=["intensity", "texture"],
+                            labelStyle={'display': 'inline-block'}
                         ),
-                        html.H6("Blurring parameter for image feature extraction:"),
+                        html.H6("Blurring parameter for Random Forest image feature extraction:"),
                         dcc.RangeSlider(
                             id="sigma-range-slider",
                             min=0.01,
-                            max=20,
+                            max=30,
                             step=0.01,
-                            value=[2, 16],
+                            value=[1, 16],
+                        ),
+
+                        html.H6("Blurring parameter for CRF image feature extraction:"),
+                        # Slider for specifying pen width
+                        dcc.Slider(
+                            id="crf-theta-slider",
+                            min=10,
+                            max=120,
+                            step=10,
+                            value=DEFAULT_CRF_THETA,
+                        ),
+
+                        html.H6("CRF tolerance parameter of color differences between classes:"),
+                        # Slider for specifying pen width
+                        dcc.Slider(
+                            id="crf-mu-slider",
+                            min=1,
+                            max=255,
+                            step=1,
+                            value=DEFAULT_CRF_MU,
                         ),
 
                         # We use this pattern because we want to be able to download the
@@ -296,16 +332,16 @@ app.layout = html.Div(
                         #     ],
                         #     className="tooltip",
                         # ),
-                        # html.A(
-                        #     id="download-image",
-                        #     download="classified-image-"+datetime.now().strftime("%d-%m-%Y-%H-%M")+".png",
-                        #     children=[
-                        #         html.Button(
-                        #             "Download classified image",
-                        #             id="download-image-button",
-                        #         )
-                        #     ],
-                        # ),
+                        html.A(
+                            id="download-image",
+                            download="classified-image-"+datetime.now().strftime("%d-%m-%Y-%H-%M")+".png",
+                            children=[
+                                html.Button(
+                                    "Download from browser",
+                                    id="download-image-button",
+                                )
+                            ],
+                        ),
                     ],
                     className="four columns app-background",
                 ),
@@ -325,14 +361,20 @@ app.layout = html.Div(
                 # needlessly old segmentations
                 dcc.Store(id="segmentation", data={}),
                 dcc.Store(id="classified-image-store", data=""),
-
             ],
         ),
     ],
 )
 
+
+
 ##========================================================
-def show_segmentation(image_path, mask_shapes, segmenter_args, median_filter_value):
+def show_segmentation(image_path,
+    mask_shapes,
+    segmenter_args,
+    median_filter_value,
+    crf_theta_slider_value,
+    crf_mu_slider_value):
     """ adds an image showing segmentations to a figure's layout """
 
     # add 1 because classifier takes 0 to mean no mask
@@ -344,7 +386,7 @@ def show_segmentation(image_path, mask_shapes, segmenter_args, median_filter_val
     }
 
     segimg, _, clf = compute_segmentations(
-        mask_shapes, median_filter_value,
+        mask_shapes, median_filter_value, crf_theta_slider_value,crf_mu_slider_value,
         img_path=image_path,
         segmenter_args=segmenter_args,
         shape_layers=shape_layers,
@@ -372,6 +414,8 @@ def show_segmentation(image_path, mask_shapes, segmenter_args, median_filter_val
             {"type": "label-class-button", "index": dash.dependencies.ALL},
             "n_clicks_timestamp",
         ),
+        Input("crf-theta-slider", "value"),
+        Input('crf-mu-slider', "value"),
         Input("pen-width", "value"),
         Input("show-segmentation", "value"),
         Input("median-filter", "value"),
@@ -390,6 +434,8 @@ def show_segmentation(image_path, mask_shapes, segmenter_args, median_filter_val
 def annotation_react_enact(
     graph_relayoutData,
     any_label_class_button_value,
+    crf_theta_slider_value,
+    crf_mu_slider_value,
     pen_width_value,
     show_segmentation_value,
     median_filter_value,
@@ -432,6 +478,7 @@ def annotation_react_enact(
         shapes=masks_data["shapes"],
     )
 
+
     if ("Show segmentation" in show_segmentation_value) and (
         len(masks_data["shapes"]) > 0):
         # to store segmentation data in the store, we need to base64 encode the
@@ -458,7 +505,7 @@ def annotation_react_enact(
 
             if len(segmentation_features_value) > 0:
                 segimgpng = show_segmentation(
-                    [select_image_value], masks_data["shapes"], dict_feature_opts, median_filter_value
+                    [select_image_value], masks_data["shapes"], dict_feature_opts, median_filter_value, crf_theta_slider_value, crf_mu_slider_value
                 )
 
                 segmentation_data = shapes_seg_pair_as_dict(
@@ -487,6 +534,7 @@ def annotation_react_enact(
 
         fig = plot_utils.add_layout_images_to_fig(fig, images_to_draw)
 
+
     return (
         fig,
         masks_data,
@@ -494,6 +542,7 @@ def annotation_react_enact(
         "Pen width: %d" % (pen_width,),
         segmentation_store_data,
     )
+
 
 ##========================================================
 
@@ -523,6 +572,7 @@ function(the_image_store_data) {
     Output("download-image", "href"),
     [Input("classified-image-store", "data")],
 )
+
 
 ##========================================================
 if __name__ == "__main__":
