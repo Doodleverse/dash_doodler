@@ -36,7 +36,6 @@ from pydensecrf.utils import create_pairwise_bilateral, unary_from_labels
 from skimage.filters.rank import median
 from skimage.morphology import disk
 from skimage.transform import resize
-# import dash_bootstrap_components as dbc
 
 
 np.seterr(divide='ignore', invalid='ignore')
@@ -109,7 +108,7 @@ def crf_refine(label,
     # l_unique = np.unique(label.flatten()).tolist()
     Horig = label.shape[0]
     Worig = label.shape[1]
-    fact = 10
+    fact = 5
     # decimate by factor by taking only every other row and column
     img = img[::fact,::fact, :]
     # do the same for the label image
@@ -347,13 +346,13 @@ def segmentation(
         result = median(result, disk(median_filter_value)).astype(np.uint8)
 
     if type(img_path) is list:
-        imsave(img_path[0].replace('assets/','results/').replace('.jpg','_label.png'), label_to_colors(result-1)) #result)
+        imsave(img_path[0].replace('assets','results').replace('.jpg','_label.png'), label_to_colors(result-1)) #result)
     else:
-        imsave(img_path.replace('assets/','results/').replace('.jpg','_label.png'), label_to_colors(result-1)) #result)
+        imsave(img_path.replace('assets','results').replace('.jpg','_label.png'), label_to_colors(result-1)) #result)
 
     if type(img_path) is list:
-        imsave(img_path[0].replace('assets/','results/').replace('.jpg','_label_greyscale.png'), result)
+        imsave(img_path[0].replace('assets','results').replace('.jpg','_label_greyscale.png'), result)
     else:
-        imsave(img_path.replace('assets/','results/').replace('.jpg','_label_greyscale.png'), result)
+        imsave(img_path.replace('assets','results').replace('.jpg','_label_greyscale.png'), result)
 
     return result, clf

@@ -112,7 +112,7 @@ def compute_segmentations(
         shape_layers = [(n + 1) for n, _ in enumerate(shapes)]
     mask = utils.shapes_to_mask(shape_args, shape_layers)
 
-    imsave(img_path[0].replace('assets/','results/').replace('.jpg','_annotations.png'), label_to_colors(mask-1))
+    imsave(img_path[0].replace('assets','results').replace('.jpg','_annotations.png'), label_to_colors(mask-1))
 
     # do segmentation and return this
     seg, clf = segmentation(img, img_path, median_filter_value, crf_theta_slider_value, crf_mu_slider_value, mask, **segmenter_args)

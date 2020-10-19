@@ -12,7 +12,7 @@ Note this tool is still under development. Please use the issues tab to report b
 
 The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder. you can also download a version of it from your browser for quick viewing
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_readme1.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_readme1.gif)
 
 
 <!-- Please go to the [project website](https://dbuscombe-usgs.github.io/dash_doodler/) for more details and documentation -->
@@ -34,6 +34,7 @@ Install the requirements
 ```bash
 conda create --name dashdoodler python=3.6
 conda activate dashdoodler
+conda install -c conda-forge pydensecrf cairo
 pip install -r requirements.txt
 ```
 
@@ -57,17 +58,17 @@ Results (label images and annotation images) are saved to the `results/` folder.
 #### Video 1
 Make a mistake, highlight and erase, then start labeling again. Check 'compute segmentation' and wait for the segmentation output. It needs improvement; uncheck 'compute segmentation', make more annotations and adjustments to parameters, then recompute segmentation.
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_readme2.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_readme2.gif)
 
 #### Video 2
 Label an image, view the result. Make adjustments to parameters a few times, before sownloading the segmentation and viewing it in an image viewer.
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_readme3.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_readme3.gif)
 
 #### Video 3
 Use a different image and class set. Annotate an image with the new 6-class set. View the resulting label image in an image editor (GIMP), and finally touch up a label image manually in the image analysis software.
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/doodler_readme4.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_readme4.gif)
 
 
 ## Acknowledgements

@@ -148,7 +148,7 @@ app.layout = html.Div(
                     id="title",
                     className="seven columns",
                 ),
-                html.Img(id="logo", src=app.get_asset_url("dash-logo-new.png"),),
+                html.Img(id="logo", src=app.get_asset_url("logos/dash-logo-new.png"),),
             ],
             className="ten columns app-background",
         ),
