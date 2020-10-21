@@ -1,4 +1,9 @@
-deep
-white
-shallow
-dry
+water
+marsh
+beach
+incipient_foredune
+dune_blowout
+foredune_complex
+veg_foredune
+bare_foredune
+iceplant

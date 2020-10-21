@@ -58,6 +58,7 @@ def fromhex(n):
 ##========================================================
 def label_to_colors(
     img,
+    mask,
     colormap=px.colors.qualitative.G10,
     alpha=128,
     color_class_offset=0
@@ -73,6 +74,7 @@ def label_to_colors(
     colormap[0].
     """
 
+
     colormap = [
         tuple([fromhex(h[s : s + 2]) for s in range(0, len(h), 2)])
         for h in [c.replace("#", "") for c in colormap]
@@ -85,6 +87,8 @@ def label_to_colors(
     for c in range(minc, maxc + 1):
         cimg[img == c] = colormap[(c + color_class_offset) % len(colormap)]
 
+    cimg[mask==1] = (0,0,0)
+
     return np.concatenate(
         (cimg, alpha * np.ones(img.shape[:2] + (1,), dtype="uint8")), axis=2
     )
@@ -93,7 +97,7 @@ def label_to_colors(
 ##========================================================
 def compute_segmentations(
     shapes, median_filter_value,crf_theta_slider_value,crf_mu_slider_value,
-    img_path="assets/dash-default.jpg",
+    img_path="assets/logos/dash-default.jpg",
     segmenter_args={},
     shape_layers=None,
     label_to_colors_args={},
@@ -112,11 +116,11 @@ def compute_segmentations(
         shape_layers = [(n + 1) for n, _ in enumerate(shapes)]
     mask = utils.shapes_to_mask(shape_args, shape_layers)
 
-    imsave(img_path[0].replace('assets','results').replace('.jpg','_annotations.png'), label_to_colors(mask-1))
+    imsave(img_path[0].replace('assets','results').replace('.jpg','_annotations.png'), label_to_colors(mask-1, np.zeros(np.shape(mask))))
 
     # do segmentation and return this
     seg, clf = segmentation(img, img_path, median_filter_value, crf_theta_slider_value, crf_mu_slider_value, mask, **segmenter_args)
-    color_seg = label_to_colors(seg, **label_to_colors_args)
+    color_seg = label_to_colors(seg, img[:,:,0]==0, **label_to_colors_args)
     # color_seg is a 3d tensor representing a colored image whereas seg is a
     # matrix whose entries represent the classes
     return (color_seg, seg, clf)

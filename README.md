@@ -70,7 +70,17 @@ Use a different image and class set. Annotate an image with the new 6-class set.
 
 ![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_readme4.gif)
 
+#### More
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_oct20a.gif)
+
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_oct20b.gif)
 
 ## Acknowledgements
 
 Based on [this plotly example](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) and the previous openCV based implementation [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller)
+
+## Progress report
+
+10/20/20:
+* display numbers for every parameter
+* fixed label creation and display in situations where there is a null image value (0), and where there are not as many classes in the scene as in the collection

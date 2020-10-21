@@ -108,23 +108,33 @@ def crf_refine(label,
     # l_unique = np.unique(label.flatten()).tolist()
     Horig = label.shape[0]
     Worig = label.shape[1]
-    fact = 5
+    fact = 2
     # decimate by factor by taking only every other row and column
     img = img[::fact,::fact, :]
     # do the same for the label image
     label = label[::fact,::fact]
 
+    orig_mn = np.min(np.array(label).flatten())
+    orig_mx = np.max(np.array(label).flatten())
+
+    n = 1+(orig_mx-orig_mn)
+    # print(orig_mn)
+    # print(orig_mx)
+    # print(n)
+
+    label = 1+label - orig_mn
+    print(np.unique(label))
     mn = np.min(np.array(label).flatten())
     mx = np.max(np.array(label).flatten())
 
-    #n = 1+len(np.unique(label))
     n = 1+(mx-mn)
-
-    label = rescale(np.array(label),mn,mx).astype(np.int)
+    # print(mn)
+    # print(mx)
+    # print(n)
 
     H = label.shape[0]
     W = label.shape[1]
-    U = unary_from_labels(label,n,gt_prob=0.81)
+    U = unary_from_labels(label, n, gt_prob=0.81)
     d = dcrf.DenseCRF2D(H, W, n)
     d.setUnaryEnergy(U)
 
@@ -145,7 +155,7 @@ def crf_refine(label,
 
     result = resize(result, (Horig, Worig), anti_aliasing=True)
 
-    result = rescale(result, mn, mx).astype(np.uint8)
+    result = rescale(result, orig_mn, orig_mx).astype(np.uint8)
 
     print("CRF post-processing complete")
     return result
@@ -250,6 +260,7 @@ def extract_features(
 ##========================================================
 def label_to_colors(
     img,
+    mask,
     colormap=px.colors.qualitative.G10,
     color_class_offset=0
 ):
@@ -276,6 +287,7 @@ def label_to_colors(
     for c in range(minc, maxc + 1):
         cimg[img == c] = colormap[(c + color_class_offset) % len(colormap)]
 
+    cimg[mask==1] = (0,0,0)
     return cimg
 
 ##========================================================
@@ -346,9 +358,9 @@ def segmentation(
         result = median(result, disk(median_filter_value)).astype(np.uint8)
 
     if type(img_path) is list:
-        imsave(img_path[0].replace('assets','results').replace('.jpg','_label.png'), label_to_colors(result-1)) #result)
+        imsave(img_path[0].replace('assets','results').replace('.jpg','_label.png'), label_to_colors(result-1, img[:,:,0]==0))
     else:
-        imsave(img_path.replace('assets','results').replace('.jpg','_label.png'), label_to_colors(result-1)) #result)
+        imsave(img_path.replace('assets','results').replace('.jpg','_label.png'), label_to_colors(result-1, img[:,:,0]==0))
 
     if type(img_path) is list:
         imsave(img_path[0].replace('assets','results').replace('.jpg','_label_greyscale.png'), result)

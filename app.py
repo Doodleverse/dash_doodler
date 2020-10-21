@@ -41,7 +41,7 @@ from datetime import datetime
 # import dash_bootstrap_components as dbc
 
 ##========================================================
-CURRENT_IMAGE = DEFAULT_IMAGE_PATH = "assets/dash-default.jpg"
+CURRENT_IMAGE = DEFAULT_IMAGE_PATH = "assets/logos/dash-default.jpg"
 
 DEFAULT_PEN_WIDTH = 2  # gives line width of 2^2 = 4
 
@@ -211,7 +211,7 @@ app.layout = html.Div(
                                 for image in files
                             ],
 
-                            value='assets/dash-default.jpg', #
+                            value='assets/logos/dash-default.jpg', #
                             multi=False,
                         ),
 
@@ -241,7 +241,7 @@ app.layout = html.Div(
                         ),
 
 
-                        html.H6("Image segmentation:"),
+                        # html.H6("Image segmentation:"),
 
                         # Indicate showing most recently computed segmentation
                         dcc.Checklist(
@@ -256,24 +256,13 @@ app.layout = html.Div(
                         ),
 
 
-                        # dcc.Checklist(
-                        #     id="median-filter",
-                        #     options=[
-                        #         {
-                        #             "label": "Apply median filter",
-                        #             "value": "Apply Median Filter",
-                        #         }
-                        #     ],
-                        #     value=["Apply Median Filter"],
-                        # ),
-
-                        html.H6("Median filter kernel radius:"),
+                        html.H6(id="median-filter-display"),
                         # Slider for specifying pen width
                         dcc.Slider(
                             id="median-filter",
-                            min=1,
+                            min=0.1,
                             max=100,
-                            step=1,
+                            step=0.1,
                             value=20,
                         ),
 
@@ -287,16 +276,16 @@ app.layout = html.Div(
                             value=["intensity", "texture"],
                             labelStyle={'display': 'inline-block'}
                         ),
-                        html.H6("Blurring parameter for Random Forest image feature extraction:"),
+                        html.H6(id="sigma-display"),
                         dcc.RangeSlider(
                             id="sigma-range-slider",
-                            min=0.01,
+                            min=1,
                             max=30,
-                            step=0.01,
+                            step=1,
                             value=[1, 16],
                         ),
 
-                        html.H6("Blurring parameter for CRF image feature extraction:"),
+                        html.H6(id="theta-display"),
                         # Slider for specifying pen width
                         dcc.Slider(
                             id="crf-theta-slider",
@@ -306,7 +295,7 @@ app.layout = html.Div(
                             value=DEFAULT_CRF_THETA,
                         ),
 
-                        html.H6("CRF tolerance parameter of color differences between classes:"),
+                        html.H6(id="mu-display"),
                         # Slider for specifying pen width
                         dcc.Slider(
                             id="crf-mu-slider",
@@ -406,6 +395,10 @@ def show_segmentation(image_path,
         Output("masks", "data"),
         Output("segmentation", "data"),
         Output("pen-width-display", "children"),
+        Output("sigma-display", "children"),
+        Output("theta-display", "children"),
+        Output("mu-display", "children"),
+        Output("median-filter-display", "children"),
         Output("classified-image-store", "data"),
     ],
     [
@@ -540,6 +533,10 @@ def annotation_react_enact(
         masks_data,
         segmentation_data,
         "Pen width: %d" % (pen_width,),
+        "Blurring parameter for Random Forest feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
+        "Blurring parameter for CRF image feature extraction: %d" % (crf_theta_slider_value,),
+        "CRF tolerance parameter of color differences between classes: %d" % (crf_mu_slider_value,),
+        "Median filter kernel radius: %d" % (median_filter_value,),
         segmentation_store_data,
     )
 
