@@ -126,7 +126,7 @@ Based on [this plotly example](https://github.com/plotly/dash-sample-apps/tree/m
 ## <a name="contribute"></a>Contributing
 Contributions are welcome, and they are greatly appreciated! Credit will always be given.
 
-### Report Bugs
+#### Report Bugs
 
 Report bugs at https://github.com/dbuscombe-usgs/dash_doodler/issues.
 
@@ -136,19 +136,19 @@ Please include:
     * Any details about your local setup that might be helpful in troubleshooting.
     * Detailed steps to reproduce the bug.
 
-### Fix Bugs
+#### Fix Bugs
 
 Look through the GitHub issues for bugs. Anything tagged with "bug" and "help wanted" is open to whoever wants to implement it.
 
-### Implement Features
+#### Implement Features
 
 Look through the GitHub issues for features. Anything tagged with "enhancement" and "help wanted" is open to whoever wants to implement it.
 
-### Write Documentation
+#### Write Documentation
 
 We could always use more documentation, whether as part of the docs, in docstrings, or using this software in blog posts, articles, etc.
 
-### Get Started!
+#### Get Started!
 
 Ready to contribute? Here's how to set up for local development.
 
