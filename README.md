@@ -15,9 +15,19 @@ The video shows a basic usage of doodler. 1) Annotate the scene with a few examp
 ![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_readme1.gif)
 
 
+## Contents
+* [Rationale](#rationale)
+* [Installation](#install)
+* [Use](#use)
+* [Outputs](#outputs)
+* [Acknowledgments](#ack)
+* [Contribute](#contribute)
+* [Progress](#progress)
+* [Roadmap](#roadmap)
+
 <!-- Please go to the [project website](https://dbuscombe-usgs.github.io/dash_doodler/) for more details and documentation -->
 
-## Rationale
+## <a name="rationale"></a>Rationale
 There are many great tools for exhaustive (i.e. whole image) image labeling for segmentation tasks, using polygons. Examples include [makesense.ai](www.makesense.ai) and [cvat](https://cvat.org). However, for high-resolution imagery with large spatial footprints and complex scenes, such as aerial and satellite imagery, exhaustive labeling using polygonal tools can be prohibitively time-consuming. This is especially true of scenes with many classes of interest, and covering relatively small, spatially discontinuous regions of the image.
 
 What is generally required in the above case is a semi-supervised tool for efficient image labeling, based on sparse examples provided by a human annotator. Those sparse annotations are used by a secondary automated process to estimate the class of every pixel in the image. The number of pixels annotated by the human annotator is typically a small fraction of the total pixels in the image.  
@@ -27,9 +37,23 @@ What is generally required in the above case is a semi-supervised tool for effic
 This is python software that is designed to be used from within a `conda` environment. After setting up that environment, the user places imagery in the `assets` folder and creates a `classes.txt` file that tells the program what classes will be labeled (and what buttons to create). The minimum number of classes is 2. There is no limit to the maximum number of classes, except screen real estate! Label images are written to the `results` folder.
 
 
-## Installation
+## <a name="install"></a>Installation
+
+Clone/download this repository
+
+```
+git clone https://github.com/dbuscombe-usgs/dash_doodler.git
+```
 
 Install the requirements
+
+```bash
+conda env create --file dashdoodler.yml
+conda activate dashdoodler
+```
+
+
+*If* the above doesn't work, try this:
 
 ```bash
 conda create --name dashdoodler python=3.6
@@ -39,11 +63,10 @@ pip install -r requirements.txt
 ```
 
 
-## Use
-Move your images into the `assets` folder. For the moment, they must be jpegs
+## <a name="use"></a>Use
+Move your images into the `assets` folder. For the moment, they must be jpegs with the `.jpg` extension. Support for other image types forthcoming ...
 
-Run the app. An IP address where you can view the app in your browser will be
-displayed in the terminal.
+Run the app. An IP address where you can view the app in your browser will be displayed in the terminal. Some browsers will launch automatically, while others you may have to manually type (or copy/paste) the IP address into a browser. Tested so far with Chrome, Firefox, and Edge.
 
 ```bash
 python app.py
@@ -51,8 +74,22 @@ python app.py
 
 Results (label images and annotation images) are saved to the `results/` folder. You should move your images (inputs and outputs) to another place, to keep things manageable. Later versions of this tool might provide a better file management system.
 
+The default colormap is plotly's G10, found [here](https://plotly.com/python/discrete-color/). The color sequence is:
 
-## Videos
+* <p><span style="color:blue">#3366CC</span></p>
+* #DC3912
+* #FF9900
+* #109618
+* #990099
+* #0099C6
+* #DD4477
+* #66AA00
+* #B82E2E
+* #316395
+
+If you need more than 10 colors, replace `G10` with `Light24`. This will give you up to 24 classes. Remember to keep your class names short, so the buttons all fit on the screen!
+
+### Videos
 
 
 #### Video 1
@@ -75,12 +112,91 @@ Use a different image and class set. Annotate an image with the new 6-class set.
 
 ![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_oct20b.gif)
 
-## Acknowledgements
+## <a name="outputs"></a>Outputs
+Each classified image will result in three files within the `/results` folder, with XXXXXXXX_ representing the image filename root:
+
+* `XXXXXXXX_label.png`: color version of the label image
+* `XXXXXXXX_label_greyscale.png`: greyscale version of the above. Note this will always appear very dark because the full range of an 8-bit image is 0 to 255. Your classes will be represented as integers
+* `XXXXXXXX_annotations.png`: this is mostly for debugging/analysis and may disappear in a future version. It shows your doodles.
+
+## <a name="ack"></a>Acknowledgements
 
 Based on [this plotly example](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) and the previous openCV based implementation [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller)
 
-## Progress report
+## <a name="contribute"></a>Contributing
+Contributions are welcome, and they are greatly appreciated! Credit will always be given.
+
+### Report Bugs
+
+Report bugs at https://github.com/dbuscombe-usgs/dash_doodler/issues.
+
+Please include:
+
+    * Your operating system name and version.
+    * Any details about your local setup that might be helpful in troubleshooting.
+    * Detailed steps to reproduce the bug.
+
+### Fix Bugs
+
+Look through the GitHub issues for bugs. Anything tagged with "bug" and "help wanted" is open to whoever wants to implement it.
+
+### Implement Features
+
+Look through the GitHub issues for features. Anything tagged with "enhancement" and "help wanted" is open to whoever wants to implement it.
+
+### Write Documentation
+
+We could always use more documentation, whether as part of the docs, in docstrings, or using this software in blog posts, articles, etc.
+
+### Get Started!
+
+Ready to contribute? Here's how to set up for local development.
+
+    * Fork the dash_doodler repo on GitHub.
+
+    * Clone your fork locally:
+
+    `$ git clone git@github.com:your_name_here/dash_doodler.git`
+
+    Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development:
+
+    `$ cd dash_doodler/`
+    `$ conda env create --file dashdoodler.yml`
+    `$ conda activate dashdoodler`
+
+    Create a branch for local development:
+
+    `$ git checkout -b name-of-your-bugfix-or-feature`
+
+    Now you can make your changes locally.
+
+    Commit your changes and push your branch to GitHub:
+
+    `$ git add .`
+    `$ git commit -m "Your detailed description of your changes."`
+    `$ git push origin name-of-your-bugfix-or-feature`
+
+    Submit a pull request through the GitHub website.
+
+
+## <a name="progress"></a>Progress report
 
 10/20/20:
 * display numbers for every parameter
 * fixed label creation and display in situations where there is a null image value (0), and where there are not as many classes in the scene as in the collection
+
+10/22/20
+* modified layout so image window is larger, and button bank is narrower. Hopefully easier to label, less zooming, etc. see https://github.com/dbuscombe-usgs/dash_doodler/issues/4. Thanks Dan Nowacki
+* added yml installation file, modified requirements.txt to remove gunicorn dependency. see . Thanks Dan Nowacki, Chris Sherwood,
+* updates to docs, README, videos
+
+## <a name="roadmap"></a>Roadmap
+
+
+* Maybe a button to reset the coefficients to the defaults?
+
+* Delay running the model until all of the coefficients are adjusted...right now it jumps right into the calcs as soon a slider is moved, but maybe you want to adjust two sliders first. Maybe change the compute segmentation to a button that changes color if the model is out of date wrt to the current settings.
+
+* Publish the color order so people can assign colors by changing the order of the labels.
+
+Use the issues tab to suggest new features!

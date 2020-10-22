@@ -45,8 +45,9 @@ CURRENT_IMAGE = DEFAULT_IMAGE_PATH = "assets/logos/dash-default.jpg"
 
 DEFAULT_PEN_WIDTH = 2  # gives line width of 2^2 = 4
 
-DEFAULT_CRF_THETA = 40
-DEFAULT_CRF_MU = 100
+DEFAULT_CRF_THETA = 60
+DEFAULT_CRF_MU = 80
+DEFAULT_MEDIAN_KERNEL = 10
 
 SEG_FEATURE_TYPES = ["intensity", "edges", "texture"]
 
@@ -60,8 +61,6 @@ with open('classes.txt') as f:
     classes = f.readlines()
 
 class_label_names = [c.strip() for c in classes]
-
-# class_label_names = ['deep', 'white', 'shallow', 'dry']
 
 NUM_LABEL_CLASSES = len(class_label_names)
 
@@ -107,6 +106,7 @@ def make_and_return_default_figure(
             "newshape.line.color": stroke_color,
             "newshape.line.width": pen_width,
             "margin": dict(l=0, r=0, b=0, t=0, pad=4),
+            "height": 600
         }
     )
 
@@ -263,7 +263,7 @@ app.layout = html.Div(
                             min=0.1,
                             max=100,
                             step=0.1,
-                            value=20,
+                            value=DEFAULT_MEDIAN_KERNEL,
                         ),
 
                         html.H6("Image Feature Extraction:"),
@@ -289,7 +289,7 @@ app.layout = html.Div(
                         # Slider for specifying pen width
                         dcc.Slider(
                             id="crf-theta-slider",
-                            min=10,
+                            min=1,
                             max=120,
                             step=10,
                             value=DEFAULT_CRF_THETA,
@@ -332,7 +332,7 @@ app.layout = html.Div(
                             ],
                         ),
                     ],
-                    className="four columns app-background",
+                    className="three columns app-background",
                 ),
             ],
             className="ten columns",
@@ -533,9 +533,9 @@ def annotation_react_enact(
         masks_data,
         segmentation_data,
         "Pen width: %d" % (pen_width,),
-        "Blurring parameter for Random Forest feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
+        "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
         "Blurring parameter for CRF image feature extraction: %d" % (crf_theta_slider_value,),
-        "CRF tolerance parameter of color differences between classes: %d" % (crf_mu_slider_value,),
+        "CRF color class difference tolerance parameter: %d" % (crf_mu_slider_value,),
         "Median filter kernel radius: %d" % (median_filter_value,),
         segmentation_store_data,
     )

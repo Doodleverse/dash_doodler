@@ -1,0 +1,22 @@
+name: dashdoodler
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+ - python=3.6
+ - dash-core-components=1.10
+ - plotly==4.7.1
+ - plotly_express=0.4
+ - CairoSVG==2.4.2
+ - matplotlib==3.2.1
+ - scipy==1.4.1
+ - dash==1.12.0
+ - numpy=1.18
+ - scikit-image==0.16.2
+ - dash-html-components=1.0
+ - dash-table=4.7
+ - Pillow==7.1.2
+ - scikit-learn=0.23
+ - pandas==1.0.3
+ - pydensecrf
+ - cairo

@@ -130,7 +130,7 @@ def crf_refine(label,
     n = 1+(mx-mn)
     # print(mn)
     # print(mx)
-    # print(n)
+    print(n)
 
     H = label.shape[0]
     W = label.shape[1]
@@ -157,8 +157,17 @@ def crf_refine(label,
 
     result = rescale(result, orig_mn, orig_mx).astype(np.uint8)
 
+
     print("CRF post-processing complete")
-    return result
+    return result, n
+    # if n==1:
+    #     return result[label>0]==np.unique(label)
+    # else:
+    #
+    #     for k in np.unique(result):
+    #         if k not in np.unique(label):
+    #             result[result==k] = label[result==k]
+    #     return result
 
 ##========================================================
 def features_sigma(img,
@@ -350,21 +359,27 @@ def segmentation(
     else:
         result[mask == 0] = labels
 
+    print(np.unique(result))
     print("applying CRF refinement:")
-    result = crf_refine(result, expand_img(img), crf_theta_slider_value, crf_mu_slider_value)
+    result2, n = crf_refine(result, expand_img(img), crf_theta_slider_value, crf_mu_slider_value)
+
+    if ((n==1)):# and (np.unique(result) != np.unique(result2)):
+        print('aye')
+        result2[result>0] = np.unique(result)
+
 
     if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
         print("applying median filter:")
-        result = median(result, disk(median_filter_value)).astype(np.uint8)
+        result = median(result2, disk(median_filter_value)).astype(np.uint8)
 
     if type(img_path) is list:
-        imsave(img_path[0].replace('assets','results').replace('.jpg','_label.png'), label_to_colors(result-1, img[:,:,0]==0))
+        imsave(img_path[0].replace('assets','results').replace('.jpg','_label.png'), label_to_colors(result2-1, img[:,:,0]==0))
     else:
-        imsave(img_path.replace('assets','results').replace('.jpg','_label.png'), label_to_colors(result-1, img[:,:,0]==0))
+        imsave(img_path.replace('assets','results').replace('.jpg','_label.png'), label_to_colors(result2-1, img[:,:,0]==0))
 
     if type(img_path) is list:
-        imsave(img_path[0].replace('assets','results').replace('.jpg','_label_greyscale.png'), result)
+        imsave(img_path[0].replace('assets','results').replace('.jpg','_label_greyscale.png'), result2)
     else:
-        imsave(img_path.replace('assets','results').replace('.jpg','_label_greyscale.png'), result)
+        imsave(img_path.replace('assets','results').replace('.jpg','_label_greyscale.png'), result2)
 
-    return result, clf
+    return result2, clf

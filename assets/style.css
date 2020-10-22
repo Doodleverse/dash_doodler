@@ -148,7 +148,7 @@ h2 { font-size: 1.3rem; letter-spacing: -.1rem; margin-bottom: 1rem; margin-top:
 h3 { font-size: 1.2rem; letter-spacing: -.1rem; margin-bottom: .8rem; margin-top: 1.4rem;}
 h4 { font-size: 1.1rem; letter-spacing: -.08rem; margin-bottom: .5rem; margin-top: 1.2rem;}
 h5 { font-size: 1.0rem; letter-spacing: -.05rem; margin-bottom: 0.6rem; margin-top: 0.6rem;}
-h6 { font-size: 1.0rem; letter-spacing: 0; margin-bottom: 0.75rem; margin-top: 0.75rem;}
+h6 { font-size: 0.8rem; letter-spacing: 0; margin-bottom: 0.75rem; margin-top: 0.75rem;}
 
 p {
   margin-top: 0; }
@@ -369,6 +369,12 @@ ol {
 .u-pull-left {
   float: left; }
 
+.u-full-height {
+  height: 100%;
+  box-sizing: border-box; }
+.u-max-full-height {
+  max-height: 100%;
+  box-sizing: border-box; }
 
 /* Misc
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
