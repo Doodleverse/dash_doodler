@@ -189,16 +189,16 @@ Submit a pull request through the GitHub website.
 
 10/22/20
 * modified layout so image window is larger, and button bank is narrower. Hopefully easier to label, less zooming, etc. see https://github.com/dbuscombe-usgs/dash_doodler/issues/4. Thanks Dan Nowacki
-* added yml installation file, modified requirements.txt to remove gunicorn dependency. see . Thanks Dan Nowacki, Chris Sherwood,
+* added yml installation file, modified requirements.txt to remove gunicorn dependency. see https://github.com/dbuscombe-usgs/dash_doodler/issues/1. Thanks Dan Nowacki, Chris Sherwood, Rich Signell
 * updates to docs, README, videos
 
 ## <a name="roadmap"></a>Roadmap
 
 
-* Maybe a button to reset the coefficients to the defaults?
+* Maybe a button to reset the coefficients to the defaults? [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 
-* Delay running the model until all of the coefficients are adjusted...right now it jumps right into the calcs as soon a slider is moved, but maybe you want to adjust two sliders first. Maybe change the compute segmentation to a button that changes color if the model is out of date wrt to the current settings.
+* Delay running the model until all of the coefficients are adjusted...right now it jumps right into the calcs as soon a slider is moved, but maybe you want to adjust two sliders first. Maybe change the compute segmentation to a button that changes color if the model is out of date wrt to the current settings. [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 
-* Publish the color order so people can assign colors by changing the order of the labels.
+* Publish the color order so people can assign colors by changing the order of the labels. [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 
 Use the issues tab to suggest new features!
