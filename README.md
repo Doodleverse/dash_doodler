@@ -74,20 +74,20 @@ python app.py
 
 Results (label images and annotation images) are saved to the `results/` folder. You should move your images (inputs and outputs) to another place, to keep things manageable. Later versions of this tool might provide a better file management system.
 
-The default colormap is plotly's G10, found [here](https://plotly.com/python/discrete-color/). The color sequence is:
+The default colormap is plotly's G10, found [here](https://plotly.com/python/discrete-color/). The hex (rgb) color sequence is:
 
-* <p><span style="color:blue">#3366CC</span></p>
-* #DC3912
-* #FF9900
-* #109618
-* #990099
-* #0099C6
-* #DD4477
-* #66AA00
-* #B82E2E
-* #316395
+* #3366CC (51, 102, 204)
+* #DC3912 (220, 57, 18)
+* #FF9900 (255, 153, 0)
+* #109618 (16, 150, 24)
+* #990099 (153, 0, 153)
+* #0099C6 (0, 153, 198)
+* #DD4477 (221, 68, 119)
+* #66AA00 (102, 170, 0)
+* #B82E2E (184, 46, 46)
+* #316395 (49, 99, 149)
 
-If you need more than 10 colors, replace `G10` with `Light24`. This will give you up to 24 classes. Remember to keep your class names short, so the buttons all fit on the screen!
+(you can google search those hex codes and get a color picker view). If you need more than 10 colors, replace `G10` with `Light24`. This will give you up to 24 classes. Remember to keep your class names short, so the buttons all fit on the screen!
 
 ### Videos
 
