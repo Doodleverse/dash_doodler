@@ -152,31 +152,31 @@ We could always use more documentation, whether as part of the docs, in docstrin
 
 Ready to contribute? Here's how to set up for local development.
 
-    * Fork the dash_doodler repo on GitHub.
+* Fork the dash_doodler repo on GitHub.
 
-    * Clone your fork locally:
+* Clone your fork locally:
 
-    `$ git clone git@github.com:your_name_here/dash_doodler.git`
+`$ git clone git@github.com:your_name_here/dash_doodler.git`
 
-    Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development:
+Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development:
 
-    `$ cd dash_doodler/`
-    `$ conda env create --file dashdoodler.yml`
-    `$ conda activate dashdoodler`
+`$ cd dash_doodler/`
+`$ conda env create --file dashdoodler.yml`
+`$ conda activate dashdoodler`
 
-    Create a branch for local development:
+Create a branch for local development:
 
-    `$ git checkout -b name-of-your-bugfix-or-feature`
+`$ git checkout -b name-of-your-bugfix-or-feature`
 
-    Now you can make your changes locally.
+Now you can make your changes locally.
 
-    Commit your changes and push your branch to GitHub:
+Commit your changes and push your branch to GitHub:
 
-    `$ git add .`
-    `$ git commit -m "Your detailed description of your changes."`
-    `$ git push origin name-of-your-bugfix-or-feature`
+`$ git add .`
+`$ git commit -m "Your detailed description of your changes."`
+`$ git push origin name-of-your-bugfix-or-feature`
 
-    Submit a pull request through the GitHub website.
+Submit a pull request through the GitHub website.
 
 
 ## <a name="progress"></a>Progress report
