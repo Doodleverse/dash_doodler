@@ -7,12 +7,9 @@
 
 > The Conditional Random Field (CRF) model used by this tool is described by [Buscombe and Ritchie (2018)](https://www.mdpi.com/2076-3263/8/7/244)
 
+The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder, and you can also download a version of it from your browser for quick viewing
 
-Note this tool is still under development. Please use the issues tab to report bugs and suggest improvements. Please get in touch if you're interested in helping improve this tool!
-
-The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder. you can also download a version of it from your browser for quick viewing
-
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_readme1.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_quick.gif)
 
 
 ## Contents
@@ -32,9 +29,9 @@ There are many great tools for exhaustive (i.e. whole image) image labeling for 
 
 What is generally required in the above case is a semi-supervised tool for efficient image labeling, based on sparse examples provided by a human annotator. Those sparse annotations are used by a secondary automated process to estimate the class of every pixel in the image. The number of pixels annotated by the human annotator is typically a small fraction of the total pixels in the image.  
 
-`Doodler` is a tool for "exemplative", not exhaustive, labeling. The approach taken here is to freehand label only some of the scene, then use a model to complete the scene. Sparse annotations are provided to a Conditional Random Field (CRF) model, that develops a scene-specific model for each class and creates a dense (i.e. per pixel) label image based on the information you provide it. This approach can reduce the time required for detailed labeling of large and complex scenes by an order of magnitude or more. Your annotations are first used to train and apply a random forest on the entire image, then a CRF is used to refine labels further based on the underlying image.
+`Doodler` is a tool for sparse, not exhaustive, labeling. The approach taken here is to freehand label only some of the scene, then use a model to complete the scene. Sparse annotations are provided to a Conditional Random Field (CRF) model, that develops a scene-specific model for each class and creates a dense (i.e. per pixel) label image based on the information you provide it. This approach can reduce the time required for detailed labeling of large and complex scenes by an order of magnitude or more. Your annotations are first used to train and apply a random forest on the entire image, then a CRF is used to refine labels further based on the underlying image.
 
-This is python software that is designed to be used from within a `conda` environment. After setting up that environment, the user places imagery in the `assets` folder and creates a `classes.txt` file that tells the program what classes will be labeled (and what buttons to create). The minimum number of classes is 2. There is no limit to the maximum number of classes, except screen real estate! Label images are written to the `results` folder.
+This is python software that is designed to be used from within a `conda` environment. After setting up that environment, create a `classes.txt` file that tells the program what classes will be labeled (and what buttons to create). The minimum number of classes is 2. There is no limit to the maximum number of classes, except screen real estate! The images that you upload will go into the `assets/` folder. The labels images you create are written to the `results` folder.
 
 
 ## <a name="install"></a>Installation
@@ -48,7 +45,7 @@ git clone https://github.com/dbuscombe-usgs/dash_doodler.git
 Install the requirements
 
 ```bash
-conda env create --file dashdoodler.yml
+conda env create --file install/dashdoodler.yml
 conda activate dashdoodler
 ```
 
@@ -59,7 +56,7 @@ conda activate dashdoodler
 conda create --name dashdoodler python=3.6
 conda activate dashdoodler
 conda install -c conda-forge pydensecrf cairo
-pip install -r requirements.txt
+pip install -r install/requirements.txt
 ```
 
 
@@ -72,7 +69,7 @@ Run the app. An IP address where you can view the app in your browser will be di
 python app.py
 ```
 
-Results (label images and annotation images) are saved to the `results/` folder. You should move your images (inputs and outputs) to another place, to keep things manageable. Later versions of this tool might provide a better file management system.
+Results (label images and annotation images) are saved to the `results/` folder. The program creates a subfolder each time it is launched, timestamped. That folder contains your results images for a session.
 
 The default colormap is plotly's G10, found [here](https://plotly.com/python/discrete-color/). The hex (rgb) color sequence is:
 
@@ -90,27 +87,18 @@ The default colormap is plotly's G10, found [here](https://plotly.com/python/dis
 (you can google search those hex codes and get a color picker view). If you need more than 10 colors, replace `G10` with `Light24`. This will give you up to 24 classes. Remember to keep your class names short, so the buttons all fit on the screen!
 
 ### Videos
+Shore demonstration videos:
 
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_video2.gif)
 
-#### Video 1
-Make a mistake, highlight and erase, then start labeling again. Check 'compute segmentation' and wait for the segmentation output. It needs improvement; uncheck 'compute segmentation', make more annotations and adjustments to parameters, then recompute segmentation.
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_video3.gif)
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_readme2.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_video4.gif)
 
-#### Video 2
-Label an image, view the result. Make adjustments to parameters a few times, before sownloading the segmentation and viewing it in an image viewer.
+Longer example, consisting of 5 images labeled, then add two more (see the list refresh) and label 2 more:
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_readme3.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_longvideo.gif)
 
-#### Video 3
-Use a different image and class set. Annotate an image with the new 6-class set. View the resulting label image in an image editor (GIMP), and finally touch up a label image manually in the image analysis software.
-
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_readme4.gif)
-
-#### More
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_oct20a.gif)
-
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_oct20b.gif)
 
 ## <a name="outputs"></a>Outputs
 Each classified image will result in three files within the `/results` folder, with XXXXXXXX_ representing the image filename root:
@@ -161,7 +149,7 @@ Ready to contribute? Here's how to set up for local development.
 Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development:
 
 `$ cd dash_doodler/`
-`$ conda env create --file dashdoodler.yml`
+`$ conda env create --file install/dashdoodler.yml`
 `$ conda activate dashdoodler`
 
 Create a branch for local development:
@@ -192,13 +180,23 @@ Submit a pull request through the GitHub website.
 * added yml installation file, modified requirements.txt to remove gunicorn dependency. see https://github.com/dbuscombe-usgs/dash_doodler/issues/1. Thanks Dan Nowacki, Chris Sherwood, Rich Signell
 * updates to docs, README, videos
 
-## <a name="roadmap"></a>Roadmap
+10/29/20
+* switched to a Flask backend server
+* added upload button/drap-and-drop
+* those images now download into the assets folder and get listed in the dropdown menu
+* figured out how to serve using gunicorn (`gunicorn -w 4 -b 127.0.0.1:8050 doodler:server`)
+* results are now handled per session, with the results written to a folder with the timestamp of the session start
+* organized files so top level directory has the main files, and then subfunctions are in `src`. conda and pip files are in `install`
+* no more banner and instructions - saves space. Instructions on github.
+* more economical use of space in drop down list - can load and display more files
+* when an image is labeled, it disappears from the list when new images are uploaded
+* new videos
 
+## <a name="roadmap"></a>Roadmap
 
 * Maybe a button to reset the coefficients to the defaults? [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 
 * Delay running the model until all of the coefficients are adjusted...right now it jumps right into the calcs as soon a slider is moved, but maybe you want to adjust two sliders first. Maybe change the compute segmentation to a button that changes color if the model is out of date wrt to the current settings. [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 
-* Publish the color order so people can assign colors by changing the order of the labels. [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 
 Use the issues tab to suggest new features!

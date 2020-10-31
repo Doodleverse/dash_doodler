@@ -1,6 +1,5 @@
 # Written by Dr Daniel Buscombe, Marda Science LLC
-# for "ML Mondays", a course supported by the USGS Community for Data Integration
-# and the USGS Coastal Change Hazards Program
+# for the USGS Coastal Change Hazards Program
 #
 # MIT License
 #
@@ -24,21 +23,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-##========================================================
+# ##========================================================
+
+# allows loading of functions from the src directory
+import sys
+sys.path.insert(1, 'src')
+
 import plotly.express as px
 import dash
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import dash_core_components as dcc
-import plot_utils
-from annotations_to_segmentations import (
-    compute_segmentations,
-    seg_pil,
-)
+
+from annotations_to_segmentations import *
+from plot_utils import *
+
 import io, base64, PIL.Image, json, shutil, os
 from glob import glob
 from datetime import datetime
-# import dash_bootstrap_components as dbc
+from urllib.parse import quote as urlquote
+from flask import Flask, send_from_directory
+
 
 ##========================================================
 CURRENT_IMAGE = DEFAULT_IMAGE_PATH = "assets/logos/dash-default.jpg"
@@ -56,6 +61,7 @@ SEG_FEATURE_TYPES = ["intensity", "edges", "texture"]
 DEFAULT_LABEL_CLASS = 0
 class_label_colormap = px.colors.qualitative.G10
 
+##========================================================
 
 with open('classes.txt') as f:
     classes = f.readlines()
@@ -78,13 +84,32 @@ def convert_color_class(c):
     return class_label_colormap.index(c)
 
 
+
+##========================================================
 files = sorted(glob('assets/*.jpg'))
 
 files = [f for f in files if 'dash' not in f]
 
+
+results_folder = 'results/results'+datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
+
+try:
+    os.mkdir(results_folder)
+    print("Results will be written to %s" % (results_folder))
+except:
+    pass
+
+
 ##========================================================
-app = dash.Dash(__name__) #, external_stylesheets=[dbc.themes.BOOTSTRAP])
-server = app.server
+
+UPLOAD_DIRECTORY = os.getcwd()+os.sep+"assets"
+
+if not os.path.exists(UPLOAD_DIRECTORY):
+    os.makedirs(UPLOAD_DIRECTORY)
+
+files = sorted(glob('assets/*.jpg'))
+
+files = [f for f in files if 'dash' not in f]
 
 
 ##========================================================
@@ -95,9 +120,9 @@ def make_and_return_default_figure(
     shapes=[],
 ):
 
-    fig = plot_utils.dummy_fig()
+    fig = dummy_fig() #plot_utils.
 
-    plot_utils.add_layout_images_to_fig(fig, images)
+    add_layout_images_to_fig(fig, images) #plot_utils.
 
     fig.update_layout(
         {
@@ -135,7 +160,27 @@ def shapes_seg_pair_as_dict(d, key, seg, remove_old=True):
 
     return d
 
-##========================================================
+
+##===============================================================
+
+UPLOAD_DIRECTORY = os.getcwd()+os.sep+"assets"
+#UPLOAD_DIRECTORY = '/media/marda/TWOTB/USGS/SOFTWARE/Projects/dash_doodler/project/to_label'
+
+if not os.path.exists(UPLOAD_DIRECTORY):
+    os.makedirs(UPLOAD_DIRECTORY)
+
+
+# Normally, Dash creates its own Flask server internally. By creating our own,
+# we can create a route for downloading files directly:
+server = Flask(__name__)
+app = dash.Dash(server=server)
+
+
+@server.route("/download/<path:path>")
+def download(path):
+    """Serve a file from the upload directory."""
+    return send_from_directory(UPLOAD_DIRECTORY, path, as_attachment=True)
+
 
 app.layout = html.Div(
     id="app-container",
@@ -144,32 +189,37 @@ app.layout = html.Div(
             id="banner",
             children=[
                 html.H1(
-                    "Doodler: Interactive Segmentation of Imagery",
-                    id="title",
-                    className="seven columns",
-                ),
-                html.Img(id="logo", src=app.get_asset_url("logos/dash-logo-new.png"),),
-            ],
-            className="ten columns app-background",
+            "Doodler: Interactive Segmentation of Imagery",
+            id="title",
+            className="seven columns",
         ),
+        html.Img(id="logo", src=app.get_asset_url("logos/dash-logo-new.png")),
+        # html.Div(html.Img(src=app.get_asset_url('logos/dash-logo-new.png'), style={'height':'10%', 'width':'10%'})), #id="logo",
 
-        html.Div(
-            id="description",
-            children=[
-                html.P(
-                    'Make some annotations on the picture using different classes. '+
-                    'Select "Compute segmentation" to compute the segmentation. Play with feature types, median filter, and other parameters. '+
-                    'Add more annotations. Wait for updates.',
-                    className="twelve columns",
-                ),
-                # html.Img(
-                #     id="example-image",
-                #     src="assets/dash-segmentation_img_example_marks.jpg",
-                #     className="two columns",
-                # ),
-            ],
-            className="twelve columns app-background",
+        html.H2(""),
+        dcc.Upload(
+            id="upload-data",
+            children=html.Div(
+                ["Drag and drop or click to select a file to upload."]
+            ),
+            style={
+                "width": "100%",
+                "height": "60px",
+                "lineHeight": "60px",
+                "borderWidth": "1px",
+                "borderStyle": "dashed",
+                "borderRadius": "5px",
+                "textAlign": "center",
+                "margin": "10px",
+            },
+            multiple=True,
         ),
+        html.H2(""),
+        html.Ul(id="file-list"),
+
+    ], #children
+    ), #div banner id
+
         html.Div(
             id="main-content",
             children=[
@@ -199,13 +249,14 @@ app.layout = html.Div(
                 ),
 
                 html.Div(
-                    id="right-column",
-                    children=[
+                       id="right-column",
+                       children=[
 
-                       html.H6("Select Image"),
-                       dcc.Dropdown(
+                        html.H6("Upload images, doodle, download labels. Works best for 3000 x 3000 px images or smaller on most hardware. Info: https://github.com/dbuscombe-usgs/dash_doodler"),
+                        html.H6("Select Image"),
+                        dcc.Dropdown(
                             id="select-image",
-
+                            optionHeight=15,
                             options = [
                                 {'label': image.split('assets/')[-1], 'value': image } \
                                 for image in files
@@ -214,6 +265,7 @@ app.layout = html.Div(
                             value='assets/logos/dash-default.jpg', #
                             multi=False,
                         ),
+
 
                         html.H6("Label class"),
                         # Label class chosen with buttons
@@ -241,14 +293,12 @@ app.layout = html.Div(
                         ),
 
 
-                        # html.H6("Image segmentation:"),
-
                         # Indicate showing most recently computed segmentation
                         dcc.Checklist(
                             id="show-segmentation",
                             options=[
                                 {
-                                    "label": "Compute segmentation",
+                                    "label": "Compute/Show segmentation",
                                     "value": "Show segmentation",
                                 }
                             ],
@@ -305,28 +355,12 @@ app.layout = html.Div(
                             value=DEFAULT_CRF_MU,
                         ),
 
-                        # We use this pattern because we want to be able to download the
-                        # annotations by clicking on a button
-                        # html.A(
-                        #     id="download",
-                        #     download="annotations-"+datetime.now().strftime("%d-%m-%Y-%H-%M")+".json",
-                        #     children=[
-                        #         html.Button(
-                        #             "Download annotations", id="download-button"
-                        #         ),
-                        #         html.Span(
-                        #             " ",
-                        #             className="tooltiptext",
-                        #         ),
-                        #     ],
-                        #     className="tooltip",
-                        # ),
                         html.A(
                             id="download-image",
                             download="classified-image-"+datetime.now().strftime("%d-%m-%Y-%H-%M")+".png",
                             children=[
                                 html.Button(
-                                    "Download from browser",
+                                    "Download Label Image",
                                     id="download-image-button",
                                 )
                             ],
@@ -336,10 +370,12 @@ app.layout = html.Div(
                 ),
             ],
             className="ten columns",
-        ),
+        ), #main content Div
+
         html.Div(
             id="no-display",
             children=[
+                dcc.Store(id="image-list-store", data=[]),
                 # Store for user created masks
                 # data is a list of dicts describing shapes
                 dcc.Store(id="masks", data={"shapes": []}),
@@ -351,9 +387,34 @@ app.layout = html.Div(
                 dcc.Store(id="segmentation", data={}),
                 dcc.Store(id="classified-image-store", data=""),
             ],
-        ),
-    ],
-)
+        ), #nos-display div
+
+    ], #children
+) #app layout
+
+##============================================================
+def save_file(name, content):
+    """Decode and store a file uploaded with Plotly Dash."""
+    data = content.encode("utf8").split(b";base64,")[1]
+    with open(os.path.join(UPLOAD_DIRECTORY, name), "wb") as fp:
+        fp.write(base64.decodebytes(data))
+
+
+def uploaded_files():
+    """List the files in the upload directory."""
+    files = []
+    for filename in os.listdir(UPLOAD_DIRECTORY):
+        path = os.path.join(UPLOAD_DIRECTORY, filename)
+        if os.path.isfile(path):
+            if 'jpg' in filename:
+                files.append(filename)
+    return files
+
+
+def file_download_link(filename):
+    """Create a Plotly Dash 'A' element that downloads a file from the app."""
+    location = "/download/{}".format(urlquote(filename))
+    return html.A(filename, href=location)
 
 
 
@@ -363,7 +424,7 @@ def show_segmentation(image_path,
     segmenter_args,
     median_filter_value,
     crf_theta_slider_value,
-    crf_mu_slider_value):
+    crf_mu_slider_value, results_folder):
     """ adds an image showing segmentations to a figure's layout """
 
     # add 1 because classifier takes 0 to mean no mask
@@ -376,6 +437,7 @@ def show_segmentation(image_path,
 
     segimg, _, clf = compute_segmentations(
         mask_shapes, median_filter_value, crf_theta_slider_value,crf_mu_slider_value,
+        results_folder,
         img_path=image_path,
         segmenter_args=segmenter_args,
         shape_layers=shape_layers,
@@ -383,48 +445,73 @@ def show_segmentation(image_path,
     )
 
     # get the classifier that we can later store in the Store
-    segimgpng = plot_utils.img_array_2_pil(segimg)
+    segimgpng = img_array_2_pil(segimg) #plot_utils.
 
     return (segimgpng)
 
+def parse_contents(contents, filename, date):
+    return html.Div([
+        html.H5(filename),
+        html.H6(datetime.fromtimestamp(date)),
 
-##========================================================
+        # HTML images accept base64 encoded strings in the same format
+        # that is supplied by the upload
+        html.Img(src=contents),
+        html.Hr(),
+        html.Div('Raw Content'),
+        html.Pre(contents[0:200] + '...', style={
+            'whiteSpace': 'pre-wrap',
+            'wordBreak': 'break-all'
+        })
+    ])
+
+
+# ##========================================================
+
 @app.callback(
     [
-        Output("graph", "figure"),
-        Output("masks", "data"),
-        Output("segmentation", "data"),
-        Output("pen-width-display", "children"),
-        Output("sigma-display", "children"),
-        Output("theta-display", "children"),
-        Output("mu-display", "children"),
-        Output("median-filter-display", "children"),
-        Output("classified-image-store", "data"),
+    Output("select-image","options"),
+    Output("graph", "figure"),
+    Output("image-list-store", "data"),
+    Output("masks", "data"),
+    Output("segmentation", "data"),
+    Output("pen-width-display", "children"),
+    Output("sigma-display", "children"),
+    Output("theta-display", "children"),
+    Output("mu-display", "children"),
+    Output("median-filter-display", "children"),
+    Output("classified-image-store", "data"),
     ],
     [
-        Input("graph", "relayoutData"),
-        Input(
-            {"type": "label-class-button", "index": dash.dependencies.ALL},
-            "n_clicks_timestamp",
-        ),
-        Input("crf-theta-slider", "value"),
-        Input('crf-mu-slider', "value"),
-        Input("pen-width", "value"),
-        Input("show-segmentation", "value"),
-        Input("median-filter", "value"),
-        Input("segmentation-features", "value"),
-        Input("sigma-range-slider", "value"),
-        Input("select-image", "value"),
+    Input("upload-data", "filename"),
+    Input("upload-data", "contents"),
+    Input("graph", "relayoutData"),
+    Input(
+        {"type": "label-class-button", "index": dash.dependencies.ALL},
+        "n_clicks_timestamp",
+    ),
+    Input("crf-theta-slider", "value"),
+    Input('crf-mu-slider', "value"),
+    Input("pen-width", "value"),
+    Input("show-segmentation", "value"),
+    Input("median-filter", "value"),
+    Input("segmentation-features", "value"),
+    Input("sigma-range-slider", "value"),
+    Input("select-image", "value"),
     ],
     [
-        State("masks", "data"),
-        State("segmentation", "data"),
-        State("classified-image-store", "data"),
+    State("image-list-store", "data"),
+    State("masks", "data"),
+    State("segmentation", "data"),
+    State("classified-image-store", "data"),
     ],
 )
 
-##========================================================
-def annotation_react_enact(
+# ##========================================================
+
+def update_output(
+    uploaded_filenames,
+    uploaded_file_contents,
     graph_relayoutData,
     any_label_class_button_value,
     crf_theta_slider_value,
@@ -435,13 +522,36 @@ def annotation_react_enact(
     segmentation_features_value,
     sigma_range_slider_value,
     select_image_value,
+    image_list_data,
     masks_data,
     segmentation_data,
     segmentation_store_data,
-):
+    ):
+    """Save uploaded files and regenerate the file list."""
 
     callback_context = [p["prop_id"] for p in dash.callback_context.triggered][0]
     print(callback_context)
+
+    if uploaded_filenames is not None and uploaded_file_contents is not None:
+        for name, data in zip(uploaded_filenames, uploaded_file_contents):
+            save_file(name, data)
+
+    # if new image selected, compare lists of files versus done, and populates menu only with to-do
+    if callback_context == "select-image.value":
+        files = uploaded_files()
+        # get list of files that are different between options (all files) and image_list_data (already labeled)
+        image_list_data_nofolder = [f.split('assets/')[-1] for f in image_list_data]
+        files = list(set(files) - set(image_list_data_nofolder))
+
+        options = [{'label': image.split('assets/')[-1], 'value': image } for image in files]
+        # print(options)
+    else:
+        files = uploaded_files()
+        options = [{'label': image.split('assets/')[-1], 'value': image } for image in files]
+
+    if 'assets' not in select_image_value:
+        select_image_value = 'assets'+os.sep+select_image_value
+        # print(select_image_value)
 
     if callback_context == "graph.relayoutData":
         if "shapes" in graph_relayoutData.keys():
@@ -451,6 +561,7 @@ def annotation_react_enact(
 
     elif callback_context == "select-image.value":
        masks_data={"shapes": []}
+       segmentation_data={}
 
 
     pen_width = int(round(2 ** (pen_width_value)))
@@ -498,23 +609,24 @@ def annotation_react_enact(
 
             if len(segmentation_features_value) > 0:
                 segimgpng = show_segmentation(
-                    [select_image_value], masks_data["shapes"], dict_feature_opts, median_filter_value, crf_theta_slider_value, crf_mu_slider_value
+                    [select_image_value], masks_data["shapes"], dict_feature_opts, median_filter_value,
+                    crf_theta_slider_value, crf_mu_slider_value, results_folder,
                 )
 
                 segmentation_data = shapes_seg_pair_as_dict(
                     segmentation_data, sh, segimgpng
                 )
                 try:
-                    segmentation_store_data = plot_utils.pil2uri(
+                    segmentation_store_data = pil2uri(
                         seg_pil(
                             select_image_value, segimgpng
-                        )
+                        ) #plot_utils.
                     )
                 except:
-                    segmentation_store_data = plot_utils.pil2uri(
+                    segmentation_store_data = pil2uri(
                         seg_pil(
                             PIL.Image.open(select_image_value), segimgpng
-                        )
+                        ) #plot_utils.
                     )
         except ValueError:
             # if segmentation fails, draw nothing
@@ -525,10 +637,16 @@ def annotation_react_enact(
         if segimgpng is not None:
             images_to_draw = [segimgpng]
 
-        fig = plot_utils.add_layout_images_to_fig(fig, images_to_draw)
+        fig = add_layout_images_to_fig(fig, images_to_draw) #plot_utils.
 
+        show_segmentation_value = []
 
-    return (
+        image_list_data.append(select_image_value)
+        # print(image_list_data)
+
+    if len(files) == 0:
+        return [
+        options,
         fig,
         masks_data,
         segmentation_data,
@@ -538,25 +656,24 @@ def annotation_react_enact(
         "CRF color class difference tolerance parameter: %d" % (crf_mu_slider_value,),
         "Median filter kernel radius: %d" % (median_filter_value,),
         segmentation_store_data,
-    )
+        ]
+    else:
+        return [
+        options,
+        fig,
+        image_list_data,
+        masks_data,
+        segmentation_data,
+        "Pen width: %d" % (pen_width,),
+        "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
+        "Blurring parameter for CRF image feature extraction: %d" % (crf_theta_slider_value,),
+        "CRF color class difference tolerance parameter: %d" % (crf_mu_slider_value,),
+        "Median filter kernel radius: %d" % (median_filter_value,),
+        segmentation_store_data,
+        ]
 
 
 ##========================================================
-
-# set the download url to the contents of the classifier-store (so they can be
-# downloaded from the browser's memory)
-app.clientside_callback(
-    """
-function(the_store_data) {
-    let s = JSON.stringify(the_store_data);
-    let b = new Blob([s],{type: 'text/plain'});
-    let url = URL.createObjectURL(b);
-    return url;
-}
-""",
-    Output("download", "href"),
-    [Input("segmentation", "data")],
-)
 
 # set the download url to the contents of the classified-image-store (so they can be
 # downloaded from the browser's memory)
@@ -571,6 +688,5 @@ function(the_image_store_data) {
 )
 
 
-##========================================================
 if __name__ == "__main__":
-    app.run_server()
+    app.run_server() #debug=True, port=8888)
