@@ -43,16 +43,21 @@ from glob import glob
 from datetime import datetime
 from urllib.parse import quote as urlquote
 from flask import Flask, send_from_directory
-from skimage.filters.rank import median
-from skimage.morphology import disk
-
+# from skimage.filters.rank import median
+# from skimage.morphology import disk
 ##========================================================
+
+try:
+    os.remove('RandomForestClassifier.pkl.z')
+except:
+    pass
+
 CURRENT_IMAGE = DEFAULT_IMAGE_PATH = "assets/logos/dash-default.jpg"
 
 DEFAULT_PEN_WIDTH = 2  # gives line width of 2^2 = 4
 
-DEFAULT_CRF_THETA = 30
-DEFAULT_CRF_MU = 50
+# DEFAULT_CRF_THETA = 30
+# DEFAULT_CRF_MU = 50
 DEFAULT_MEDIAN_KERNEL = 5
 
 SEG_FEATURE_TYPES = ["intensity", "edges", "texture"]
@@ -292,9 +297,9 @@ app.layout = html.Div(
                         # Slider for specifying pen width
                         dcc.Slider(
                             id="pen-width",
-                            min=0,
+                            min=1,
                             max=6,
-                            step=0.1,
+                            step=0.5,
                             value=DEFAULT_PEN_WIDTH,
                         ),
 
@@ -341,29 +346,29 @@ app.layout = html.Div(
                             value=[1, 16],
                         ),
 
-                        html.H6(id="theta-display"),
-                        # Slider for specifying pen width
-                        dcc.Slider(
-                            id="crf-theta-slider",
-                            min=1,
-                            max=120,
-                            step=10,
-                            value=DEFAULT_CRF_THETA,
-                        ),
+                        # html.H6(id="theta-display"),
+                        # # Slider for specifying pen width
+                        # dcc.Slider(
+                        #     id="crf-theta-slider",
+                        #     min=1,
+                        #     max=120,
+                        #     step=10,
+                        #     value=DEFAULT_CRF_THETA,
+                        # ),
 
-                        html.H6(id="mu-display"),
-                        # Slider for specifying pen width
-                        dcc.Slider(
-                            id="crf-mu-slider",
-                            min=1,
-                            max=255,
-                            step=1,
-                            value=DEFAULT_CRF_MU,
-                        ),
+                        # html.H6(id="mu-display"),
+                        # # Slider for specifying pen width
+                        # dcc.Slider(
+                        #     id="crf-mu-slider",
+                        #     min=1,
+                        #     max=255,
+                        #     step=1,
+                        #     value=DEFAULT_CRF_MU,
+                        # ),
 
                         html.A(
                             id="download-image",
-                            download="classified-image-"+datetime.now().strftime("%d-%m-%Y-%H-%M")+".png",
+                            download="classified-image-"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+".png",
                             children=[
                                 html.Button(
                                     "Download Label Image",
@@ -422,9 +427,7 @@ def file_download_link(filename):
     location = "/download/{}".format(urlquote(filename))
     return html.A(filename, href=location)
 
-
-
-    # median_filter_value,
+    #
 # median_filter_value
 ##========================================================
 def show_segmentation(image_path,
@@ -457,39 +460,6 @@ def show_segmentation(image_path,
     segimgpng = img_array_2_pil(segimg) #plot_utils.
 
     return (segimgpng, seg, img)
-#
-# ##========================================================
-# def show_segmentation(image_path,
-#     mask_shapes,
-#     segmenter_args,
-#     median_filter_value,
-#     crf_theta_slider_value,
-#     crf_mu_slider_value, results_folder):
-#     """ adds an image showing segmentations to a figure's layout """
-#
-#     # add 1 because classifier takes 0 to mean no mask
-#     shape_layers = [convert_color_class(shape["line"]["color"]) + 1 for shape in mask_shapes]
-#
-#     label_to_colors_args = {
-#         "colormap": class_label_colormap,
-#         "color_class_offset": -1,
-#     }
-#
-#     # print(mask_shapes)
-#
-#     segimg, _ = compute_segmentations(
-#         mask_shapes, median_filter_value, crf_theta_slider_value,crf_mu_slider_value,
-#         results_folder,
-#         img_path=image_path,
-#         segmenter_args=segmenter_args,
-#         shape_layers=shape_layers,
-#         label_to_colors_args=label_to_colors_args,
-#     )
-#
-#     # get the classifier that we can later store in the Store
-#     segimgpng = img_array_2_pil(segimg) #plot_utils.
-#
-#     return (segimgpng)
 
 def parse_contents(contents, filename, date):
     return html.Div([
@@ -515,6 +485,10 @@ def look_up_seg(d, key):
     return img
 
 # ##========================================================
+# Input("crf-theta-slider", "value"),
+# Input('crf-mu-slider', "value"),
+    # Output("theta-display", "children"),
+    # Output("mu-display", "children"),
 
 @app.callback(
     [
@@ -525,8 +499,6 @@ def look_up_seg(d, key):
     Output("segmentation", "data"),
     Output("pen-width-display", "children"),
     Output("sigma-display", "children"),
-    Output("theta-display", "children"),
-    Output("mu-display", "children"),
     Output("median-filter-display", "children"),
     Output("classified-image-store", "data"),
     ],
@@ -538,8 +510,6 @@ def look_up_seg(d, key):
         {"type": "label-class-button", "index": dash.dependencies.ALL},
         "n_clicks_timestamp",
     ),
-    Input("crf-theta-slider", "value"),
-    Input('crf-mu-slider', "value"),
     Input("pen-width", "value"),
     Input("show-segmentation", "value"),
     Input("median-filter", "value"),
@@ -556,14 +526,14 @@ def look_up_seg(d, key):
 )
 
 # ##========================================================
+    # crf_theta_slider_value,
+    # crf_mu_slider_value,
 
 def update_output(
     uploaded_filenames,
     uploaded_file_contents,
     graph_relayoutData,
     any_label_class_button_value,
-    crf_theta_slider_value,
-    crf_mu_slider_value,
     pen_width_value,
     show_segmentation_value,
     median_filter_value,
@@ -611,7 +581,6 @@ def update_output(
        masks_data={"shapes": []}
        segmentation_data={}
 
-
     pen_width = int(round(2 ** (pen_width_value)))
 
     # find label class value by finding button with the greatest n_clicks
@@ -644,43 +613,63 @@ def update_output(
             ]
         )
 
-        # if sh in segmentation_data.keys():
-        #     segimgpng = look_up_seg(segmentation_data, sh)
-        # else:
-        #     segimgpng = None
-        #     try:
-        #         dict_feature_opts = {
-        #             key: (key in segmentation_features_value)
-        #             for key in SEG_FEATURE_TYPES
-        #         }
+
+        # if callback_context == "median-filter.value":
+        #     if sh in segmentation_data.keys():
+        #         if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
+        #             print("applying median filter:")
+        #             mask = imread(select_image_value.replace('assets',results_folder).replace('.jpg','_label_greyscale.png'))
+        #             mask = median(mask, disk(median_filter_value)).astype(np.uint8)
+        #             # print(segimgpng.shape)
         #
-        #         dict_feature_opts["sigma_min"] = sigma_range_slider_value[0]
-        #         dict_feature_opts["sigma_max"] = sigma_range_slider_value[1]
+        #             label_to_colors_args = {
+        #                 "colormap": class_label_colormap,
+        #                 "color_class_offset": -1,
+        #             }
         #
-        #         if len(segmentation_features_value) > 0:
-        #             segimgpng = show_segmentation(
-        #                 [select_image_value], masks_data["shapes"], dict_feature_opts, median_filter_value,
-        #                 crf_theta_slider_value, crf_mu_slider_value, results_folder,
-        #             )
+        #             try:
+        #                 segimgpng = label_to_colors(mask, img[:,:,0]==0, alpha=0, **label_to_colors_args, do_alpha=True)
+        #             except:
+        #                 img = img_to_ubyte_array(select_image_value)
+        #                 segimgpng = label_to_colors(mask, img[:,:,0]==0, alpha=0, **label_to_colors_args, do_alpha=True)
+        #
+        #             # segimgpng = np.dstack((segimgpng, np.zeros(segimgpng.shape[:1])))
+        #             print(segimgpng.shape)
+        #             #segimgpng = PIL.Image.fromarray(np.uint8(segimgpng))
+        #
+        #             segimgpng = img_array_2_pil(segimgpng) #plot_utils.
+        #             # print(segimgpng.shape)
+        #
+        #             if type(select_image_value) is list:
+        #                 imsave(select_image_value[0].replace('assets',results_folder).replace('.jpg','_label.png'), label_to_colors(mask-1, img[:,:,0]==0, class_label_colormap, do_alpha=False))
+        #             else:
+        #                 imsave(select_image_value.replace('assets',results_folder).replace('.jpg','_label.png'), label_to_colors(mask-1, img[:,:,0]==0, class_label_colormap, do_alpha=False))
+        #
+        #             if type(select_image_value) is list:
+        #                 imsave(select_image_value[0].replace('assets',results_folder).replace('.jpg','_label_greyscale.png'), mask)
+        #             else:
+        #                 imsave(select_image_value.replace('assets',results_folder).replace('.jpg','_label_greyscale.png'), mask)
+        #             del mask
         #
         #             segmentation_data = shapes_seg_pair_as_dict(
         #                 segmentation_data, sh, segimgpng
         #             )
-        #             try:
-        #                 segmentation_store_data = pil2uri(
-        #                     seg_pil(
-        #                         select_image_value, segimgpng
-        #                     ) #plot_utils.
-        #                 )
-        #             except:
-        #                 segmentation_store_data = pil2uri(
-        #                     seg_pil(
-        #                         PIL.Image.open(select_image_value), segimgpng
-        #                     ) #plot_utils.
-        #                 )
-        #     except ValueError:
-        #         # if segmentation fails, draw nothing
-        #         pass
+        #
+        #             segmentation_store_data = pil2uri(
+        #                 seg_pil(
+        #                     select_image_value, segimgpng, do_alpha=True
+        #                 ) #plot_utils.
+        #             )
+        #             images_to_draw = []
+        #
+        #             if segimgpng is not None:
+        #                 images_to_draw = [segimgpng]
+        #
+        #             fig = add_layout_images_to_fig(fig, images_to_draw) #plot_utils.
+        #
+        #             show_segmentation_value = []
+
+
         # if sh in segmentation_data.keys():
         #     segimgpng = look_up_seg(segmentation_data, sh)
         # else:
@@ -698,9 +687,8 @@ def update_output(
             if len(segmentation_features_value) > 0:
                 segimgpng, seg, img = show_segmentation(
                     [select_image_value], masks_data["shapes"], dict_feature_opts, median_filter_value,
-                     crf_theta_slider_value, crf_mu_slider_value, results_folder,
+                    None, None, results_folder,
                 )
-
 
                 if type(select_image_value) is list:
                     imsave(select_image_value[0].replace('assets',results_folder).replace('.jpg','_label.png'), label_to_colors(seg-1, img[:,:,0]==0, class_label_colormap, do_alpha=False))
@@ -734,6 +722,7 @@ def update_output(
 
 
         images_to_draw = []
+
         if segimgpng is not None:
             images_to_draw = [segimgpng]
 
@@ -744,6 +733,7 @@ def update_output(
         image_list_data.append(select_image_value)
         # print(image_list_data)
 
+
     if len(files) == 0:
         return [
         options,
@@ -752,8 +742,6 @@ def update_output(
         segmentation_data,
         "Pen width: %d" % (pen_width,),
         "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
-        "Blurring parameter for CRF image feature extraction: %d" % (crf_theta_slider_value,),
-        "CRF color class difference tolerance parameter: %d" % (crf_mu_slider_value,),
         "Median filter kernel radius: %d" % (median_filter_value,),
         segmentation_store_data,
         ]
@@ -766,12 +754,16 @@ def update_output(
         segmentation_data,
         "Pen width: %d" % (pen_width,),
         "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
-        "Blurring parameter for CRF image feature extraction: %d" % (crf_theta_slider_value,),
-        "CRF color class difference tolerance parameter: %d" % (crf_mu_slider_value,),
         "Median filter kernel radius: %d" % (median_filter_value,),
         segmentation_store_data,
         ]
 
+
+# "Blurring parameter for CRF image feature extraction: %d" % (crf_theta_slider_value,),
+# "CRF color class difference tolerance parameter: %d" % (crf_mu_slider_value,),
+#
+# "Blurring parameter for CRF image feature extraction: %d" % (crf_theta_slider_value,),
+# "CRF color class difference tolerance parameter: %d" % (crf_mu_slider_value,),
 
 ##========================================================
 

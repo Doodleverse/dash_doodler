@@ -36,6 +36,7 @@ from pydensecrf.utils import create_pairwise_bilateral, unary_from_labels
 from skimage.filters.rank import median
 from skimage.morphology import disk
 from skimage.transform import resize
+from joblib import dump, load
 
 
 np.seterr(divide='ignore', invalid='ignore')
@@ -253,50 +254,15 @@ def extract_features(
     return np.array(features)
 
 
-##========================================================
-def label_to_colors(
-    img,
-    mask,
-    colormap=px.colors.qualitative.G10,
-    color_class_offset=0
-):
-    """
-    Take MxN matrix containing integers representing labels and return an MxNx4
-    matrix where each label has been replaced by a color looked up in colormap.
-    colormap entries must be strings like plotly.express style colormaps.
-    alpha is the value of the 4th channel
-    color_class_offset allows adding a value to the color class index to force
-    use of a particular range of colors in the colormap. This is useful for
-    example if 0 means 'no class' but we want the color of class 1 to be
-    colormap[0].
-    """
-
-    colormap = [
-        tuple([fromhex(h[s : s + 2]) for s in range(0, len(h), 2)])
-        for h in [c.replace("#", "") for c in colormap]
-    ]
-
-    cimg = np.zeros(img.shape[:2] + (3,), dtype="uint8")
-    minc = np.min(img)
-    maxc = np.max(img)
-
-    for c in range(minc, maxc + 1):
-        cimg[img == c] = colormap[(c + color_class_offset) % len(colormap)]
-
-    cimg[mask==1] = (0,0,0)
-    return cimg
-
-
     #
-
 ##========================================================
 def segmentation(
     img,
     img_path,
     results_folder,
-    median_filter_value,
     crf_theta_slider_value,
     crf_mu_slider_value,
+    median_filter_value,
     mask=None,
     multichannel=True,
     intensity=True,
@@ -305,7 +271,6 @@ def segmentation(
     sigma_min=0.5,
     sigma_max=16,
     downsample=10,
-    clf=None,
 ):
 
     """
@@ -321,19 +286,28 @@ def segmentation(
         sigma_max=sigma_max,
     )
 
-    if clf is None:
-        if mask is None:
-            raise ValueError("If no classifier clf is passed, you must specify a mask.")
-        training_data = features[:, mask > 0].T
-        training_labels = mask[mask > 0].ravel()
-        data = features[:, mask == 0].T
-        clf = RandomForestClassifier(n_estimators=10, n_jobs=-1)
+    if mask is None:
+        raise ValueError("If no classifier clf is passed, you must specify a mask.")
+    training_data = features[:, mask > 0].T
+    training_labels = mask[mask > 0].ravel()
+    data = features[:, mask == 0].T
+    try:
+        print('updating RF model')
+        clf = load('RandomForestClassifier.pkl')
         clf.fit(training_data[::downsample], training_labels[::downsample])
-        result = np.copy(mask)
+        dump(clf, 'RandomForestClassifier.pkl.z', compress=True)
+    except:
+        print('initializing RF model')
+        # warm_start: When set to True, reuse the solution of the previous call to fit and add more estimators to the ensemble, otherwise, just fit a whole new forest.
+        clf = RandomForestClassifier(n_estimators=10, n_jobs=-1, warm_start=True)
+        clf.fit(training_data[::downsample], training_labels[::downsample])
+        dump(clf, 'RandomForestClassifier.pkl.z', compress=True)
 
-    else:
-        # we have to flatten all but the first dimension of features
-        data = features.reshape((features.shape[0], np.product(features.shape[1:]))).T
+    result = np.copy(mask)
+
+    # else:
+    #     # we have to flatten all but the first dimension of features
+    #     data = features.reshape((features.shape[0], np.product(features.shape[1:]))).T
 
     print("Feature extraction and model fitting complete")
 
@@ -347,25 +321,27 @@ def segmentation(
     else:
         result[mask == 0] = labels
 
-    print("applying CRF refinement:")
-    result2, n = crf_refine(result, expand_img(img), crf_theta_slider_value, crf_mu_slider_value)
+    if crf_theta_slider_value is None:
+        result2 = result.copy()
+    else:
+        print("applying CRF refinement:")
+        result2, n = crf_refine(result, expand_img(img), crf_theta_slider_value, crf_mu_slider_value)
 
-    if ((n==1)):
-        result2[result>0] = np.unique(result)
-
+        if ((n==1)):
+            result2[result>0] = np.unique(result)
 
     if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
         print("applying median filter:")
         result2 = median(result2, disk(median_filter_value)).astype(np.uint8)
 
-    if type(img_path) is list:
-        imsave(img_path[0].replace('assets',results_folder).replace('.jpg','_label.png'), label_to_colors(result2-1, img[:,:,0]==0))
-    else:
-        imsave(img_path.replace('assets',results_folder).replace('.jpg','_label.png'), label_to_colors(result2-1, img[:,:,0]==0))
+    return result2
 
-    if type(img_path) is list:
-        imsave(img_path[0].replace('assets',results_folder).replace('.jpg','_label_greyscale.png'), result2)
-    else:
-        imsave(img_path.replace('assets',results_folder).replace('.jpg','_label_greyscale.png'), result2)
-
-    return result2, clf
+    # if type(img_path) is list:
+    #     imsave(img_path[0].replace('assets',results_folder).replace('.jpg','_label.png'), label_to_colors(result2-1, img[:,:,0]==0))
+    # else:
+    #     imsave(img_path.replace('assets',results_folder).replace('.jpg','_label.png'), label_to_colors(result2-1, img[:,:,0]==0))
+    #
+    # if type(img_path) is list:
+    #     imsave(img_path[0].replace('assets',results_folder).replace('.jpg','_label_greyscale.png'), result2)
+    # else:
+    #     imsave(img_path.replace('assets',results_folder).replace('.jpg','_label_greyscale.png'), result2)

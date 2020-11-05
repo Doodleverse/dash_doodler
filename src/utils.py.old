@@ -31,6 +31,31 @@ import PIL.Image
 import io
 import numpy as np
 
+##========================================================
+def hex_to_rgb(value):
+    value = value.lstrip('#')
+    lv = len(value)
+    return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
+
+##========================================================
+def svg_code_to_array(svg_code):
+    svg_code = ''.join(svg_code)
+    groups = svg_code.split('<svg')[1:]
+    w = int(groups[0].split("width=")[1].split("\n")[0].replace('"',''))
+    h = int(groups[0].split("height=")[1].split("\n")[0].replace('"',''))
+    arr = np.zeros((w,h,3), dtype=np.uint8)
+    for g in groups:
+        col = g.split("stroke=")[1].split("\n")[0].replace('"','')
+        tmp = g.split("d=")[1].split("\n")[0].replace('"','').replace('M','').replace('L',',')
+        X = np.round(np.array(tmp.split(',')[::2], np.float)).astype(np.int8)
+        Y = np.round(np.array(tmp.split(',')[1::2], np.float)).astype(np.int8)
+        del tmp
+        pw = int(float(g.split("pen-width=")[1].split("\n")[0].replace('"',''))/2)
+        rgb = hex_to_rgb(col)
+        for y, x in zip(X,Y):
+            arr[x-pw:x+pw,y-pw:y+pw,:] = rgb
+
+    return arr
 
 def shape_to_svg_code(shape,
     fig=None,
@@ -87,6 +112,11 @@ def shape_to_png(fig=None,
     """
 
     svg_code = shape_to_svg_code(fig=fig, shape=shape, width=width, height=height)
+
+    # f = open("svg-annotations.txt", "a")
+    # f.write(svg_code)
+    # f.close()
+
     r = svg2png(bytestring=svg_code, write_to=write_to)
 
     return r

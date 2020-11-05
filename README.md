@@ -184,7 +184,7 @@ Submit a pull request through the GitHub website.
 * switched to a Flask backend server
 * added upload button/drap-and-drop
 * those images now download into the assets folder and get listed in the dropdown menu
-* figured out how to serve using gunicorn (`gunicorn -w 4 -b 127.0.0.1:8050 doodler:server`)
+* figured out how to serve using gunicorn (`gunicorn -w 4 -b 127.0.0.1:8050 app:server`)
 * results are now handled per session, with the results written to a folder with the timestamp of the session start
 * organized files so top level directory has the main files, and then subfunctions are in `src`. conda and pip files are in `install`
 * no more banner and instructions - saves space. Instructions on github.
@@ -192,11 +192,22 @@ Submit a pull request through the GitHub website.
 * when an image is labeled, it disappears from the list when new images are uploaded
 * new videos
 
+
+11/04/20
+* fixed bug in how annotations were being generated and written to png file
+* new version uses a cumulatively trained random forest. First image annotated, builds RF, makes prediction. Then subsequent images build upon the last RF. Uses scikit-learn RandomForestClassifier's `warm_start` parameter and saving model to pickle file
+* all the CRF functions and controls are removed in `appRF.py`. Just RF is implemented. Faster, also perhaps better (more testing)
+* fixed bug that was making it redo segmentations automatically on file change and other callbacks
+* time strings now ISO conformable (thanks Dan Nowacki)
+* image printing now in the main app function rather than subfunction, aids incorporation into more sophisticated callback workflows
+
+
 ## <a name="roadmap"></a>Roadmap
 
 * Maybe a button to reset the coefficients to the defaults? [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 
 * Delay running the model until all of the coefficients are adjusted...right now it jumps right into the calcs as soon a slider is moved, but maybe you want to adjust two sliders first. Maybe change the compute segmentation to a button that changes color if the model is out of date wrt to the current settings. [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 
+* userID written to results files. What would this require? Text box? login account?
 
 Use the issues tab to suggest new features!
