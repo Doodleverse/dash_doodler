@@ -293,8 +293,9 @@ def segmentation(
     data = features[:, mask == 0].T
     try:
         print('updating RF model')
-        clf = load('RandomForestClassifier.pkl')
+        clf = load('RandomForestClassifier.pkl.z')
         clf.fit(training_data[::downsample], training_labels[::downsample])
+        os.remove('RandomForestClassifier.pkl.z')
         dump(clf, 'RandomForestClassifier.pkl.z', compress=True)
     except:
         print('initializing RF model')

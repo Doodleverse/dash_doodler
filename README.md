@@ -39,7 +39,7 @@ This is python software that is designed to be used from within a `conda` enviro
 Clone/download this repository
 
 ```
-git clone https://github.com/dbuscombe-usgs/dash_doodler.git
+git clone --depth 1 https://github.com/dbuscombe-usgs/dash_doodler.git
 ```
 
 Install the requirements
@@ -209,5 +209,7 @@ Submit a pull request through the GitHub website.
 * Delay running the model until all of the coefficients are adjusted...right now it jumps right into the calcs as soon a slider is moved, but maybe you want to adjust two sliders first. Maybe change the compute segmentation to a button that changes color if the model is out of date wrt to the current settings. [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 
 * userID written to results files. What would this require? Text box? login account?
+
+* expose 
 
 Use the issues tab to suggest new features!
