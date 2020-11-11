@@ -149,10 +149,10 @@ def fromhex(n):
 def label_to_colors(
     img,
     mask,
-    alpha=128,
-    colormap=px.colors.qualitative.G10,
-    color_class_offset=0,
-    do_alpha=True
+    alpha,#=128,
+    colormap,#=class_label_colormap, #px.colors.qualitative.G10,
+    color_class_offset,#=0,
+    do_alpha,#=True
 ):
     """
     Take MxN matrix containing integers representing labels and return an MxNx4
@@ -196,6 +196,9 @@ def compute_segmentations(
     crf_mu_slider_value,
     results_folder,
     median_filter_value,
+    downsample_value,
+    crf_downsample_factor,
+    callback_context,
     img_path="assets/logos/dash-default.jpg",
     segmenter_args={},
     shape_layers=None,
@@ -217,15 +220,24 @@ def compute_segmentations(
 
     # imsave('annotations.png', mask)
 
-    color_annos = label_to_colors(mask, img[:,:,0]==0, **label_to_colors_args)
+    color_annos = label_to_colors(mask, img[:,:,0]==0, alpha=128, do_alpha=True, **label_to_colors_args)
 
     # print(type(color_annos))
     # print(color_annos.shape)
     imsave(img_path[0].replace('assets',results_folder).replace('.jpg','_annotations.png'), color_annos[:,:,:3])
 
     # do segmentation and return this
-    seg = segmentation(img, img_path, results_folder, crf_theta_slider_value, crf_mu_slider_value, median_filter_value, mask, **segmenter_args) #median_filter_value
-    color_seg = label_to_colors(seg, img[:,:,0]==0, **label_to_colors_args)
+    if segmenter_args is not None:
+        seg = segmentation(img, img_path, results_folder, callback_context,
+                           crf_theta_slider_value, crf_mu_slider_value, median_filter_value, downsample_value,
+                           crf_downsample_factor, mask, **segmenter_args) #median_filter_value
+    else:
+        seg = segmentation(img, img_path, results_folder, callback_context,
+                           crf_theta_slider_value, crf_mu_slider_value, median_filter_value, downsample_value,
+                           crf_downsample_factor, mask)
+
+    #print(np.unique(seg))
+    color_seg = label_to_colors(seg, img[:,:,0]==0, alpha=128, do_alpha=True, **label_to_colors_args)
 
     # color_seg is a 3d tensor representing a colored image whereas seg is a
     # matrix whose entries represent the classes

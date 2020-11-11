@@ -93,7 +93,8 @@ def rescale(dat,
 def crf_refine(label,
     img,
     crf_theta_slider_value,
-    crf_mu_slider_value):
+    crf_mu_slider_value,
+    crf_downsample_factor):
     """
     "crf_refine(label, img)"
     This function refines a label image based on an input label image and the associated image
@@ -105,55 +106,68 @@ def crf_refine(label,
     GLOBAL INPUTS: None
     OUTPUTS: label [ndarray]: label image 2D matrix of integers
     """
+    l_unique = np.unique(label.flatten())#.tolist()
+    # print(l_unique)
+    scale = 1+(5 * (np.array(img.shape).max() / 3000))
+    # print(scale)
 
-    # l_unique = np.unique(label.flatten()).tolist()
     Horig = label.shape[0]
     Worig = label.shape[1]
-    fact = 2
+    # crf_downsample_factor = 2
     # decimate by factor by taking only every other row and column
-    img = img[::fact,::fact, :]
+    img = img[::crf_downsample_factor,::crf_downsample_factor, :]
     # do the same for the label image
-    label = label[::fact,::fact]
+    label = label[::crf_downsample_factor,::crf_downsample_factor]
 
     orig_mn = np.min(np.array(label).flatten())
     orig_mx = np.max(np.array(label).flatten())
 
     n = 1+(orig_mx-orig_mn)
 
-    label = 1+label - orig_mn
-    #print(np.unique(label))
+    label = 1+(label - orig_mn)
+    # l_unique = np.unique(label.flatten())#.tolist()
+    # print(l_unique)
+
     mn = np.min(np.array(label).flatten())
     mx = np.max(np.array(label).flatten())
 
     n = 1+(mx-mn)
+    # print(n)
 
     H = label.shape[0]
     W = label.shape[1]
-    U = unary_from_labels(label, n, gt_prob=0.81)
+    U = unary_from_labels(label.astype('int'), n, gt_prob=0.9)
     d = dcrf.DenseCRF2D(H, W, n)
     d.setUnaryEnergy(U)
 
     # to add the color-independent term, where features are the locations only:
     d.addPairwiseGaussian(sxy=(3, 3),
-                 compat=13,
+                 compat=3,
                  kernel=dcrf.DIAG_KERNEL,
                  normalization=dcrf.NORMALIZE_SYMMETRIC)
     feats = create_pairwise_bilateral(
                           sdims=(crf_theta_slider_value, crf_theta_slider_value), #(60, 60),
-                          schan=(2,2,2,2,2,2),
+                          # schan=(2,2,2,2,2,2), #add these when implement 6 band
+                          schan=(scale,scale,scale),
                           img=img,
                           chdim=2)
 
     d.addPairwiseEnergy(feats, compat=crf_mu_slider_value, kernel=dcrf.DIAG_KERNEL,normalization=dcrf.NORMALIZE_SYMMETRIC) #260
     Q = d.inference(10)
-    result = np.argmax(Q, axis=0).reshape((H, W)).astype(np.uint8)
+    result = 1+np.argmax(Q, axis=0).reshape((H, W)).astype(np.uint8)
+    # l_unique = np.bincount(result.flatten())#.tolist()
+    # print(l_unique)
 
-    result = resize(result, (Horig, Worig), anti_aliasing=True)
+    result = resize(result, (Horig, Worig), order=0, anti_aliasing=True)
+    # l_unique = np.unique(result.flatten())#.tolist()
+    # print(l_unique)
 
     result = rescale(result, orig_mn, orig_mx).astype(np.uint8)
-
+    # l_unique = np.bincount(result.flatten())#.tolist()
+    # print(l_unique)
 
     print("CRF post-processing complete")
+
     return result, n
 
 
@@ -254,28 +268,9 @@ def extract_features(
     return np.array(features)
 
 
-    #
 ##========================================================
-def segmentation(
-    img,
-    img_path,
-    results_folder,
-    crf_theta_slider_value,
-    crf_mu_slider_value,
-    median_filter_value,
-    mask=None,
-    multichannel=True,
-    intensity=True,
-    edges=True,
-    texture=True,
-    sigma_min=0.5,
-    sigma_max=16,
-    downsample=10,
-):
+def do_rf(img,mask,multichannel,intensity,edges,texture,sigma_min,sigma_max, downsample_value):
 
-    """
-    Segmentation using labeled parts of the image and a random forest classifier.
-    """
     features = extract_features(
         img,
         multichannel=multichannel,
@@ -286,6 +281,9 @@ def segmentation(
         sigma_max=sigma_max,
     )
 
+    if downsample_value is None:
+        downsample_value = 10
+
     if mask is None:
         raise ValueError("If no classifier clf is passed, you must specify a mask.")
     training_data = features[:, mask > 0].T
@@ -293,56 +291,103 @@ def segmentation(
     data = features[:, mask == 0].T
     try:
         print('updating RF model')
-        clf = load('RandomForestClassifier.pkl.z')
-        clf.fit(training_data[::downsample], training_labels[::downsample])
-        os.remove('RandomForestClassifier.pkl.z')
-        dump(clf, 'RandomForestClassifier.pkl.z', compress=True)
+        clf = load('RandomForestClassifier.pkl.z') #load last model from file
+        clf.n_estimators += 10 #add more trees for the new data
+        clf.fit(training_data[::downsample_value], training_labels[::downsample_value]) # fit with with new data
+        os.remove('RandomForestClassifier.pkl.z') #remove old file
+        dump(clf, 'RandomForestClassifier.pkl.z', compress=True) #save new file
     except:
         print('initializing RF model')
-        # warm_start: When set to True, reuse the solution of the previous call to fit and add more estimators to the ensemble, otherwise, just fit a whole new forest.
-        clf = RandomForestClassifier(n_estimators=10, n_jobs=-1, warm_start=True)
-        clf.fit(training_data[::downsample], training_labels[::downsample])
+        ##warm_start: When set to True, reuse the solution of the previous call to fit and add more estimators to the ensemble, otherwise, just fit a whole new forest.
+        clf = RandomForestClassifier(n_estimators=10, n_jobs=-1) #, warm_start=True)
+        clf.fit(training_data[::downsample_value], training_labels[::downsample_value])
         dump(clf, 'RandomForestClassifier.pkl.z', compress=True)
 
-    result = np.copy(mask)
-
-    # else:
-    #     # we have to flatten all but the first dimension of features
-    #     data = features.reshape((features.shape[0], np.product(features.shape[1:]))).T
+    result = np.copy(mask)#+1
 
     print("Feature extraction and model fitting complete")
-
-    # Horig = img.shape[0]
-    # Worig = img.shape[1]
-    # data = resize(data, (Horig, Worig), anti_aliasing=True)
 
     labels = clf.predict(data)
     if mask is None:
         result = labels.reshape(img.shape[:2])
     else:
         result[mask == 0] = labels
-
-    if crf_theta_slider_value is None:
-        result2 = result.copy()
-    else:
-        print("applying CRF refinement:")
-        result2, n = crf_refine(result, expand_img(img), crf_theta_slider_value, crf_mu_slider_value)
-
-        if ((n==1)):
-            result2[result>0] = np.unique(result)
-
-    if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
-        print("applying median filter:")
-        result2 = median(result2, disk(median_filter_value)).astype(np.uint8)
-
+    result2 = result.copy()
     return result2
 
-    # if type(img_path) is list:
-    #     imsave(img_path[0].replace('assets',results_folder).replace('.jpg','_label.png'), label_to_colors(result2-1, img[:,:,0]==0))
-    # else:
-    #     imsave(img_path.replace('assets',results_folder).replace('.jpg','_label.png'), label_to_colors(result2-1, img[:,:,0]==0))
+
+##========================================================
+def segmentation(
+    img,
+    img_path,
+    results_folder,
+    callback_context,
+    crf_theta_slider_value,
+    crf_mu_slider_value,
+    median_filter_value,
+    downsample_value,
+    crf_downsample_factor,
+    mask=None,
+    multichannel=True,
+    intensity=True,
+    edges=True,
+    texture=True,
+    sigma_min=0.5,
+    sigma_max=16,
+):
+
+    if 'rf' in callback_context:
+        if 'crf' not in callback_context:
+            # print(np.unique(mask.flatten()))
+
+            result2 = do_rf(img,mask,multichannel,intensity,edges,texture,sigma_min,sigma_max, downsample_value)
+
+            # if 'median' in callback_context:
+            if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
+                print("applying median filter:")
+                result2 = median(result2, disk(median_filter_value)).astype(np.uint8)
+
+    if 'crf' in callback_context:
+        if crf_theta_slider_value is None:
+            result2 = result.copy()
+        else:
+            print("applying CRF refinement:")
+            # print(np.unique(mask.flatten()))
+
+            # result2, n = crf_refine(mask, expand_img(img), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor) #result
+            result = do_rf(img,mask,True,True,False,False,0.5,16, downsample_value)
+            result2, n = crf_refine(result, img, crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor) #result
+
+            if ((n==1)):
+                result2[result>0] = np.unique(result)
+
+        # if 'median' in callback_context:
+        if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
+            print("applying median filter:")
+            result2 = median(result2, disk(median_filter_value)).astype(np.uint8)
+
+
+    # if 'median' in callback_context:
     #
-    # if type(img_path) is list:
-    #     imsave(img_path[0].replace('assets',results_folder).replace('.jpg','_label_greyscale.png'), result2)
-    # else:
-    #     imsave(img_path.replace('assets',results_folder).replace('.jpg','_label_greyscale.png'), result2)
+    #     # if 'crf' in callback_context:
+    #     # if crf_theta_slider_value is None:
+    #     #     result2 = result.copy()
+    #     # else:
+    #     print("applying CRF refinement:")
+    #     # print(np.unique(mask.flatten()))
+    #
+    #     # result2, n = crf_refine(mask, expand_img(img), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor) #result
+    #     result = do_rf(img,mask,True,True,False,False,0.5,16, downsample_value)
+    #     result2, n = crf_refine(result, img, crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor) #result
+    #
+    #     if ((n==1)):
+    #         result2[result>0] = np.unique(result)
+    #
+    #     # if 'median' in callback_context:
+    #     if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
+    #         print("applying median filter:")
+    #         result2 = median(result2, disk(median_filter_value)).astype(np.uint8)
+
+
+
+    return result2

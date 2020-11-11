@@ -9,7 +9,7 @@
 
 The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder, and you can also download a version of it from your browser for quick viewing
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_quick.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-a.gif)
 
 
 ## Contents
@@ -29,7 +29,7 @@ There are many great tools for exhaustive (i.e. whole image) image labeling for 
 
 What is generally required in the above case is a semi-supervised tool for efficient image labeling, based on sparse examples provided by a human annotator. Those sparse annotations are used by a secondary automated process to estimate the class of every pixel in the image. The number of pixels annotated by the human annotator is typically a small fraction of the total pixels in the image.  
 
-`Doodler` is a tool for sparse, not exhaustive, labeling. The approach taken here is to freehand label only some of the scene, then use a model to complete the scene. Sparse annotations are provided to a Conditional Random Field (CRF) model, that develops a scene-specific model for each class and creates a dense (i.e. per pixel) label image based on the information you provide it. This approach can reduce the time required for detailed labeling of large and complex scenes by an order of magnitude or more. Your annotations are first used to train and apply a random forest on the entire image, then a CRF is used to refine labels further based on the underlying image.
+`Doodler` is a tool for sparse, not exhaustive, labeling. The approach taken here is to freehand label only some of the scene, then use a model to complete the scene. Sparse annotations are provided to a Conditional Random Field (CRF) model, that develops a scene-specific model for each class and creates a dense (i.e. per pixel) label image based on the information you provide it. This approach can reduce the time required for detailed labeling of large and complex scenes by an order of magnitude or more. Your annotations are first used to train and apply a random forest on the entire image. In another version (the recommended one), then a CRF is used to refine labels further based on the underlying image.
 
 This is python software that is designed to be used from within a `conda` environment. After setting up that environment, create a `classes.txt` file that tells the program what classes will be labeled (and what buttons to create). The minimum number of classes is 2. There is no limit to the maximum number of classes, except screen real estate! The images that you upload will go into the `assets/` folder. The labels images you create are written to the `results` folder.
 
@@ -65,9 +65,19 @@ Move your images into the `assets` folder. For the moment, they must be jpegs wi
 
 Run the app. An IP address where you can view the app in your browser will be displayed in the terminal. Some browsers will launch automatically, while others you may have to manually type (or copy/paste) the IP address into a browser. Tested so far with Chrome, Firefox, and Edge.
 
+There are two versions that implement different algorithms. When in doubt, start with the CRF version:
+
 ```bash
-python app.py
+python appCRF.py
 ```
+
+The alternative is the Random Forest version
+
+```bash
+python appRF.py
+```
+
+Here's a [video](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-b.gif) of that being used. It works in a similar way, and is faster with fewer options, but is generally not as powerful. However, the algorithm may suit certain situations better than others, so you should ideally try both.
 
 Results (label images and annotation images) are saved to the `results/` folder. The program creates a subfolder each time it is launched, timestamped. That folder contains your results images for a session.
 
@@ -87,18 +97,22 @@ The default colormap is plotly's G10, found [here](https://plotly.com/python/dis
 (you can google search those hex codes and get a color picker view). If you need more than 10 colors, replace `G10` with `Light24`. This will give you up to 24 classes. Remember to keep your class names short, so the buttons all fit on the screen!
 
 ### Videos
-Shore demonstration videos:
+More demonstration videos:
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_video2.gif)
+![Elwha example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-c.gif)
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_video3.gif)
+Recheck compute segmentation when median filter changed:
+
+![Beach example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-d.gif)
+
+<!-- ![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_video3.gif)
 
 ![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_video4.gif)
 
 Longer example, consisting of 5 images labeled, then add two more (see the list refresh) and label 2 more:
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_longvideo.gif)
-
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_longvideo.gif) -->
+ -->
 
 ## <a name="outputs"></a>Outputs
 Each classified image will result in three files within the `/results` folder, with XXXXXXXX_ representing the image filename root:
@@ -202,6 +216,18 @@ Submit a pull request through the GitHub website.
 * image printing now in the main app function rather than subfunction, aids incorporation into more sophisticated callback workflows
 
 
+11/10/20
+* added sliders for CRF and RF downsample factors
+* fixed bug that causes error when no files present upon launch
+* fixed bug that caused incorrect colormap on color label outputs where nodata also present (orthomosaics)
+* automatically selects colormap based on number of classes (G10 for up to 10, Light24 for up to 24)
+* tested on large set of orthomosaics and other types of imagery
+* 6-stack no longer used in CRF (too slow). Back to RGB. Later will add 6-stack as an option, or individual bands as options (like for RF)
+* resize now uses nearest nearest (order 0 polynomial) interpolation rather than linear. Makes more sense for discrete values
+* callback context now passed to segmentation function
+* `app.py` is now `appyCRF.py` and now uses CRF with fixed RF inputs, and different defaults for MU and THETA
+* median filter size adjustments no longer force redoing of segmentation. Instead, it disables the segmentation so after you have set the new median filter kernel size, recheck the compute/show segmentation box
+
 ## <a name="roadmap"></a>Roadmap
 
 * Maybe a button to reset the coefficients to the defaults? [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
@@ -210,6 +236,6 @@ Submit a pull request through the GitHub website.
 
 * userID written to results files. What would this require? Text box? login account?
 
-* expose 
+* pymongo (mongoDB) database backend - thanks Evan and Shah @UNCG-DAISY!
 
 Use the issues tab to suggest new features!
