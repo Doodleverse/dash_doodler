@@ -77,7 +77,11 @@ The alternative is the Random Forest version
 python appRF.py
 ```
 
-Here's a [video](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-b.gif) of that being used. It works in a similar way, and is faster with fewer options, but is generally not as powerful. However, the algorithm may suit certain situations better than others, so you should ideally try both.
+Here's a video of that being used.
+
+[RF version](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-b.gif)
+
+It works in a similar way, and is faster with fewer options, but is generally not as powerful. However, the algorithm may suit certain situations better than others, so you should ideally try both.
 
 Results (label images and annotation images) are saved to the `results/` folder. The program creates a subfolder each time it is launched, timestamped. That folder contains your results images for a session.
 
