@@ -98,7 +98,7 @@ The default colormap is plotly's G10, found [here](https://plotly.com/python/dis
 * #B82E2E (184, 46, 46)
 * #316395 (49, 99, 149)
 
-(you can google search those hex codes and get a color picker view). If you need more than 10 colors, replace `G10` with `Light24`. This will give you up to 24 classes. Remember to keep your class names short, so the buttons all fit on the screen!
+(you can google search those hex codes and get a color picker view). If you have more than 10 classes, the program uses `Light24` instead. This will give you up to 24 classes. Remember to keep your class names short, so the buttons all fit on the screen!
 
 ### Videos
 More demonstration videos:
