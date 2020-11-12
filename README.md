@@ -7,7 +7,7 @@
 
 > The Conditional Random Field (CRF) model used by this tool is described by [Buscombe and Ritchie (2018)](https://www.mdpi.com/2076-3263/8/7/244)
 
-The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder, and you can also download a version of it from your browser for quick viewing
+The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check `compute and show segmentation` and wait for the result. The label image is written to the `results` folder, and you can also download a version of it from your browser for quick viewing.
 
 ![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-a.gif)
 
@@ -31,18 +31,18 @@ What is generally required in the above case is a semi-supervised tool for effic
 
 `Doodler` is a tool for sparse, not exhaustive, labeling. The approach taken here is to freehand label only some of the scene, then use a model to complete the scene. Sparse annotations are provided to a Conditional Random Field (CRF) model, that develops a scene-specific model for each class and creates a dense (i.e. per pixel) label image based on the information you provide it. This approach can reduce the time required for detailed labeling of large and complex scenes by an order of magnitude or more. Your annotations are first used to train and apply a random forest on the entire image. In another version (the recommended one), then a CRF is used to refine labels further based on the underlying image.
 
-This is python software that is designed to be used from within a `conda` environment. After setting up that environment, create a `classes.txt` file that tells the program what classes will be labeled (and what buttons to create). The minimum number of classes is 2. There is no limit to the maximum number of classes, except screen real estate! The images that you upload will go into the `assets/` folder. The labels images you create are written to the `results` folder.
+This is python software that is designed to be used from within a `conda` environment. After setting up that environment, a `classes.txt` file tells the program what classes will be labeled. The images that you upload will go into the `assets/` folder. The labels you create are written to the `results` folder.
 
 
 ## <a name="install"></a>Installation
 
-Clone/download this repository
+Clone/download this repository (the `--depth 1` will clone only the latest copy of the relevant files to save space and time) 
 
 ```
 git clone --depth 1 https://github.com/dbuscombe-usgs/dash_doodler.git
 ```
 
-Install the requirements
+cd into the new repo and install the requirements
 
 ```bash
 conda env create --file install/dashdoodler.yml
@@ -61,31 +61,20 @@ pip install -r install/requirements.txt
 
 
 ## <a name="use"></a>Use
-Move your images into the `assets` folder. For the moment, they must be jpegs with the `.jpg` extension. Support for other image types forthcoming ...
+The general steps to using the Dash app. 
 
-Run the app. An IP address where you can view the app in your browser will be displayed in the terminal. Some browsers will launch automatically, while others you may have to manually type (or copy/paste) the IP address into a browser. Tested so far with Chrome, Firefox, and Edge.
+#### Adding Imagery
+The two current options for loading imagery to the Dash Doodler tool:
+1. Move your images into the `assets` folder - if the app has already been launched, refresh to see newly added images.
+2. Launch the app and use the `Drag and drop or click to select a file to upload` option. This will also add the image to the `assets` folder. 
 
-There are two versions that implement different algorithms. When in doubt, start with the CRF version:
+For the moment, they must be jpegs with the `.jpg` extension. Support for other image types forthcoming ...
+Best results occur for images 3000 x 3000 pixels or less. Very large images may not load correctly and take a much longer time to compute the segmentation.
 
-```bash
-python appCRF.py
-```
+#### Classes
+Edit/create the `classes.txt` file in the repository. This file tells the program what classes will be labeled (and what buttons to create). The minimum number of classes is 2. There is no limit to the maximum number of classes, except screen real estate! If you have more than 10 classes, the program uses `Light24` instead. This will give you up to 24 classes. Remember to keep your class names short, so the buttons all fit on the screen!
 
-The alternative is the Random Forest version
-
-```bash
-python appRF.py
-```
-
-Here's a video of that being used.
-
-![RF version](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-b.gif)
-
-It works in a similar way, and is faster with fewer options, but is generally not as powerful. However, the algorithm may suit certain situations better than others, so you should ideally try both.
-
-Results (label images and annotation images) are saved to the `results/` folder. The program creates a subfolder each time it is launched, timestamped. That folder contains your results images for a session.
-
-The default colormap is plotly's G10, found [here](https://plotly.com/python/discrete-color/). The hex (rgb) color sequence is:
+The default class colormap in the App is plotly's G10, found [here](https://plotly.com/python/discrete-color/). The hex (rgb) color sequence is:
 
 * #3366CC (51, 102, 204)
 * #DC3912 (220, 57, 18)
@@ -98,9 +87,72 @@ The default colormap is plotly's G10, found [here](https://plotly.com/python/dis
 * #B82E2E (184, 46, 46)
 * #316395 (49, 99, 149)
 
-(you can google search those hex codes and get a color picker view). If you have more than 10 classes, the program uses `Light24` instead. This will give you up to 24 classes. Remember to keep your class names short, so the buttons all fit on the screen!
+(you can google search those hex codes and get a color picker view). 
+
+Classes are discrete labels that you define to represent and reduce the dimensionality of featyres and objects in your imagery. Each class really represents a spectrum of textures, colors, and spatial extents. It can be difficult to define a good set, but the golden rule (in my humble opinion) is that each class in the set of classes should represent a spectrum of image features that collectively have much greater inter-class variability than intra-class variability.
+
+#### App Algorithm Types
+Run the app using one of the versions below. An IP address where you can view the app in your browser will be displayed in the terminal. Some browsers will launch automatically, while others you may have to manually type (or copy/paste) the IP address into a browser. Tested so far with Chrome, Firefox, and Edge.
+
+There are two versions that implement different algorithms. When in doubt, start with the Conditional Random Field (CRF) version:
+
+```bash
+python appCRF.py
+```
+This version currently allows for four parameters/coefficents of the segmentation to be changed by using the sliders in the app. Refreshing the app will cause the parameters to reset to their defaults, shown in bold after the range below. 
+
+- Blurring for image feature extraction (10-220, **40**)
+- Color class difference tolerance (1-255, **100**)
+- Downscale factor (1-6, **2**)
+- Median filter kernel radius (0-100, **3**)
+
+The alternative is the Random Forest (RF) version
+
+```bash
+python appRF.py
+```
+This version currently allows for three parameters/coefficents of the segmentation to be changed by using the sliders in the app. Refreshing the app will cause the parameters to reset to their defaults, shown in bold after the range below. 
+
+- Median filter kernel radius (0-100, **5**)
+- Image Feature Extraction: 
+- [x] Intensity
+- [ ] Edges
+- [x] Texture
+- Blurring for image feature extraction (1-30, **1-16**)
+- Downscale factor (2-30, **10**)
+
+It works in a similar way, and is faster with fewer options, but is generally not as powerful. However, the algorithm may suit certain situations better than others, so you should ideally try both.
+
+#### Making Annotations and Computing Segmentation
+When first launching the app, the `Compute/Show segmentation` is de-selected. 
+
+1. Select the image to annote/label from the `Select` dropdown. 
+2. Click the class to start annotating
+3. Pen width can be changed to doodle on more or less area at a time
+4. Doodle! A colored line based on the class will appear. This can be selected and the nodes dragged to rearrange the doodle or deleted with the `Erase active shape` menu button
+5. Use the rest of the class labels to doodle until satisfied
+6. Select the `Compute/Show segmentation`
+7. Wait - this could take seconds or minutes depending on the image size and processing power of your machine
+8. Examine the segmentation results - if unhappy with the results there are two main options
+   - add more doodles
+   - change the CRF/RF parameters/coefficients
+Before either, consider de-selecting `Compute/Show segmentation`, otherwise everytime you change a setting or make a single doodle the segmentation will re-compute. This can be aggravating if you want to change multiple things at once. If you wish to compare segmentation results consider using the `DOWNLOAD LABEL IMAGE`, otherwise the labeled image in the `results` folder overwrites itself. 
+9. When satisfied with segmentation, select a new image to annotate. Don't forget to de-select the `Compute/Show segmentation` before starting to doodle again. 
+
+
+## <a name="outputs"></a>Outputs
+Results (label images and annotation images) are saved to the `results/` folder. The program creates a subfolder each time it is launched, timestamped. That folder contains your results images for a session. Each classified image will result in three files within the `/results` folder, with XXXXXXXX_ representing the image filename root:
+
+* `XXXXXXXX_label.png`: color version of the label image
+* `XXXXXXXX_label_greyscale.png`: greyscale version of the above. Note this will always appear very dark because the full range of an 8-bit image is 0 to 255. Your classes will be represented as integers
+* `XXXXXXXX_annotations.png`: this is mostly for debugging/analysis and may disappear in a future version. It shows your doodles.
 
 ### Videos
+
+Here's a video of the Random Forest version being used.
+
+![RF version](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-b.gif)
+
 More demonstration videos:
 
 ![Elwha example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-c.gif)
@@ -118,12 +170,6 @@ Longer example, consisting of 5 images labeled, then add two more (see the list 
 ![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_longvideo.gif) -->
  -->
 
-## <a name="outputs"></a>Outputs
-Each classified image will result in three files within the `/results` folder, with XXXXXXXX_ representing the image filename root:
-
-* `XXXXXXXX_label.png`: color version of the label image
-* `XXXXXXXX_label_greyscale.png`: greyscale version of the above. Note this will always appear very dark because the full range of an 8-bit image is 0 to 255. Your classes will be represented as integers
-* `XXXXXXXX_annotations.png`: this is mostly for debugging/analysis and may disappear in a future version. It shows your doodles.
 
 ## <a name="ack"></a>Acknowledgements
 
