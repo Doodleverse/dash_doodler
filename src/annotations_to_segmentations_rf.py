@@ -39,7 +39,6 @@ from skimage.io import imsave, imread
 import os
 from datetime import datetime
 
-
 def set_dll_search_path():
     # Python 3.8 no longer searches for DLLs in PATH, so we have to add
     # everything in PATH manually. Note that unlike PATH add_dll_directory
@@ -56,8 +55,11 @@ def set_dll_search_path():
 
 set_dll_search_path()
 
-from cairosvg import svg2png
+import ctypes.util
+path = ctypes.util.find_library('libcairo-2')
+print(path)
 
+from cairosvg import svg2png
 
 
 def shape_to_svg_code(shape, fig=None, width=None, height=None):
@@ -104,6 +106,7 @@ def shape_to_png(fig=None, shape=None, width=None, height=None, write_to=None):
     to a file it writes to this file and returns None.
     """
     svg_code = shape_to_svg_code(fig=fig, shape=shape, width=width, height=height)
+
     r = svg2png(bytestring=svg_code, write_to=write_to)
     return r
 
