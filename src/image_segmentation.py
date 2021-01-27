@@ -37,7 +37,7 @@ from skimage.filters.rank import median
 from skimage.morphology import disk
 from skimage.transform import resize
 from joblib import dump, load
-
+import io, os
 
 np.seterr(divide='ignore', invalid='ignore')
 

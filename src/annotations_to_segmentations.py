@@ -30,7 +30,7 @@ import numpy as np
 import skimage.util
 import skimage.io
 import skimage.color
-import io
+import io, os
 # from utils import *
 from image_segmentation import segmentation
 import plotly.express as px

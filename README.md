@@ -240,6 +240,6 @@ Submit a pull request through the GitHub website.
 
 * userID written to results files. What would this require? Text box? login account?
 
-* pymongo (mongoDB) database backend - thanks Evan and Shah @UNCG-DAISY!
+* pymongo (mongoDB) database backend - thanks Evan and Shah @UNCG-DAISY! See [here](https://api.mongodb.com/python/current/tools.html), [here](https://strapi.io/pricing)
 
 Use the issues tab to suggest new features!
