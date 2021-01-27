@@ -37,7 +37,7 @@ import plotly.express as px
 from skimage.io import imsave, imread
 
 from cairosvg import svg2png
-
+from datetime import datetime
 
 def shape_to_svg_code(shape, fig=None, width=None, height=None):
     """
@@ -224,7 +224,7 @@ def compute_segmentations(
 
     # print(type(color_annos))
     # print(color_annos.shape)
-    imsave(img_path[0].replace('assets',results_folder).replace('.jpg','_annotations.png'), color_annos[:,:,:3])
+    imsave(img_path[0].replace('assets',results_folder).replace('.jpg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+'.png'), color_annos[:,:,:3])
 
     # do segmentation and return this
     if segmenter_args is not None:

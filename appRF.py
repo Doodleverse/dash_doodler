@@ -35,7 +35,7 @@ from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import dash_core_components as dcc
 
-from annotations_to_segmentations import *
+from annotations_to_segmentations_rf import *
 from plot_utils import *
 
 import io, base64, PIL.Image, json, shutil, os
@@ -631,16 +631,16 @@ def update_output(
                 )
 
                 if type(select_image_value) is list:
-                    imsave(select_image_value[0].replace('assets',results_folder).replace('.jpg','_label.png'),
+                    imsave(select_image_value[0].replace('assets',results_folder).replace('.jpg','_label'+datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+'.png'),
                             label_to_colors(seg-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
                 else:
-                    imsave(select_image_value.replace('assets',results_folder).replace('.jpg','_label.png'),
+                    imsave(select_image_value.replace('assets',results_folder).replace('.jpg','_label'+datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+'.png'),
                             label_to_colors(seg-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
 
                 if type(select_image_value) is list:
-                    imsave(select_image_value[0].replace('assets',results_folder).replace('.jpg','_label_greyscale.png'), seg)
+                    imsave(select_image_value[0].replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+'.png'), seg)
                 else:
-                    imsave(select_image_value.replace('assets',results_folder).replace('.jpg','_label_greyscale.png'), seg)
+                    imsave(select_image_value.replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+'.png'), seg)
                 del img, seg
 
                 segmentation_data = shapes_seg_pair_as_dict(
