@@ -13,4 +13,3 @@ Pillow==7.1.2
 scikit_learn==0.23.1
 scikit-image==0.16.2
 pandas==1.0.3
-pydensecrf==1.0rc3
