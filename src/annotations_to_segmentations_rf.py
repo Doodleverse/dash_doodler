@@ -36,8 +36,28 @@ from image_segmentation_rf import segmentation
 import plotly.express as px
 from skimage.io import imsave, imread
 
-from cairosvg import svg2png
+import os
 from datetime import datetime
+
+
+def set_dll_search_path():
+    # Python 3.8 no longer searches for DLLs in PATH, so we have to add
+    # everything in PATH manually. Note that unlike PATH add_dll_directory
+    # has no defined order, so if there are two cairo DLLs in PATH we
+    # might get a random one.
+    if os.name != "nt" or not hasattr(os, "add_dll_directory"):
+        return
+    for p in os.environ.get("PATH", "").split(os.pathsep):
+        try:
+            os.add_dll_directory(p)
+        except OSError:
+            pass
+
+
+set_dll_search_path()
+
+from cairosvg import svg2png
+
 
 
 def shape_to_svg_code(shape, fig=None, width=None, height=None):
