@@ -146,7 +146,7 @@ h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: 0;
   font-weight: 400;
-  color: rgb(201, 255, 253);
+  color: rgb(0, 0, 0);
 }
 h1 { font-size: 2rem; letter-spacing: -.1rem; margin-bottom: 1.5rem; margin-top: 2.5rem}
 h1.title {font-size: 2.5rem; margin-left: 1em;}
@@ -224,8 +224,8 @@ input[type="submit"].button-primary,
 input[type="reset"].button-primary,
 input[type="button"].button-primary {
   color: #d4cdc1;
-  background-color: #5a320a;
-  border-color: #5a320a; }
+  background-color: #fae6d1;
+  border-color: #fae6d1; }
 .button.button-primary:hover,
 button.button-primary:hover,
 input[type="submit"].button-primary:hover,
@@ -237,8 +237,8 @@ input[type="submit"].button-primary:focus,
 input[type="reset"].button-primary:focus,
 input[type="button"].button-primary:focus {
   color: #d4cdc1;
-  background-color: #5a320a;
-  border-color: #5a320a; }
+  background-color: #fae6d1;
+  border-color: #fae6d1; }
 
 
 /* Forms
@@ -254,8 +254,8 @@ textarea,
 select {
   height: 38px;
   padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
-  background-color: #5a320a;
-  border: 1px solid #5a320a;
+  background-color: #fae6d1;
+  border: 1px solid #fae6d1;
   border-radius: 4px;
   box-shadow: none;
   box-sizing: border-box;

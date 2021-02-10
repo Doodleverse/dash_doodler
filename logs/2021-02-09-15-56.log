@@ -1,0 +1,129 @@
+INFO:root:09-02-2021-15-56-11
+INFO:root:loaded class labels:
+INFO:root:water
+INFO:root:land
+INFO:root:09-02-2021-15-56-11
+INFO:root:Folder created: results/results2021-02-09-15-56
+INFO:root:09-02-2021-15-56-11
+INFO:root:Results will be written to results/results2021-02-09-15-56
+INFO:root:09-02-2021-15-56-11
+INFO:root:loaded files:
+INFO:root:assets/D800_20160308_222129lr00.jpg
+INFO:root:assets/D800_20160308_222129lr01.jpg
+INFO:root:assets/D800_20160308_222129lr02.jpg
+INFO:root:assets/D800_20160308_222129lr03.jpg
+INFO:root:assets/D800_20160308_222135lr00.jpg
+INFO:root:assets/D800_20160308_222135lr01.jpg
+INFO:root:assets/D800_20160308_222135lr02.jpg
+INFO:root:assets/D800_20160308_222135lr03.jpg
+INFO:root:assets/D800_20160308_222136lr00.jpg
+INFO:root:assets/D800_20160308_222136lr01.jpg
+INFO:root:assets/D800_20160308_222136lr02.jpg
+INFO:root:assets/D800_20160308_222136lr03.jpg
+INFO:werkzeug: * Running on http://127.0.0.1:8050/ (Press CTRL+C to quit)
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:15] "[37mGET / HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:15] "[37mGET /_dash-dependencies HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:15] "[37mGET /_dash-layout HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:15] "[37mGET /_favicon.ico?v=1.12.0 HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:15] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:16] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET / HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /assets/ml-image-segmentation-style.css?m=1603399494.08517 HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /assets/style.css?m=1612847359.6626081 HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-component-suites/dash_renderer/prop-types@15.v1_4_1m1602968819.7.2.min.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-component-suites/dash_renderer/react@16.v1_4_1m1602968819.13.0.min.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-component-suites/dash_renderer/polyfill@7.v1_4_1m1602968819.8.7.min.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-component-suites/dash_core_components/dash_core_components-shared.v1_10_0m1602968808.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-component-suites/dash_renderer/react-dom@16.v1_4_1m1602968819.13.0.min.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-component-suites/dash_html_components/dash_html_components.v1_0_3m1602968819.min.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-component-suites/dash_core_components/dash_core_components.v1_10_0m1602968808.min.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-component-suites/dash_renderer/dash_renderer.v1_4_1m1602968819.min.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_favicon.ico?v=1.12.0 HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-layout HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-dependencies HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-component-suites/dash_core_components/async-upload.v1_10_0m1588696753.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-component-suites/dash_core_components/async-graph.v1_10_0m1588696753.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-component-suites/dash_core_components/async-slider.v1_10_0m1588696753.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-component-suites/dash_core_components/async-markdown.v1_10_0m1588696753.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /assets/logos/dash-logo-new.png HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-component-suites/dash_core_components/async-highlight.v1_10_0m1588696753.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /_dash-component-suites/dash_core_components/async-plotlyjs.v1_10_0m1588696753.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mGET /assets/logos/dash-default.jpg HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:47] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:57] "[37mGET /_dash-component-suites/dash_core_components/async-dropdown.v1_10_0m1588696753.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:57] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:root:09-02-2021-15-56-59
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:56:59] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-01
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:01] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-03
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:03] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-05
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:05] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-07
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:07] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:08] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-09
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:09] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:10] "[37mGET /assets/D800_20160308_222129lr02.jpg HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:10] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:root:09-02-2021-15-57-17
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:17] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-19
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:19] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-21
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:21] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-23
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:23] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-25
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:25] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-27
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:27] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-34
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:34] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-36
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:36] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-38
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:38] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-40
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:40] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-48
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:48] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-50
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:50] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-52
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:52] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-15-57-54
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:54] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:57] "[37mGET / HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:58] "[37mGET /_dash-layout HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:58] "[37mGET /_dash-dependencies HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:58] "[37mGET /_favicon.ico?v=1.12.0 HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:58] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:57:58] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:58:28] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:root:09-02-2021-15-58-30
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:58:30] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 15:58:31] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -

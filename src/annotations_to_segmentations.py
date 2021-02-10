@@ -31,13 +31,14 @@ import skimage.util
 import skimage.io
 import skimage.color
 import io, os
-# from utils import *
+from datetime import datetime
 from image_segmentation import segmentation
 import plotly.express as px
 from skimage.io import imsave, imread
 
 from cairosvg import svg2png
 from datetime import datetime
+import logging
 
 def shape_to_svg_code(shape, fig=None, width=None, height=None):
     """
@@ -196,14 +197,18 @@ def compute_segmentations(
     crf_mu_slider_value,
     results_folder,
     median_filter_value,
-    downsample_value,
+    rf_downsample_value,
     crf_downsample_factor,
+    gt_prob,
+    my_id_value,
     callback_context,
+    rf_file,
     img_path="assets/logos/dash-default.jpg",
     segmenter_args={},
     shape_layers=None,
     label_to_colors_args={},
 ):
+
     """ segments the image based on the user annotations"""
 
     # load original image
@@ -218,23 +223,22 @@ def compute_segmentations(
         shape_layers = [(n + 1) for n, _ in enumerate(shapes)]
     mask = shapes_to_mask(shape_args, shape_layers) #utils.
 
-    # imsave('annotations.png', mask)
-
     color_annos = label_to_colors(mask, img[:,:,0]==0, alpha=128, do_alpha=True, **label_to_colors_args)
 
-    # print(type(color_annos))
-    # print(color_annos.shape)
-    imsave(img_path[0].replace('assets',results_folder).replace('.jpg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+'.png'), color_annos[:,:,:3])
+    annofile = img_path[0].replace('assets',results_folder).replace('.jpg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+    imsave(annofile, color_annos[:,:,:3]) #'_'+my_id_value+
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('Saved annotations to '+annofile)
 
     # do segmentation and return this
     if segmenter_args is not None:
-        seg = segmentation(img, img_path, results_folder, callback_context,
-                           crf_theta_slider_value, crf_mu_slider_value, median_filter_value, downsample_value,
-                           crf_downsample_factor, mask, **segmenter_args) #median_filter_value
+        seg = segmentation(img, img_path, results_folder, rf_file, callback_context,
+                           crf_theta_slider_value, crf_mu_slider_value, median_filter_value, rf_downsample_value,
+                           crf_downsample_factor, gt_prob, mask, **segmenter_args) #median_filter_value
     else:
-        seg = segmentation(img, img_path, results_folder, callback_context,
-                           crf_theta_slider_value, crf_mu_slider_value, median_filter_value, downsample_value,
-                           crf_downsample_factor, mask)
+        seg = segmentation(img, img_path, results_folder, rf_file, callback_context,
+                           crf_theta_slider_value, crf_mu_slider_value, median_filter_value, rf_downsample_value,
+                           crf_downsample_factor, gt_prob, mask)
 
     #print(np.unique(seg))
     color_seg = label_to_colors(seg, img[:,:,0]==0, alpha=128, do_alpha=True, **label_to_colors_args)

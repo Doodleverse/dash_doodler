@@ -1,0 +1,1220 @@
+INFO:root:09-02-2021-16-06-26
+INFO:root:loaded class labels:
+INFO:root:water
+INFO:root:land
+INFO:root:09-02-2021-16-06-26
+INFO:root:Folder created: results/results2021-02-09-16-06
+INFO:root:09-02-2021-16-06-26
+INFO:root:Results will be written to results/results2021-02-09-16-06
+INFO:root:09-02-2021-16-06-26
+INFO:root:loaded files:
+INFO:root:assets/D800_20160308_222129lr00.jpg
+INFO:root:assets/D800_20160308_222129lr01.jpg
+INFO:root:assets/D800_20160308_222129lr02.jpg
+INFO:root:assets/D800_20160308_222129lr03.jpg
+INFO:root:assets/D800_20160308_222135lr00.jpg
+INFO:root:assets/D800_20160308_222135lr01.jpg
+INFO:root:assets/D800_20160308_222135lr02.jpg
+INFO:root:assets/D800_20160308_222135lr03.jpg
+INFO:root:assets/D800_20160308_222136lr00.jpg
+INFO:root:assets/D800_20160308_222136lr01.jpg
+INFO:root:assets/D800_20160308_222136lr02.jpg
+INFO:root:assets/D800_20160308_222136lr03.jpg
+INFO:werkzeug: * Running on http://127.0.0.1:8050/ (Press CTRL+C to quit)
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:30] "[37mGET / HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:30] "[37mGET /_dash-layout HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:30] "[37mGET /_dash-dependencies HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:30] "[37mGET /_favicon.ico?v=1.12.0 HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:30] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:31] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:42] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:root:09-02-2021-16-06-44
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:44] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-06-46
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:46] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-06-48
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:48] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:48] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-06-50
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:50] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:50] "[37mGET /assets/D800_20160308_222129lr00.jpg HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:50] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:52] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:06:52] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-06-53
+INFO:root:Using intensity for RF feature extraction
+INFO:root:Using edges for RF feature extraction
+INFO:root:Using texture for RF feature extraction
+INFO:root:09-02-2021-16-06-53
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:09-02-2021-16-06-53
+INFO:root:Saved annotations to results/results2021-02-09-16-06/D800_20160308_222129lr00_annotations2021-02-09-16-06_db.png
+INFO:root:09-02-2021-16-06-53
+INFO:root:Extracting features from channel 0
+INFO:root:09-02-2021-16-06-53
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-06-53
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-06-54
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-06-54
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-06-54
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-06-54
+INFO:root:Extracting features from channel 1
+INFO:root:09-02-2021-16-06-54
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-06-54
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-06-54
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-06-54
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-06-54
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-06-54
+INFO:root:Extracting features from channel 2
+INFO:root:09-02-2021-16-06-54
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-06-54
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-06-54
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-06-54
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-06-55
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-06-55
+INFO:root:Feature extraction complete
+INFO:root:09-02-2021-16-06-55
+INFO:root:Using 5 decision trees per image
+INFO:root:09-02-2021-16-06-55
+INFO:root:Updating existing RF classifier
+INFO:root:09-02-2021-16-06-59
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:09-02-2021-16-06-59
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:09-02-2021-16-06-59
+INFO:root:CRF scale: 4.066667
+INFO:root:09-02-2021-16-06-59
+INFO:root:CRF downsample factor: 2.000000
+INFO:root:CRF theta parameter: 40.000000
+INFO:root:CRF mu parameter: 100.000000
+INFO:root:CRF prior probability of labels: 0.900000
+INFO:root:09-02-2021-16-07-00
+INFO:root:CRF inference made
+INFO:root:09-02-2021-16-07-00
+INFO:root:CRF post-processing complete
+INFO:root:09-02-2021-16-07-00
+INFO:root:CRF model applied with theta=40.000000 and mu=100.000000
+INFO:root:09-02-2021-16-07-00
+INFO:root:Median filter of radius 3 applied
+INFO:root:09-02-2021-16-07-00
+INFO:root:RGB label image saved to results/results2021-02-09-16-06/D800_20160308_222129lr00_label2021-02-09-16-07_db.png
+INFO:root:09-02-2021-16-07-00
+INFO:root:Greyscale label image saved to results/results2021-02-09-16-06/D800_20160308_222129lr00_label_greyscale2021-02-09-16-07_db.png
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:00] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:02] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-07-05
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:05] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:06] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:06] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-07-07
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:07] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:08] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-07-09
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:09] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:09] "[37mGET /assets/D800_20160308_222129lr01.jpg HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:10] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:11] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:12] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-07-13
+INFO:root:Using intensity for RF feature extraction
+INFO:root:Using edges for RF feature extraction
+INFO:root:Using texture for RF feature extraction
+INFO:root:09-02-2021-16-07-13
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:09-02-2021-16-07-13
+INFO:root:Saved annotations to results/results2021-02-09-16-06/D800_20160308_222129lr01_annotations2021-02-09-16-07_db.png
+INFO:root:09-02-2021-16-07-13
+INFO:root:Extracting features from channel 0
+INFO:root:09-02-2021-16-07-13
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-07-13
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-07-13
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-07-14
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-07-14
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-07-14
+INFO:root:Extracting features from channel 1
+INFO:root:09-02-2021-16-07-14
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-07-14
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-07-14
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-07-14
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-07-14
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-07-14
+INFO:root:Extracting features from channel 2
+INFO:root:09-02-2021-16-07-14
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-07-14
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-07-14
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-07-14
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-07-15
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-07-15
+INFO:root:Feature extraction complete
+INFO:root:09-02-2021-16-07-15
+INFO:root:Using 5 decision trees per image
+INFO:root:09-02-2021-16-07-15
+INFO:root:Updating existing RF classifier
+INFO:root:09-02-2021-16-07-19
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:09-02-2021-16-07-19
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:09-02-2021-16-07-19
+INFO:root:CRF scale: 4.066667
+INFO:root:09-02-2021-16-07-19
+INFO:root:CRF downsample factor: 2.000000
+INFO:root:CRF theta parameter: 40.000000
+INFO:root:CRF mu parameter: 100.000000
+INFO:root:CRF prior probability of labels: 0.900000
+INFO:root:09-02-2021-16-07-20
+INFO:root:CRF inference made
+INFO:root:09-02-2021-16-07-20
+INFO:root:CRF post-processing complete
+INFO:root:09-02-2021-16-07-20
+INFO:root:CRF model applied with theta=40.000000 and mu=100.000000
+INFO:root:09-02-2021-16-07-20
+INFO:root:Median filter of radius 3 applied
+INFO:root:09-02-2021-16-07-20
+INFO:root:RGB label image saved to results/results2021-02-09-16-06/D800_20160308_222129lr01_label2021-02-09-16-07_db.png
+INFO:root:09-02-2021-16-07-20
+INFO:root:Greyscale label image saved to results/results2021-02-09-16-06/D800_20160308_222129lr01_label_greyscale2021-02-09-16-07_db.png
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:20] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:21] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-07-24
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:24] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:25] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:25] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-07-26
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:26] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:27] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-07-28
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:28] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:29] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:33] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:36] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:39] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:41] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:42] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:47] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:07:53] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-07-54
+INFO:root:Using intensity for RF feature extraction
+INFO:root:Using edges for RF feature extraction
+INFO:root:Using texture for RF feature extraction
+INFO:root:09-02-2021-16-07-54
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:09-02-2021-16-07-55
+INFO:root:Saved annotations to results/results2021-02-09-16-06/D800_20160308_222129lr02_annotations2021-02-09-16-07_db.png
+INFO:root:09-02-2021-16-07-55
+INFO:root:Extracting features from channel 0
+INFO:root:09-02-2021-16-07-55
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-07-55
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-07-56
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-07-56
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-07-56
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-07-56
+INFO:root:Extracting features from channel 1
+INFO:root:09-02-2021-16-07-56
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-07-56
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-07-56
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-07-56
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-07-56
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-07-56
+INFO:root:Extracting features from channel 2
+INFO:root:09-02-2021-16-07-56
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-07-56
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-07-56
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-07-56
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-07-57
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-07-57
+INFO:root:Feature extraction complete
+INFO:root:09-02-2021-16-07-57
+INFO:root:Using 5 decision trees per image
+INFO:root:09-02-2021-16-07-57
+INFO:root:Updating existing RF classifier
+INFO:root:09-02-2021-16-08-04
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:09-02-2021-16-08-04
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:09-02-2021-16-08-04
+INFO:root:CRF scale: 4.066667
+INFO:root:09-02-2021-16-08-04
+INFO:root:CRF downsample factor: 2.000000
+INFO:root:CRF theta parameter: 40.000000
+INFO:root:CRF mu parameter: 100.000000
+INFO:root:CRF prior probability of labels: 0.900000
+INFO:root:09-02-2021-16-08-06
+INFO:root:CRF inference made
+INFO:root:09-02-2021-16-08-06
+INFO:root:CRF post-processing complete
+INFO:root:09-02-2021-16-08-06
+INFO:root:CRF model applied with theta=40.000000 and mu=100.000000
+INFO:root:09-02-2021-16-08-06
+INFO:root:Median filter of radius 3 applied
+INFO:root:09-02-2021-16-08-06
+INFO:root:RGB label image saved to results/results2021-02-09-16-06/D800_20160308_222129lr02_label2021-02-09-16-08_db.png
+INFO:root:09-02-2021-16-08-06
+INFO:root:Greyscale label image saved to results/results2021-02-09-16-06/D800_20160308_222129lr02_label_greyscale2021-02-09-16-08_db.png
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:07] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:09] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-08-12
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:12] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:13] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:13] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-08-14
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:14] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:16] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-08-16
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:16] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:17] "[37mGET /assets/D800_20160308_222129lr03.jpg HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:18] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:28] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:30] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:34] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-08-35
+INFO:root:Using intensity for RF feature extraction
+INFO:root:Using edges for RF feature extraction
+INFO:root:Using texture for RF feature extraction
+INFO:root:09-02-2021-16-08-35
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:09-02-2021-16-08-36
+INFO:root:Saved annotations to results/results2021-02-09-16-06/D800_20160308_222129lr03_annotations2021-02-09-16-08_db.png
+INFO:root:09-02-2021-16-08-36
+INFO:root:Extracting features from channel 0
+INFO:root:09-02-2021-16-08-36
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-08-36
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-08-36
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-08-36
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-08-36
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-08-36
+INFO:root:Extracting features from channel 1
+INFO:root:09-02-2021-16-08-36
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-08-36
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-08-36
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-08-36
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-08-37
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-08-37
+INFO:root:Extracting features from channel 2
+INFO:root:09-02-2021-16-08-37
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-08-37
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-08-37
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-08-37
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-08-37
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-08-37
+INFO:root:Feature extraction complete
+INFO:root:09-02-2021-16-08-37
+INFO:root:Using 5 decision trees per image
+INFO:root:09-02-2021-16-08-37
+INFO:root:Updating existing RF classifier
+INFO:root:09-02-2021-16-08-45
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:09-02-2021-16-08-45
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:09-02-2021-16-08-45
+INFO:root:CRF scale: 4.066667
+INFO:root:09-02-2021-16-08-45
+INFO:root:CRF downsample factor: 2.000000
+INFO:root:CRF theta parameter: 40.000000
+INFO:root:CRF mu parameter: 100.000000
+INFO:root:CRF prior probability of labels: 0.900000
+INFO:root:09-02-2021-16-08-46
+INFO:root:CRF inference made
+INFO:root:09-02-2021-16-08-47
+INFO:root:CRF post-processing complete
+INFO:root:09-02-2021-16-08-47
+INFO:root:CRF model applied with theta=40.000000 and mu=100.000000
+INFO:root:09-02-2021-16-08-47
+INFO:root:Median filter of radius 3 applied
+INFO:root:09-02-2021-16-08-47
+INFO:root:RGB label image saved to results/results2021-02-09-16-06/D800_20160308_222129lr03_label2021-02-09-16-08_db.png
+INFO:root:09-02-2021-16-08-47
+INFO:root:Greyscale label image saved to results/results2021-02-09-16-06/D800_20160308_222129lr03_label_greyscale2021-02-09-16-08_db.png
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:47] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:50] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:51] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:53] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:54] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:56] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:08:58] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-08-59
+INFO:root:Using intensity for RF feature extraction
+INFO:root:Using edges for RF feature extraction
+INFO:root:Using texture for RF feature extraction
+INFO:root:09-02-2021-16-08-59
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:09-02-2021-16-09-00
+INFO:root:Saved annotations to results/results2021-02-09-16-06/D800_20160308_222129lr03_annotations2021-02-09-16-09_db.png
+INFO:root:09-02-2021-16-09-00
+INFO:root:Extracting features from channel 0
+INFO:root:09-02-2021-16-09-00
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-09-00
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-09-00
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-09-01
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-09-01
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-09-01
+INFO:root:Extracting features from channel 1
+INFO:root:09-02-2021-16-09-01
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-09-01
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-09-01
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-09-01
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-09-01
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-09-01
+INFO:root:Extracting features from channel 2
+INFO:root:09-02-2021-16-09-01
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-09-01
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-09-01
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-09-01
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-09-02
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-09-02
+INFO:root:Feature extraction complete
+INFO:root:09-02-2021-16-09-02
+INFO:root:Using 5 decision trees per image
+INFO:root:09-02-2021-16-09-02
+INFO:root:Updating existing RF classifier
+INFO:root:09-02-2021-16-09-09
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:09-02-2021-16-09-09
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:09-02-2021-16-09-09
+INFO:root:CRF scale: 4.066667
+INFO:root:09-02-2021-16-09-09
+INFO:root:CRF downsample factor: 2.000000
+INFO:root:CRF theta parameter: 40.000000
+INFO:root:CRF mu parameter: 100.000000
+INFO:root:CRF prior probability of labels: 0.900000
+INFO:root:09-02-2021-16-09-11
+INFO:root:CRF inference made
+INFO:root:09-02-2021-16-09-12
+INFO:root:CRF post-processing complete
+INFO:root:09-02-2021-16-09-12
+INFO:root:CRF model applied with theta=40.000000 and mu=100.000000
+INFO:root:09-02-2021-16-09-12
+INFO:root:Median filter of radius 3 applied
+INFO:root:09-02-2021-16-09-12
+INFO:root:RGB label image saved to results/results2021-02-09-16-06/D800_20160308_222129lr03_label2021-02-09-16-09_db.png
+INFO:root:09-02-2021-16-09-12
+INFO:root:Greyscale label image saved to results/results2021-02-09-16-06/D800_20160308_222129lr03_label_greyscale2021-02-09-16-09_db.png
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:12] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:15] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-09-18
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:18] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:19] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:19] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-09-20
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:20] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-09-22
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:22] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:22] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-09-24
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:24] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:24] "[37mGET /assets/D800_20160308_222135lr00.jpg HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:25] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:26] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:27] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-09-28
+INFO:root:Using intensity for RF feature extraction
+INFO:root:Using edges for RF feature extraction
+INFO:root:Using texture for RF feature extraction
+INFO:root:09-02-2021-16-09-28
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:09-02-2021-16-09-29
+INFO:root:Saved annotations to results/results2021-02-09-16-06/D800_20160308_222135lr00_annotations2021-02-09-16-09_db.png
+INFO:root:09-02-2021-16-09-29
+INFO:root:Extracting features from channel 0
+INFO:root:09-02-2021-16-09-29
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-09-29
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-09-29
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-09-29
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-09-29
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-09-29
+INFO:root:Extracting features from channel 1
+INFO:root:09-02-2021-16-09-29
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-09-29
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-09-29
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-09-29
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-09-29
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-09-29
+INFO:root:Extracting features from channel 2
+INFO:root:09-02-2021-16-09-29
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-09-30
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-09-30
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-09-30
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-09-30
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-09-30
+INFO:root:Feature extraction complete
+INFO:root:09-02-2021-16-09-30
+INFO:root:Using 5 decision trees per image
+INFO:root:09-02-2021-16-09-30
+INFO:root:Updating existing RF classifier
+INFO:root:09-02-2021-16-09-34
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:09-02-2021-16-09-34
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:09-02-2021-16-09-34
+INFO:root:CRF scale: 4.066667
+INFO:root:09-02-2021-16-09-34
+INFO:root:CRF downsample factor: 2.000000
+INFO:root:CRF theta parameter: 40.000000
+INFO:root:CRF mu parameter: 100.000000
+INFO:root:CRF prior probability of labels: 0.900000
+INFO:root:09-02-2021-16-09-35
+INFO:root:CRF inference made
+INFO:root:09-02-2021-16-09-36
+INFO:root:CRF post-processing complete
+INFO:root:09-02-2021-16-09-36
+INFO:root:CRF model applied with theta=40.000000 and mu=100.000000
+INFO:root:09-02-2021-16-09-36
+INFO:root:Median filter of radius 3 applied
+INFO:root:09-02-2021-16-09-36
+INFO:root:RGB label image saved to results/results2021-02-09-16-06/D800_20160308_222135lr00_label2021-02-09-16-09_db.png
+INFO:root:09-02-2021-16-09-36
+INFO:root:Greyscale label image saved to results/results2021-02-09-16-06/D800_20160308_222135lr00_label_greyscale2021-02-09-16-09_db.png
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:36] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:38] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-09-41
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:41] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:42] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:42] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-09-43
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:43] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-09-45
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:45] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:47] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-09-47
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:47] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:48] "[37mGET /assets/D800_20160308_222135lr01.jpg HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:48] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:50] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:09:50] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-09-51
+INFO:root:Using intensity for RF feature extraction
+INFO:root:Using edges for RF feature extraction
+INFO:root:Using texture for RF feature extraction
+INFO:root:09-02-2021-16-09-51
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:09-02-2021-16-09-52
+INFO:root:Saved annotations to results/results2021-02-09-16-06/D800_20160308_222135lr01_annotations2021-02-09-16-09_db.png
+INFO:root:09-02-2021-16-09-52
+INFO:root:Extracting features from channel 0
+INFO:root:09-02-2021-16-09-52
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-09-52
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-09-52
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-09-52
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-09-52
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-09-52
+INFO:root:Extracting features from channel 1
+INFO:root:09-02-2021-16-09-52
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-09-52
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-09-52
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-09-52
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-09-53
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-09-53
+INFO:root:Extracting features from channel 2
+INFO:root:09-02-2021-16-09-53
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-09-53
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-09-53
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-09-53
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-09-53
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-09-53
+INFO:root:Feature extraction complete
+INFO:root:09-02-2021-16-09-53
+INFO:root:Using 5 decision trees per image
+INFO:root:09-02-2021-16-09-53
+INFO:root:Updating existing RF classifier
+INFO:root:09-02-2021-16-09-58
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:09-02-2021-16-09-58
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:09-02-2021-16-09-58
+INFO:root:CRF scale: 4.066667
+INFO:root:09-02-2021-16-09-58
+INFO:root:CRF downsample factor: 2.000000
+INFO:root:CRF theta parameter: 40.000000
+INFO:root:CRF mu parameter: 100.000000
+INFO:root:CRF prior probability of labels: 0.900000
+INFO:root:09-02-2021-16-09-59
+INFO:root:CRF inference made
+INFO:root:09-02-2021-16-09-59
+INFO:root:CRF post-processing complete
+INFO:root:09-02-2021-16-09-59
+INFO:root:CRF model applied with theta=40.000000 and mu=100.000000
+INFO:root:09-02-2021-16-09-59
+INFO:root:Median filter of radius 3 applied
+INFO:root:09-02-2021-16-09-59
+INFO:root:RGB label image saved to results/results2021-02-09-16-06/D800_20160308_222135lr01_label2021-02-09-16-09_db.png
+INFO:root:09-02-2021-16-09-59
+INFO:root:Greyscale label image saved to results/results2021-02-09-16-06/D800_20160308_222135lr01_label_greyscale2021-02-09-16-09_db.png
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:00] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:01] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-10-04
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:04] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:05] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:05] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-10-06
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:06] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:07] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-10-08
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:08] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:09] "[37mGET /assets/D800_20160308_222135lr03.jpg HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:09] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:10] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:14] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:17] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:19] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:20] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:21] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:24] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:25] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:27] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:28] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:30] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-10-31
+INFO:root:Using intensity for RF feature extraction
+INFO:root:Using edges for RF feature extraction
+INFO:root:Using texture for RF feature extraction
+INFO:root:09-02-2021-16-10-31
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:09-02-2021-16-10-33
+INFO:root:Saved annotations to results/results2021-02-09-16-06/D800_20160308_222135lr03_annotations2021-02-09-16-10_db.png
+INFO:root:09-02-2021-16-10-33
+INFO:root:Extracting features from channel 0
+INFO:root:09-02-2021-16-10-33
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-10-33
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-10-33
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-10-33
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-10-33
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-10-33
+INFO:root:Extracting features from channel 1
+INFO:root:09-02-2021-16-10-33
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-10-33
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-10-33
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-10-33
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-10-34
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-10-34
+INFO:root:Extracting features from channel 2
+INFO:root:09-02-2021-16-10-34
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-10-34
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-10-34
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-10-34
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-10-34
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-10-34
+INFO:root:Feature extraction complete
+INFO:root:09-02-2021-16-10-34
+INFO:root:Using 5 decision trees per image
+INFO:root:09-02-2021-16-10-34
+INFO:root:Updating existing RF classifier
+INFO:root:09-02-2021-16-10-42
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:09-02-2021-16-10-42
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:09-02-2021-16-10-42
+INFO:root:CRF scale: 4.066667
+INFO:root:09-02-2021-16-10-42
+INFO:root:CRF downsample factor: 2.000000
+INFO:root:CRF theta parameter: 40.000000
+INFO:root:CRF mu parameter: 100.000000
+INFO:root:CRF prior probability of labels: 0.900000
+INFO:root:09-02-2021-16-10-44
+INFO:root:CRF inference made
+INFO:root:09-02-2021-16-10-44
+INFO:root:CRF post-processing complete
+INFO:root:09-02-2021-16-10-44
+INFO:root:CRF model applied with theta=40.000000 and mu=100.000000
+INFO:root:09-02-2021-16-10-44
+INFO:root:Median filter of radius 3 applied
+INFO:root:09-02-2021-16-10-45
+INFO:root:RGB label image saved to results/results2021-02-09-16-06/D800_20160308_222135lr03_label2021-02-09-16-10_db.png
+INFO:root:09-02-2021-16-10-45
+INFO:root:Greyscale label image saved to results/results2021-02-09-16-06/D800_20160308_222135lr03_label_greyscale2021-02-09-16-10_db.png
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:45] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:47] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-10-50
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:50] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:51] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:51] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-10-52
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:52] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:53] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-10-54
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:54] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:55] "[37mGET /assets/D800_20160308_222135lr02.jpg HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:55] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:10:56] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:03] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:04] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:07] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:10] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:11] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-11-13
+INFO:root:Using intensity for RF feature extraction
+INFO:root:Using edges for RF feature extraction
+INFO:root:Using texture for RF feature extraction
+INFO:root:09-02-2021-16-11-13
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:09-02-2021-16-11-14
+INFO:root:Saved annotations to results/results2021-02-09-16-06/D800_20160308_222135lr02_annotations2021-02-09-16-11_db.png
+INFO:root:09-02-2021-16-11-14
+INFO:root:Extracting features from channel 0
+INFO:root:09-02-2021-16-11-14
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-11-14
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-11-14
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-11-14
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-11-14
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-11-14
+INFO:root:Extracting features from channel 1
+INFO:root:09-02-2021-16-11-14
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-11-14
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-11-14
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-11-14
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-11-15
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-11-15
+INFO:root:Extracting features from channel 2
+INFO:root:09-02-2021-16-11-15
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-11-15
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-11-15
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-11-15
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-11-15
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-11-15
+INFO:root:Feature extraction complete
+INFO:root:09-02-2021-16-11-15
+INFO:root:Using 5 decision trees per image
+INFO:root:09-02-2021-16-11-15
+INFO:root:Updating existing RF classifier
+INFO:root:09-02-2021-16-11-24
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:09-02-2021-16-11-24
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:09-02-2021-16-11-24
+INFO:root:CRF scale: 4.066667
+INFO:root:09-02-2021-16-11-24
+INFO:root:CRF downsample factor: 2.000000
+INFO:root:CRF theta parameter: 40.000000
+INFO:root:CRF mu parameter: 100.000000
+INFO:root:CRF prior probability of labels: 0.900000
+INFO:root:09-02-2021-16-11-25
+INFO:root:CRF inference made
+INFO:root:09-02-2021-16-11-26
+INFO:root:CRF post-processing complete
+INFO:root:09-02-2021-16-11-26
+INFO:root:CRF model applied with theta=40.000000 and mu=100.000000
+INFO:root:09-02-2021-16-11-26
+INFO:root:Median filter of radius 3 applied
+INFO:root:09-02-2021-16-11-26
+INFO:root:RGB label image saved to results/results2021-02-09-16-06/D800_20160308_222135lr02_label2021-02-09-16-11_db.png
+INFO:root:09-02-2021-16-11-26
+INFO:root:Greyscale label image saved to results/results2021-02-09-16-06/D800_20160308_222135lr02_label_greyscale2021-02-09-16-11_db.png
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:26] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:28] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-11-31
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:31] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:32] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:32] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-11-33
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:33] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:34] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-11-35
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:35] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:36] "[37mGET /assets/D800_20160308_222136lr00.jpg HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:36] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:37] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:38] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-11-39
+INFO:root:Using intensity for RF feature extraction
+INFO:root:Using edges for RF feature extraction
+INFO:root:Using texture for RF feature extraction
+INFO:root:09-02-2021-16-11-39
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:09-02-2021-16-11-39
+INFO:root:Saved annotations to results/results2021-02-09-16-06/D800_20160308_222136lr00_annotations2021-02-09-16-11_db.png
+INFO:root:09-02-2021-16-11-39
+INFO:root:Extracting features from channel 0
+INFO:root:09-02-2021-16-11-39
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-11-39
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-11-39
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-11-39
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-11-39
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-11-39
+INFO:root:Extracting features from channel 1
+INFO:root:09-02-2021-16-11-39
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-11-39
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-11-40
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-11-40
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-11-40
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-11-40
+INFO:root:Extracting features from channel 2
+INFO:root:09-02-2021-16-11-40
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-11-40
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-11-40
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-11-40
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-11-40
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-11-40
+INFO:root:Feature extraction complete
+INFO:root:09-02-2021-16-11-40
+INFO:root:Using 5 decision trees per image
+INFO:root:09-02-2021-16-11-40
+INFO:root:Updating existing RF classifier
+INFO:root:09-02-2021-16-11-45
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:09-02-2021-16-11-45
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:09-02-2021-16-11-45
+INFO:root:CRF scale: 4.066667
+INFO:root:09-02-2021-16-11-45
+INFO:root:CRF downsample factor: 2.000000
+INFO:root:CRF theta parameter: 40.000000
+INFO:root:CRF mu parameter: 100.000000
+INFO:root:CRF prior probability of labels: 0.900000
+INFO:root:09-02-2021-16-11-46
+INFO:root:CRF inference made
+INFO:root:09-02-2021-16-11-46
+INFO:root:CRF post-processing complete
+INFO:root:09-02-2021-16-11-46
+INFO:root:CRF model applied with theta=40.000000 and mu=100.000000
+INFO:root:09-02-2021-16-11-46
+INFO:root:Median filter of radius 3 applied
+INFO:root:09-02-2021-16-11-46
+INFO:root:RGB label image saved to results/results2021-02-09-16-06/D800_20160308_222136lr00_label2021-02-09-16-11_db.png
+INFO:root:09-02-2021-16-11-46
+INFO:root:Greyscale label image saved to results/results2021-02-09-16-06/D800_20160308_222136lr00_label_greyscale2021-02-09-16-11_db.png
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:47] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:48] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-11-51
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:51] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:52] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:52] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-11-53
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:53] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:54] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-11-55
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:55] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:56] "[37mGET /assets/D800_20160308_222136lr01.jpg HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:56] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:58] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:11:58] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-11-59
+INFO:root:Using intensity for RF feature extraction
+INFO:root:Using edges for RF feature extraction
+INFO:root:Using texture for RF feature extraction
+INFO:root:09-02-2021-16-11-59
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:09-02-2021-16-12-00
+INFO:root:Saved annotations to results/results2021-02-09-16-06/D800_20160308_222136lr01_annotations2021-02-09-16-12_db.png
+INFO:root:09-02-2021-16-12-00
+INFO:root:Extracting features from channel 0
+INFO:root:09-02-2021-16-12-00
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-12-00
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-12-00
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-12-00
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-12-00
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-12-00
+INFO:root:Extracting features from channel 1
+INFO:root:09-02-2021-16-12-00
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-12-00
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-12-00
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-12-00
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-12-00
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-12-00
+INFO:root:Extracting features from channel 2
+INFO:root:09-02-2021-16-12-00
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-12-01
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-12-01
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-12-01
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-12-01
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-12-01
+INFO:root:Feature extraction complete
+INFO:root:09-02-2021-16-12-01
+INFO:root:Using 5 decision trees per image
+INFO:root:09-02-2021-16-12-01
+INFO:root:Updating existing RF classifier
+INFO:root:09-02-2021-16-12-06
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:09-02-2021-16-12-06
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:09-02-2021-16-12-06
+INFO:root:CRF scale: 4.066667
+INFO:root:09-02-2021-16-12-06
+INFO:root:CRF downsample factor: 2.000000
+INFO:root:CRF theta parameter: 40.000000
+INFO:root:CRF mu parameter: 100.000000
+INFO:root:CRF prior probability of labels: 0.900000
+INFO:root:09-02-2021-16-12-07
+INFO:root:CRF inference made
+INFO:root:09-02-2021-16-12-07
+INFO:root:CRF post-processing complete
+INFO:root:09-02-2021-16-12-07
+INFO:root:CRF model applied with theta=40.000000 and mu=100.000000
+INFO:root:09-02-2021-16-12-07
+INFO:root:Median filter of radius 3 applied
+INFO:root:09-02-2021-16-12-07
+INFO:root:RGB label image saved to results/results2021-02-09-16-06/D800_20160308_222136lr01_label2021-02-09-16-12_db.png
+INFO:root:09-02-2021-16-12-07
+INFO:root:Greyscale label image saved to results/results2021-02-09-16-06/D800_20160308_222136lr01_label_greyscale2021-02-09-16-12_db.png
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:08] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:09] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-12-11
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:11] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:12] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:12] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-12-13
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:13] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:14] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:15] "[37mGET /assets/D800_20160308_222136lr02.jpg HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:16] "[37mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:17] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:24] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:25] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:29] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:34] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-12-35
+INFO:root:Using intensity for RF feature extraction
+INFO:root:Using edges for RF feature extraction
+INFO:root:Using texture for RF feature extraction
+INFO:root:09-02-2021-16-12-35
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:09-02-2021-16-12-36
+INFO:root:Saved annotations to results/results2021-02-09-16-06/D800_20160308_222136lr02_annotations2021-02-09-16-12_db.png
+INFO:root:09-02-2021-16-12-36
+INFO:root:Extracting features from channel 0
+INFO:root:09-02-2021-16-12-36
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-12-36
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-12-36
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-12-36
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-12-36
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-12-36
+INFO:root:Extracting features from channel 1
+INFO:root:09-02-2021-16-12-36
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-12-36
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-12-36
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-12-36
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-12-37
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-12-37
+INFO:root:Extracting features from channel 2
+INFO:root:09-02-2021-16-12-37
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-12-37
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-12-37
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-12-37
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-12-37
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-12-37
+INFO:root:Feature extraction complete
+INFO:root:09-02-2021-16-12-37
+INFO:root:Using 5 decision trees per image
+INFO:root:09-02-2021-16-12-37
+INFO:root:Updating existing RF classifier
+INFO:root:09-02-2021-16-12-46
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:09-02-2021-16-12-46
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:09-02-2021-16-12-46
+INFO:root:CRF scale: 4.066667
+INFO:root:09-02-2021-16-12-46
+INFO:root:CRF downsample factor: 2.000000
+INFO:root:CRF theta parameter: 40.000000
+INFO:root:CRF mu parameter: 100.000000
+INFO:root:CRF prior probability of labels: 0.900000
+INFO:root:09-02-2021-16-12-48
+INFO:root:CRF inference made
+INFO:root:09-02-2021-16-12-48
+INFO:root:CRF post-processing complete
+INFO:root:09-02-2021-16-12-48
+INFO:root:CRF model applied with theta=40.000000 and mu=100.000000
+INFO:root:09-02-2021-16-12-48
+INFO:root:Median filter of radius 3 applied
+INFO:root:09-02-2021-16-12-48
+INFO:root:RGB label image saved to results/results2021-02-09-16-06/D800_20160308_222136lr02_label2021-02-09-16-12_db.png
+INFO:root:09-02-2021-16-12-48
+INFO:root:Greyscale label image saved to results/results2021-02-09-16-06/D800_20160308_222136lr02_label_greyscale2021-02-09-16-12_db.png
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:49] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:51] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:51] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:53] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:12:56] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-12-57
+INFO:root:Using intensity for RF feature extraction
+INFO:root:Using edges for RF feature extraction
+INFO:root:Using texture for RF feature extraction
+INFO:root:09-02-2021-16-12-57
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:09-02-2021-16-12-58
+INFO:root:Saved annotations to results/results2021-02-09-16-06/D800_20160308_222136lr02_annotations2021-02-09-16-12_db.png
+INFO:root:09-02-2021-16-12-58
+INFO:root:Extracting features from channel 0
+INFO:root:09-02-2021-16-12-58
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-12-58
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-12-58
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-12-58
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-12-59
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-12-59
+INFO:root:Extracting features from channel 1
+INFO:root:09-02-2021-16-12-59
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-12-59
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-12-59
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-12-59
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-12-59
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-12-59
+INFO:root:Extracting features from channel 2
+INFO:root:09-02-2021-16-12-59
+INFO:root:Image features extracted using sigma= 1.000000
+INFO:root:09-02-2021-16-12-59
+INFO:root:Image features extracted using sigma= 2.000000
+INFO:root:09-02-2021-16-12-59
+INFO:root:Image features extracted using sigma= 4.000000
+INFO:root:09-02-2021-16-12-59
+INFO:root:Image features extracted using sigma= 8.000000
+INFO:root:09-02-2021-16-12-59
+INFO:root:Image features extracted using sigma= 16.000000
+INFO:root:09-02-2021-16-12-59
+INFO:root:Feature extraction complete
+INFO:root:09-02-2021-16-13-00
+INFO:root:Using 5 decision trees per image
+INFO:root:09-02-2021-16-13-00
+INFO:root:Updating existing RF classifier
+INFO:root:09-02-2021-16-13-09
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:09-02-2021-16-13-09
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:09-02-2021-16-13-09
+INFO:root:CRF scale: 4.066667
+INFO:root:09-02-2021-16-13-09
+INFO:root:CRF downsample factor: 2.000000
+INFO:root:CRF theta parameter: 40.000000
+INFO:root:CRF mu parameter: 100.000000
+INFO:root:CRF prior probability of labels: 0.900000
+INFO:root:09-02-2021-16-13-10
+INFO:root:CRF inference made
+INFO:root:09-02-2021-16-13-11
+INFO:root:CRF post-processing complete
+INFO:root:09-02-2021-16-13-11
+INFO:root:CRF model applied with theta=40.000000 and mu=100.000000
+INFO:root:09-02-2021-16-13-11
+INFO:root:Median filter of radius 3 applied
+INFO:root:09-02-2021-16-13-11
+INFO:root:RGB label image saved to results/results2021-02-09-16-06/D800_20160308_222136lr02_label2021-02-09-16-13_db.png
+INFO:root:09-02-2021-16-13-11
+INFO:root:Greyscale label image saved to results/results2021-02-09-16-06/D800_20160308_222136lr02_label_greyscale2021-02-09-16-13_db.png
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:13:11] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:13:14] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-13-17
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:13:17] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -
+INFO:root:09-02-2021-16-13-19
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [09/Feb/2021 16:13:19] "[37mPOST /_dash-update-component HTTP/1.1[0m" 200 -

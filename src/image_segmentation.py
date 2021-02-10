@@ -30,6 +30,7 @@ from skimage import filters, feature, img_as_float32
 from sklearn.ensemble import RandomForestClassifier
 import plotly.express as px
 from skimage.io import imsave
+from datetime import datetime
 
 import pydensecrf.densecrf as dcrf
 from pydensecrf.utils import create_pairwise_bilateral, unary_from_labels
@@ -37,7 +38,7 @@ from skimage.filters.rank import median
 from skimage.morphology import disk
 from skimage.transform import resize
 from joblib import dump, load
-import io, os
+import io, os, logging
 
 np.seterr(divide='ignore', invalid='ignore')
 
@@ -46,37 +47,37 @@ def fromhex(n):
     """ hexadecimal to integer """
     return int(n, base=16)
 
-##========================================================
-def expand_img(img):
-    '''
-    expands a 3-band image into a 6-band image stack,
-    with the last three bands being derived from the first 3
-    specifically; 1) VARI = (G-R)/(G+R-B); 2) NEXG = (2*G - R - B) / (G+R+B); 3) NGRDI = (G-R)/(G+R)
-    '''
-    R = img[:,:,0]
-    G = img[:,:,1]
-    B = img[:,:,2]
-
-    VARI = 1+(G-R)/1+(G+R-B)
-    NEXG = 1+(2*G - R - B) / 1+(G+R+B)
-    NGRDI = 1+(G-R)/1+(G+R)
-    VARI[np.isinf(VARI)] = 1e-2
-    NEXG[np.isinf(NEXG)] = 1e-2
-    NGRDI[np.isinf(NGRDI)] = 1e-2
-    VARI[np.isnan(VARI)] = 1e-2
-    NEXG[np.isnan(NEXG)] = 1e-2
-    NGRDI[np.isnan(NGRDI)] = 1e-2
-    VARI[VARI==0] = 1e-2
-    NEXG[NEXG==0] = 1e-2
-    NGRDI[NGRDI==0] = 1e-2
-
-    VARI = rescale(np.log(VARI),0,255)
-    NEXG = rescale(np.log(NEXG),0,255)
-    NGRDI = rescale(np.log(NGRDI),0,255)
-
-    STACK = np.dstack((R,G,B,VARI,NEXG,NGRDI)).astype(np.int)
-    del R, G, B, VARI, NEXG, NGRDI
-    return STACK
+# ##========================================================
+# def expand_img(img):
+#     '''
+#     expands a 3-band image into a 6-band image stack,
+#     with the last three bands being derived from the first 3
+#     specifically; 1) VARI = (G-R)/(G+R-B); 2) NEXG = (2*G - R - B) / (G+R+B); 3) NGRDI = (G-R)/(G+R)
+#     '''
+#     R = img[:,:,0]
+#     G = img[:,:,1]
+#     B = img[:,:,2]
+#
+#     VARI = 1+(G-R)/1+(G+R-B)
+#     NEXG = 1+(2*G - R - B) / 1+(G+R+B)
+#     NGRDI = 1+(G-R)/1+(G+R)
+#     VARI[np.isinf(VARI)] = 1e-2
+#     NEXG[np.isinf(NEXG)] = 1e-2
+#     NGRDI[np.isinf(NGRDI)] = 1e-2
+#     VARI[np.isnan(VARI)] = 1e-2
+#     NEXG[np.isnan(NEXG)] = 1e-2
+#     NGRDI[np.isnan(NGRDI)] = 1e-2
+#     VARI[VARI==0] = 1e-2
+#     NEXG[NEXG==0] = 1e-2
+#     NGRDI[NGRDI==0] = 1e-2
+#
+#     VARI = rescale(np.log(VARI),0,255)
+#     NEXG = rescale(np.log(NEXG),0,255)
+#     NGRDI = rescale(np.log(NGRDI),0,255)
+#
+#     STACK = np.dstack((R,G,B,VARI,NEXG,NGRDI)).astype(np.int)
+#     del R, G, B, VARI, NEXG, NGRDI
+#     return STACK
 
 ##========================================================
 def rescale(dat,
@@ -94,7 +95,8 @@ def crf_refine(label,
     img,
     crf_theta_slider_value,
     crf_mu_slider_value,
-    crf_downsample_factor):
+    crf_downsample_factor,
+    gt_prob):
     """
     "crf_refine(label, img)"
     This function refines a label image based on an input label image and the associated image
@@ -106,14 +108,22 @@ def crf_refine(label,
     GLOBAL INPUTS: None
     OUTPUTS: label [ndarray]: label image 2D matrix of integers
     """
+
+    #gt_prob = 0.9
     l_unique = np.unique(label.flatten())#.tolist()
-    # print(l_unique)
     scale = 1+(5 * (np.array(img.shape).max() / 3000))
-    # print(scale)
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('CRF scale: %f' % (scale))
 
     Horig = label.shape[0]
     Worig = label.shape[1]
-    # crf_downsample_factor = 2
+
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('CRF downsample factor: %f' % (crf_downsample_factor))
+    logging.info('CRF theta parameter: %f' % (crf_theta_slider_value))
+    logging.info('CRF mu parameter: %f' % (crf_mu_slider_value))
+    logging.info('CRF prior probability of labels: %f' % (gt_prob))
+
     # decimate by factor by taking only every other row and column
     img = img[::crf_downsample_factor,::crf_downsample_factor, :]
     # do the same for the label image
@@ -125,18 +135,15 @@ def crf_refine(label,
     n = 1+(orig_mx-orig_mn)
 
     label = 1+(label - orig_mn)
-    # l_unique = np.unique(label.flatten())#.tolist()
-    # print(l_unique)
 
     mn = np.min(np.array(label).flatten())
     mx = np.max(np.array(label).flatten())
 
     n = 1+(mx-mn)
-    # print(n)
 
     H = label.shape[0]
     W = label.shape[1]
-    U = unary_from_labels(label.astype('int'), n, gt_prob=0.9)
+    U = unary_from_labels(label.astype('int'), n, gt_prob=gt_prob)
     d = dcrf.DenseCRF2D(H, W, n)
     d.setUnaryEnergy(U)
 
@@ -146,7 +153,7 @@ def crf_refine(label,
                  kernel=dcrf.DIAG_KERNEL,
                  normalization=dcrf.NORMALIZE_SYMMETRIC)
     feats = create_pairwise_bilateral(
-                          sdims=(crf_theta_slider_value, crf_theta_slider_value), #(60, 60),
+                          sdims=(crf_theta_slider_value, crf_theta_slider_value),
                           # schan=(2,2,2,2,2,2), #add these when implement 6 band
                           schan=(scale,scale,scale),
                           img=img,
@@ -155,18 +162,15 @@ def crf_refine(label,
     d.addPairwiseEnergy(feats, compat=crf_mu_slider_value, kernel=dcrf.DIAG_KERNEL,normalization=dcrf.NORMALIZE_SYMMETRIC) #260
     Q = d.inference(10)
     result = 1+np.argmax(Q, axis=0).reshape((H, W)).astype(np.uint8)
-    # l_unique = np.bincount(result.flatten())#.tolist()
-    # print(l_unique)
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('CRF inference made')
 
     result = resize(result, (Horig, Worig), order=0, anti_aliasing=True)
-    # l_unique = np.unique(result.flatten())#.tolist()
-    # print(l_unique)
 
     result = rescale(result, orig_mn, orig_mx).astype(np.uint8)
-    # l_unique = np.bincount(result.flatten())#.tolist()
-    # print(l_unique)
 
-    print("CRF post-processing complete")
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('CRF post-processing complete')
 
     return result, n
 
@@ -200,10 +204,14 @@ def features_sigma(img,
         for eigval_mat in eigvals:
             features.append(eigval_mat)
 
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('Image features extracted using sigma= %f' % (sigma))
+
     return features
 
 ##========================================================
 def extract_features_2d(
+    dim,
     img,
     intensity=True,
     edges=True,
@@ -213,6 +221,10 @@ def extract_features_2d(
 ):
     """Features for a single channel image. ``img`` can be 2d or 3d.
     """
+
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('Extracting features from channel %i' % (dim))
+
     # computations are faster as float32
     img = img_as_float32(img)
 
@@ -246,6 +258,7 @@ def extract_features(
     if multichannel: #img.ndim == 3 and multichannel:
         all_results = (
             extract_features_2d(
+                dim,
                 img[..., dim],
                 intensity=intensity,
                 edges=edges,
@@ -265,11 +278,14 @@ def extract_features(
             sigma_min=sigma_min,
             sigma_max=sigma_max,
         )
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('Feature extraction complete')
+
     return np.array(features)
 
 
 ##========================================================
-def do_rf(img,mask,multichannel,intensity,edges,texture,sigma_min,sigma_max, downsample_value):
+def do_rf(img,rf_file,mask,multichannel,intensity,edges,texture,sigma_min,sigma_max, downsample_value, n_estimators):
 
     features = extract_features(
         img,
@@ -284,35 +300,45 @@ def do_rf(img,mask,multichannel,intensity,edges,texture,sigma_min,sigma_max, dow
     if downsample_value is None:
         downsample_value = 10
 
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('Using %i decision trees per image' % (n_estimators))
+
     if mask is None:
         raise ValueError("If no classifier clf is passed, you must specify a mask.")
     training_data = features[:, mask > 0].T
     training_labels = mask[mask > 0].ravel()
     data = features[:, mask == 0].T
     try:
-        print('updating RF model')
-        clf = load('RandomForestClassifier.pkl.z') #load last model from file
-        clf.n_estimators += 10 #add more trees for the new data
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('Updating existing RF classifier')
+        #rf_file = 'RandomForestClassifier.pkl.z'
+
+        clf = load(rf_file) #load last model from file
+        clf.n_estimators += n_estimators #add more trees for the new data
         clf.fit(training_data[::downsample_value], training_labels[::downsample_value]) # fit with with new data
-        os.remove('RandomForestClassifier.pkl.z') #remove old file
-        dump(clf, 'RandomForestClassifier.pkl.z', compress=True) #save new file
+        os.remove(rf_file) #remove old file
+        dump(clf, rf_file, compress=True) #save new file
     except:
-        print('initializing RF model')
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('Initialize RF classifier with %i estimators' % (n_estimators))
         ##warm_start: When set to True, reuse the solution of the previous call to fit and add more estimators to the ensemble, otherwise, just fit a whole new forest.
-        clf = RandomForestClassifier(n_estimators=10, n_jobs=-1) #, warm_start=True)
+        clf = RandomForestClassifier(n_estimators=n_estimators, n_jobs=-1) #, warm_start=True)
         clf.fit(training_data[::downsample_value], training_labels[::downsample_value])
-        dump(clf, 'RandomForestClassifier.pkl.z', compress=True)
+        dump(clf, rf_file, compress=True)
 
     result = np.copy(mask)#+1
-
-    print("Feature extraction and model fitting complete")
 
     labels = clf.predict(data)
     if mask is None:
         result = labels.reshape(img.shape[:2])
+        result2 = result.copy()
     else:
         result[mask == 0] = labels
-    result2 = result.copy()
+        result2 = result.copy()
+
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('RF feature extraction and model fitting complete')
+
     return result2
 
 
@@ -321,12 +347,14 @@ def segmentation(
     img,
     img_path,
     results_folder,
+    rf_file,
     callback_context,
     crf_theta_slider_value,
     crf_mu_slider_value,
     median_filter_value,
-    downsample_value,
+    rf_downsample_value,
     crf_downsample_factor,
+    gt_prob,
     mask=None,
     multichannel=True,
     intensity=True,
@@ -334,60 +362,41 @@ def segmentation(
     texture=True,
     sigma_min=0.5,
     sigma_max=16,
+    n_estimators=5
 ):
 
     if 'rf' in callback_context:
         if 'crf' not in callback_context:
-            # print(np.unique(mask.flatten()))
 
-            result2 = do_rf(img,mask,multichannel,intensity,edges,texture,sigma_min,sigma_max, downsample_value)
+            result2 = do_rf(img,rf_file,mask,multichannel,intensity,edges,texture,sigma_min,sigma_max, rf_downsample_value, n_estimators)
+            logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+            logging.info('RF model applied with sigma range %f : %f' % (sigma_min,sigma_max))
 
             # if 'median' in callback_context:
             if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
-                print("applying median filter:")
                 result2 = median(result2, disk(median_filter_value)).astype(np.uint8)
+                logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+                logging.info('Median filter of radius %i applied' % (median_filter_value))
 
     if 'crf' in callback_context:
         if crf_theta_slider_value is None:
             result2 = result.copy()
         else:
-            print("applying CRF refinement:")
-            # print(np.unique(mask.flatten()))
 
-            # result2, n = crf_refine(mask, expand_img(img), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor) #result
-            result = do_rf(img,mask,True,True,False,False,0.5,16, downsample_value)
-            result2, n = crf_refine(result, img, crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor) #result
+            result = do_rf(img,rf_file,mask,True,True,False,False,sigma_min,sigma_max, rf_downsample_value, n_estimators)
+            logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+            logging.info('RF model applied with sigma range %f : %f' % (sigma_min,sigma_max))
+
+            result2, n = crf_refine(result, img, crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #result
+            logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+            logging.info('CRF model applied with theta=%f and mu=%f' % ( crf_theta_slider_value, crf_mu_slider_value))
 
             if ((n==1)):
                 result2[result>0] = np.unique(result)
 
-        # if 'median' in callback_context:
         if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
-            print("applying median filter:")
             result2 = median(result2, disk(median_filter_value)).astype(np.uint8)
 
-
-    # if 'median' in callback_context:
-    #
-    #     # if 'crf' in callback_context:
-    #     # if crf_theta_slider_value is None:
-    #     #     result2 = result.copy()
-    #     # else:
-    #     print("applying CRF refinement:")
-    #     # print(np.unique(mask.flatten()))
-    #
-    #     # result2, n = crf_refine(mask, expand_img(img), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor) #result
-    #     result = do_rf(img,mask,True,True,False,False,0.5,16, downsample_value)
-    #     result2, n = crf_refine(result, img, crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor) #result
-    #
-    #     if ((n==1)):
-    #         result2[result>0] = np.unique(result)
-    #
-    #     # if 'median' in callback_context:
-    #     if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
-    #         print("applying median filter:")
-    #         result2 = median(result2, disk(median_filter_value)).astype(np.uint8)
-
-
-
+            logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+            logging.info('Median filter of radius %i applied' % (median_filter_value))
     return result2

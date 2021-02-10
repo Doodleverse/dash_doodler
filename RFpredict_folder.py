@@ -35,7 +35,6 @@ from datetime import datetime
 
 from image_segmentation import extract_features, crf_refine
 from annotations_to_segmentations import img_to_ubyte_array, label_to_colors
-# import itertools
 import numpy as np
 from joblib import load
 
@@ -59,7 +58,7 @@ crf_theta_slider_value = 40
 crf_mu_slider_value = 100
 crf_downsample_factor = 2
 median_filter_value = 3
-RF_model_file = 'RandomForestClassifier-monterey.pkl.z' #'RandomForestClassifier-watermask-binary.pkl.z' #'RandomForestClassifier.pkl.z'
+RF_model_file = 'RandomForestClassifier_water_land.pkl.z' #'RandomForestClassifier-watermask-binary.pkl.z' #'RandomForestClassifier.pkl.z'
 
 ##========================================================
 

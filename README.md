@@ -9,7 +9,7 @@
 
 The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder, and you can also download a version of it from your browser for quick viewing
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-a.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short.gif)
 
 
 ## Contents
@@ -65,23 +65,9 @@ Move your images into the `assets` folder. For the moment, they must be jpegs wi
 
 Run the app. An IP address where you can view the app in your browser will be displayed in the terminal. Some browsers will launch automatically, while others you may have to manually type (or copy/paste) the IP address into a browser. Tested so far with Chrome, Firefox, and Edge.
 
-There are two versions that implement different algorithms. When in doubt, start with the CRF version:
-
 ```bash
-python appCRF.py
+python doodler.py
 ```
-
-The alternative is the Random Forest version
-
-```bash
-python appRF.py
-```
-
-Here's a video of that being used.
-
-![RF version](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-b.gif)
-
-It works in a similar way, and is faster with fewer options, but is generally not as powerful. However, the algorithm may suit certain situations better than others, so you should ideally try both.
 
 Results (label images and annotation images) are saved to the `results/` folder. The program creates a subfolder each time it is launched, timestamped. That folder contains your results images for a session.
 
@@ -103,20 +89,13 @@ The default colormap is plotly's G10, found [here](https://plotly.com/python/dis
 ### Videos
 More demonstration videos:
 
-![Elwha example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-c.gif)
+<!-- ![Elwha example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-c.gif)
 
 Recheck compute segmentation when median filter changed:
 
-![Beach example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-d.gif)
+![Beach example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-d.gif) -->
 
-<!-- ![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_video3.gif)
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_video4.gif)
-
-Longer example, consisting of 5 images labeled, then add two more (see the list refresh) and label 2 more:
-
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_longvideo.gif) -->
- -->
 
 ## <a name="outputs"></a>Outputs
 Each classified image will result in three files within the `/results` folder, with XXXXXXXX_ representing the image filename root:
@@ -232,14 +211,25 @@ Submit a pull request through the GitHub website.
 * `app.py` is now `appyCRF.py` and now uses CRF with fixed RF inputs, and different defaults for MU and THETA
 * median filter size adjustments no longer force redoing of segmentation. Instead, it disables the segmentation so after you have set the new median filter kernel size, recheck the compute/show segmentation box
 
+02/09/21
+* Uses two tabs: tab 1 is for image annotations and controls, and tab 2 is for file selection and instructions
+* RF model updating properly implemented. RF model file name contains classes
+* CRF version fully exposes all parameters to user
+* optionally, users can enter their unique ID for saving results
+* Log file created for a session
+* Better instructions
+* RF-only version no longer available. Only CRF. App now called `doodler.py`
+* Images that are done are copied to the 'labeled' folder. Every 2 seconds the program checks the assets and labeled folders and only lists the difference of those two sets.
+* Image names are copied below into a box, for copy/pasting (note taking). The names of images done are copied to a text file, for later use
+
 ## <a name="roadmap"></a>Roadmap
 
 * Maybe a button to reset the coefficients to the defaults? [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 
 * Delay running the model until all of the coefficients are adjusted...right now it jumps right into the calcs as soon a slider is moved, but maybe you want to adjust two sliders first. Maybe change the compute segmentation to a button that changes color if the model is out of date wrt to the current settings. [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 
-* userID written to results files. What would this require? Text box? login account?
-
 * pymongo (mongoDB) database backend - thanks Evan and Shah @UNCG-DAISY! See [here](https://api.mongodb.com/python/current/tools.html), [here](https://strapi.io/pricing)
+
+* on Ctrl+C, clear 'labeled' flder, etc
 
 Use the issues tab to suggest new features!
