@@ -89,11 +89,7 @@ The default colormap is plotly's G10, found [here](https://plotly.com/python/dis
 ### Videos
 More demonstration videos:
 
-<!-- ![Elwha example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-c.gif)
-
-Recheck compute segmentation when median filter changed:
-
-![Beach example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_nov10-d.gif) -->
+![Elwha example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short-elwha.gif)
 
 
 
