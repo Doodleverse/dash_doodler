@@ -91,6 +91,7 @@ More demonstration videos:
 
 ![Elwha example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short-elwha.gif)
 
+![Coast Train example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short-coast.gif)
 
 
 ## <a name="outputs"></a>Outputs
