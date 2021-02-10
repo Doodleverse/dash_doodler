@@ -93,6 +93,8 @@ More demonstration videos:
 
 ![Coast Train example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short-coast.gif)
 
+![Coast Train example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short-coast2.gif)
+
 
 ## <a name="outputs"></a>Outputs
 Each classified image will result in three files within the `/results` folder, with XXXXXXXX_ representing the image filename root:
