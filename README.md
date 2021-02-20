@@ -9,7 +9,9 @@
 
 The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder, and you can also download a version of it from your browser for quick viewing
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short.gif)
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/quick-satshoreline-x2c.gif)
+
+![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/quick-satshore2-x2c.gif)
 
 
 ## Contents
@@ -88,6 +90,10 @@ The default colormap is plotly's G10, found [here](https://plotly.com/python/dis
 
 ### Videos
 More demonstration videos:
+
+![Doodler example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/quick-saturban-x2c.gif)
+
+![Doodler example 3](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short.gif)
 
 ![Elwha example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short-elwha.gif)
 
@@ -220,6 +226,12 @@ Submit a pull request through the GitHub website.
 * RF-only version no longer available. Only CRF. App now called `doodler.py`
 * Images that are done are copied to the 'labeled' folder. Every 2 seconds the program checks the assets and labeled folders and only lists the difference of those two sets.
 * Image names are copied below into a box, for copy/pasting (note taking). The names of images done are copied to a text file, for later use
+
+02/12/21
+* Re-implemented RF updating by writing out data to file, then refitting to all data
+* some argument passing changes
+* RF now uses intensity, edges and texture by default (no choice)
+* updated `predict_flder.py` script - first usable version
 
 ## <a name="roadmap"></a>Roadmap
 

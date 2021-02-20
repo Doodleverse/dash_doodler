@@ -64,7 +64,7 @@ DEFAULT_MEDIAN_KERNEL = 3
 DEFAULT_RF_NESTIMATORS = 5
 DEFAULT_CRF_GTPROB = 0.9
 
-SEG_FEATURE_TYPES = ["intensity", "edges", "texture"]
+# SEG_FEATURE_TYPES = ["intensity", "edges", "texture"]
 
 # the number of different classes for labels
 DEFAULT_LABEL_CLASS = 0
@@ -380,16 +380,16 @@ app.layout = html.Div(
                             ">Advanced Random Forest settings"
                         ),
 
-                        html.H6("Image Feature Extraction:"),
-                        dcc.Checklist(
-                            id="rf-segmentation-features",
-                            options=[
-                                {"label": l.capitalize(), "value": l}
-                                for l in SEG_FEATURE_TYPES
-                            ],
-                            value=["intensity", "texture"],
-                            labelStyle={'display': 'inline-block'}
-                        ),
+                        # html.H6("Image Feature Extraction:"),
+                        # dcc.Checklist(
+                        #     id="rf-segmentation-features",
+                        #     options=[
+                        #         {"label": l.capitalize(), "value": l}
+                        #         for l in SEG_FEATURE_TYPES
+                        #     ],
+                        #     value=["intensity", "edges", "texture"],
+                        #     labelStyle={'display': 'inline-block'}
+                        # ),
                         html.H6(id="sigma-display"),
                         dcc.RangeSlider(
                             id="rf-sigma-range-slider",
@@ -571,7 +571,6 @@ def file_download_link(filename):
 ##========================================================
 def show_segmentation(image_path,
     mask_shapes,
-    segmenter_args,
     median_filter_value,
     callback_context,
     crf_theta_slider_value,
@@ -581,7 +580,16 @@ def show_segmentation(image_path,
     crf_downsample_factor,
     gt_prob,
     my_id_value,
-    rf_file):
+    rf_file,
+    data_file,
+    multichannel,
+    intensity,
+    edges,
+    texture,
+    sigma_min,
+    sigma_max,
+    n_estimators,
+    ):
 
     """ adds an image showing segmentations to a figure's layout """
 
@@ -594,11 +602,11 @@ def show_segmentation(image_path,
     }
 
     segimg, seg, img = compute_segmentations(
-        mask_shapes, crf_theta_slider_value,crf_mu_slider_value, #my_id_value
+        mask_shapes, crf_theta_slider_value,crf_mu_slider_value,
         results_folder,  median_filter_value, rf_downsample_value,
-        crf_downsample_factor, gt_prob, my_id_value, callback_context, rf_file,
+        crf_downsample_factor, gt_prob, my_id_value, callback_context, rf_file, data_file,
+        multichannel, intensity, edges, texture, sigma_min, sigma_max, n_estimators,
         img_path=image_path,
-        segmenter_args=segmenter_args,
         shape_layers=shape_layers,
         label_to_colors_args=label_to_colors_args,
     )
@@ -720,6 +728,11 @@ def update_output(
     callback_context = [p["prop_id"] for p in dash.callback_context.triggered][0]
     print(callback_context)
 
+    multichannel = True
+    intensity = True
+    edges = True
+    texture = True
+
     if uploaded_filenames is not None and uploaded_file_contents is not None:
         for name, data in zip(uploaded_filenames, uploaded_file_contents):
             save_file(name, data)
@@ -793,33 +806,38 @@ def update_output(
             ]
         )
 
-        segmentation_features_value=[
-            {"label": l.capitalize(), "value": l}
-            for l in SEG_FEATURE_TYPES
-        ]
-        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-        for l in SEG_FEATURE_TYPES:
-            logging.info('Using %s for RF feature extraction' % (l))
+        # segmentation_features_value=[
+        #     {"label": l.capitalize(), "value": l}
+        #     for l in SEG_FEATURE_TYPES
+        # ]
+        # logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        # for l in SEG_FEATURE_TYPES:
+        #     logging.info('Using %s for RF feature extraction' % (l))
 
         rf_file = 'RandomForestClassifier_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('Saving RF model to %s' % (rf_file))
 
+        data_file = 'data_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('Saving data features to %s' % (rf_file))
+
         segimgpng = None
-        if 'median'not  in callback_context:
+        if 'median' not  in callback_context:
 
-            dict_feature_opts = {
-                key: (key in segmentation_features_value)
-                for key in SEG_FEATURE_TYPES
-            }
+            # dict_feature_opts = {
+            #     key: (key in segmentation_features_value)
+            #     for key in SEG_FEATURE_TYPES
+            # }
 
-            dict_feature_opts["sigma_min"] = sigma_range_slider_value[0]
-            dict_feature_opts["sigma_max"] = sigma_range_slider_value[1]
-            dict_feature_opts["n_estimators"] = n_estimators
+            # dict_feature_opts["sigma_min"] = sigma_range_slider_value[0]
+            # dict_feature_opts["sigma_max"] = sigma_range_slider_value[1]
+            # dict_feature_opts["n_estimators"] = n_estimators
 
             segimgpng, seg, img = show_segmentation(
-                [select_image_value], masks_data["shapes"], dict_feature_opts, median_filter_value, callback_context,
-                 crf_theta_slider_value, crf_mu_slider_value, results_folder, rf_downsample_value, crf_downsample_value, gt_prob, my_id_value, rf_file
+                [select_image_value], masks_data["shapes"], median_filter_value, callback_context,
+                 crf_theta_slider_value, crf_mu_slider_value, results_folder, rf_downsample_value, crf_downsample_value, gt_prob, my_id_value, rf_file, data_file,
+                 multichannel, intensity, edges, texture, sigma_range_slider_value[0], sigma_range_slider_value[1], n_estimators,
             )
 
             if type(select_image_value) is list:

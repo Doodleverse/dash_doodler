@@ -285,7 +285,7 @@ def extract_features(
 
 
 ##========================================================
-def do_rf(img,rf_file,mask,multichannel,intensity,edges,texture,sigma_min,sigma_max, downsample_value, n_estimators):
+def do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture,sigma_min,sigma_max, downsample_value, n_estimators):
 
     features = extract_features(
         img,
@@ -297,9 +297,6 @@ def do_rf(img,rf_file,mask,multichannel,intensity,edges,texture,sigma_min,sigma_
         sigma_max=sigma_max,
     )
 
-    if downsample_value is None:
-        downsample_value = 10
-
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('Using %i decision trees per image' % (n_estimators))
 
@@ -308,23 +305,44 @@ def do_rf(img,rf_file,mask,multichannel,intensity,edges,texture,sigma_min,sigma_
     training_data = features[:, mask > 0].T
     training_labels = mask[mask > 0].ravel()
     data = features[:, mask == 0].T
-    try:
-        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-        logging.info('Updating existing RF classifier')
-        #rf_file = 'RandomForestClassifier.pkl.z'
+    # try:
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('Updating existing RF classifier')
 
-        clf = load(rf_file) #load last model from file
-        clf.n_estimators += n_estimators #add more trees for the new data
-        clf.fit(training_data[::downsample_value], training_labels[::downsample_value]) # fit with with new data
-        os.remove(rf_file) #remove old file
-        dump(clf, rf_file, compress=True) #save new file
+    training_data = training_data[::downsample_value]
+    training_labels = training_labels[::downsample_value]
+
+    try:
+        file_training_data, file_training_labels = load(data_file)
+
+        training_data = np.concatenate((file_training_data, training_data))
+        training_labels = np.concatenate((file_training_labels, training_labels))
+
     except:
+        pass
+
+    try:
+        clf = load(rf_file) #load last model from file
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-        logging.info('Initialize RF classifier with %i estimators' % (n_estimators))
-        ##warm_start: When set to True, reuse the solution of the previous call to fit and add more estimators to the ensemble, otherwise, just fit a whole new forest.
-        clf = RandomForestClassifier(n_estimators=n_estimators, n_jobs=-1) #, warm_start=True)
-        clf.fit(training_data[::downsample_value], training_labels[::downsample_value])
-        dump(clf, rf_file, compress=True)
+        logging.info('Loading model from %s' % (rf_file))
+        logging.info('Number of trees: %i' % (clf.n_estimators))
+    except:
+        clf = RandomForestClassifier(n_estimators=n_estimators, n_jobs=-1)
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('Initializing RF model')
+    clf.n_estimators += n_estimators #add more trees for the new data
+    clf.fit(training_data, training_labels) # fit with with new data
+    dump(clf, rf_file, compress=True) #save new file
+
+    dump((training_data, training_labels), data_file, compress=True) #save new file
+
+    # except:
+    #     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    #     logging.info('Initialize RF classifier with %i estimators' % (n_estimators))
+    #     ##warm_start: When set to True, reuse the solution of the previous call to fit and add more estimators to the ensemble, otherwise, just fit a whole new forest.
+    #     clf = RandomForestClassifier(n_estimators=n_estimators, n_jobs=-1) #, warm_start=True)
+    #     clf.fit(training_data[::downsample_value], training_labels[::downsample_value])
+    #     dump(clf, rf_file, compress=True)
 
     result = np.copy(mask)#+1
 
@@ -348,6 +366,7 @@ def segmentation(
     img_path,
     results_folder,
     rf_file,
+    data_file,
     callback_context,
     crf_theta_slider_value,
     crf_mu_slider_value,
@@ -355,35 +374,23 @@ def segmentation(
     rf_downsample_value,
     crf_downsample_factor,
     gt_prob,
-    mask=None,
-    multichannel=True,
-    intensity=True,
-    edges=True,
-    texture=True,
-    sigma_min=0.5,
-    sigma_max=16,
-    n_estimators=5
+    mask,#=None,
+    multichannel,#=True,
+    intensity,#=True,
+    edges,#=True,
+    texture,#=True,
+    sigma_min,#=0.5,
+    sigma_max,#=16,
+    n_estimators,#=5
 ):
-
-    if 'rf' in callback_context:
-        if 'crf' not in callback_context:
-
-            result2 = do_rf(img,rf_file,mask,multichannel,intensity,edges,texture,sigma_min,sigma_max, rf_downsample_value, n_estimators)
-            logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-            logging.info('RF model applied with sigma range %f : %f' % (sigma_min,sigma_max))
-
-            # if 'median' in callback_context:
-            if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
-                result2 = median(result2, disk(median_filter_value)).astype(np.uint8)
-                logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-                logging.info('Median filter of radius %i applied' % (median_filter_value))
 
     if 'crf' in callback_context:
         if crf_theta_slider_value is None:
             result2 = result.copy()
         else:
 
-            result = do_rf(img,rf_file,mask,True,True,False,False,sigma_min,sigma_max, rf_downsample_value, n_estimators)
+            #result = do_rf(img,rf_file,mask,True,True,False,False,sigma_min,sigma_max, rf_downsample_value, n_estimators) #multichannel,intensity,edges,texture,
+            result = do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture, sigma_min,sigma_max, rf_downsample_value, n_estimators) #
             logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
             logging.info('RF model applied with sigma range %f : %f' % (sigma_min,sigma_max))
 

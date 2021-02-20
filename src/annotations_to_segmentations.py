@@ -188,8 +188,6 @@ def label_to_colors(
     else:
         return cimg
 
-    #
-
 ##========================================================
 def compute_segmentations(
     shapes,
@@ -203,12 +201,17 @@ def compute_segmentations(
     my_id_value,
     callback_context,
     rf_file,
+    data_file,
+    multichannel,
+    intensity,
+    edges,
+    texture,
+    sigma_min,
+    sigma_max,
+    n_estimators,
     img_path="assets/logos/dash-default.jpg",
-    segmenter_args={},
     shape_layers=None,
-    label_to_colors_args={},
-):
-
+    label_to_colors_args={}):
     """ segments the image based on the user annotations"""
 
     # load original image
@@ -230,15 +233,10 @@ def compute_segmentations(
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('Saved annotations to '+annofile)
 
-    # do segmentation and return this
-    if segmenter_args is not None:
-        seg = segmentation(img, img_path, results_folder, rf_file, callback_context,
-                           crf_theta_slider_value, crf_mu_slider_value, median_filter_value, rf_downsample_value,
-                           crf_downsample_factor, gt_prob, mask, **segmenter_args) #median_filter_value
-    else:
-        seg = segmentation(img, img_path, results_folder, rf_file, callback_context,
-                           crf_theta_slider_value, crf_mu_slider_value, median_filter_value, rf_downsample_value,
-                           crf_downsample_factor, gt_prob, mask)
+    seg = segmentation(img, img_path, results_folder, rf_file, data_file, callback_context,
+                       crf_theta_slider_value, crf_mu_slider_value, median_filter_value, rf_downsample_value,
+                       crf_downsample_factor, gt_prob, mask, multichannel, intensity, edges, texture,
+                       sigma_min, sigma_max, n_estimators)
 
     #print(np.unique(seg))
     color_seg = label_to_colors(seg, img[:,:,0]==0, alpha=128, do_alpha=True, **label_to_colors_args)
