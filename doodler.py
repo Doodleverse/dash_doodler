@@ -96,6 +96,20 @@ logging.info('loaded class labels:')
 for f in class_label_names:
     logging.info(f)
 
+rf_file = 'RandomForestClassifier_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
+data_file = 'data_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
+
+try:
+    shutil.move(rf_file, rf_file.replace('.pkl.z','_'+datetime.now().strftime("%d-%m-%Y-%H-%M-%S")+'.pkl.z'))
+except:
+    pass
+
+
+try:
+    shutil.move(data_file, data_file.replace('.pkl.z','_'+datetime.now().strftime("%d-%m-%Y-%H-%M-%S")+'.pkl.z'))
+except:
+    pass
+
 ##========================================================
 def convert_integer_class_to_color(n):
     return class_label_colormap[n]
@@ -302,7 +316,7 @@ app.layout = html.Div(
                         dcc.Slider(
                             id="pen-width",
                             min=0,
-                            max=6,
+                            max=4,
                             step=0.1,
                             value=DEFAULT_PEN_WIDTH,
                         ),
@@ -414,7 +428,7 @@ app.layout = html.Div(
                         dcc.Slider(
                             id="rf-nestimators-slider",
                             min=3,
-                            max=9,
+                            max=6,
                             step=1,
                             value=DEFAULT_RF_NESTIMATORS,
                         ),
@@ -815,10 +829,11 @@ def update_output(
         #     logging.info('Using %s for RF feature extraction' % (l))
 
         rf_file = 'RandomForestClassifier_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
+        data_file = 'data_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
+
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('Saving RF model to %s' % (rf_file))
 
-        data_file = 'data_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('Saving data features to %s' % (rf_file))
 
@@ -900,15 +915,15 @@ def update_output(
         segmentation_data,
         'User ID: "{}"'.format(my_id_value) ,
         select_image_value,
-        "Pen width: %d" % (pen_width,),
-        "Blurring parameter for CRF image feature extraction: %d" % (crf_theta_slider_value,),
-        "CRF color class difference tolerance parameter: %d" % (crf_mu_slider_value,),
-        "CRF downsample factor: %d" % (crf_downsample_value,),
-        "Probability of doodle: %f" % (gt_prob,),
-        "Median filter kernel radius: %d" % (median_filter_value,),
+        "Pen width (default: %d): %d" % (DEFAULT_PEN_WIDTH,pen_width),
+        "Blurring parameter for CRF image feature extraction (default: %d): %d" % (DEFAULT_CRF_THETA, crf_theta_slider_value),
+        "CRF color class difference tolerance parameter (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value),
+        "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
+        "Probability of doodle (default: %d): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
+        "Median filter kernel radius (default: %d): %d" % (DEFAULT_MEDIAN_KERNEL,median_filter_value),
         "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
-        "RF downsample factor: %d" % (rf_downsample_value,),
-        "RF estimators per image: %d" % (n_estimators,),
+        "RF downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
+        "RF estimators per image (default: %d): %d" % (DEFAULT_RF_NESTIMATORS,n_estimators),
         segmentation_store_data,
         ]
     else:
@@ -920,17 +935,18 @@ def update_output(
         segmentation_data,
         'User ID: "{}"'.format(my_id_value) ,
         select_image_value,
-        "Pen width: %d" % (pen_width,),
-        "Blurring parameter for CRF image feature extraction: %d" % (crf_theta_slider_value,),
-        "CRF color class difference tolerance parameter: %d" % (crf_mu_slider_value,),
-        "CRF downsample factor: %d" % (crf_downsample_value,),
-        "Probability of doodle: %f" % (gt_prob,),
-        "Median filter kernel radius: %d" % (median_filter_value,),
+        "Pen width (default: %d): %d" % (DEFAULT_PEN_WIDTH,pen_width),
+        "Blurring parameter for CRF image feature extraction (default: %d): %d" % (DEFAULT_CRF_THETA, crf_theta_slider_value),
+        "CRF color class difference tolerance parameter (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value),
+        "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
+        "Probability of doodle (default: %d): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
+        "Median filter kernel radius (default: %d): %d" % (DEFAULT_MEDIAN_KERNEL,median_filter_value),
         "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
-        "RF downsample factor: %d" % (rf_downsample_value,),
-        "RF estimators per image: %d" % (n_estimators,),
+        "RF downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
+        "RF estimators per image (default: %d): %d" % (DEFAULT_RF_NESTIMATORS,n_estimators),
         segmentation_store_data,
         ]
+
 
 ##========================================================
 # set the download url to the contents of the classified-image-store (so they can be

@@ -233,6 +233,14 @@ Submit a pull request through the GitHub website.
 * RF now uses intensity, edges and texture by default (no choice)
 * updated `predict_flder.py` script - first usable version
 
+02/12/21
+* If only one class example provided, whole scene assumed to be that class
+* Checks for old classifiers and data files and renames (restarts each new session)
+* By default now only uses 3 trees per image to update the RF model
+* Each setting default now displayed on control panel
+* class_weight="balanced_subsample", min_samples_split=3
+
+
 ## <a name="roadmap"></a>Roadmap
 
 * Maybe a button to reset the coefficients to the defaults? [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)

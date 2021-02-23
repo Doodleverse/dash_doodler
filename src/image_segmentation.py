@@ -327,7 +327,7 @@ def do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture,sigma_
         logging.info('Loading model from %s' % (rf_file))
         logging.info('Number of trees: %i' % (clf.n_estimators))
     except:
-        clf = RandomForestClassifier(n_estimators=n_estimators, n_jobs=-1)
+        clf = RandomForestClassifier(n_estimators=n_estimators, n_jobs=-1,class_weight="balanced_subsample", min_samples_split=3)#, ccp_alpha=0.02) # 
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('Initializing RF model')
     clf.n_estimators += n_estimators #add more trees for the new data
@@ -384,22 +384,36 @@ def segmentation(
     n_estimators,#=5
 ):
 
-    if 'crf' in callback_context:
-        if crf_theta_slider_value is None:
-            result2 = result.copy()
-        else:
+    # if 'result2' not in locals(): #''crf' in callback_context:
+    #     # if crf_theta_slider_value is None:
+    #     result2 = result.copy()
+    # else:
 
-            #result = do_rf(img,rf_file,mask,True,True,False,False,sigma_min,sigma_max, rf_downsample_value, n_estimators) #multichannel,intensity,edges,texture,
-            result = do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture, sigma_min,sigma_max, rf_downsample_value, n_estimators) #
-            logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-            logging.info('RF model applied with sigma range %f : %f' % (sigma_min,sigma_max))
+    #result = do_rf(img,rf_file,mask,True,True,False,False,sigma_min,sigma_max, rf_downsample_value, n_estimators) #multichannel,intensity,edges,texture,
 
-            result2, n = crf_refine(result, img, crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #result
-            logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-            logging.info('CRF model applied with theta=%f and mu=%f' % ( crf_theta_slider_value, crf_mu_slider_value))
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    for ni in np.unique(mask[1:]):
+        logging.info('examples provided of %i' % (ni))
 
-            if ((n==1)):
-                result2[result>0] = np.unique(result)
+    if len(np.unique(mask)[1:])==1:
+
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('Only one class annotation provided, skipping RF and CRF and coding all pixels %i' % (np.unique(mask)[1:]))
+        result2 = np.ones(mask.shape[:2])*np.unique(mask)[1:]
+        result2 = result2.astype(np.uint8)
+
+    else:
+
+        result = do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture, sigma_min,sigma_max, rf_downsample_value, n_estimators) #
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('RF model applied with sigma range %f : %f' % (sigma_min,sigma_max))
+
+        result2, n = crf_refine(result, img, crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #result
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('CRF model applied with theta=%f and mu=%f' % ( crf_theta_slider_value, crf_mu_slider_value))
+
+        if ((n==1)):
+            result2[result>0] = np.unique(result)
 
         if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
             result2 = median(result2, disk(median_filter_value)).astype(np.uint8)
