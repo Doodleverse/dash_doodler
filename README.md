@@ -71,6 +71,9 @@ Run the app. An IP address where you can view the app in your browser will be di
 python doodler.py
 ```
 
+Open a browser and go to 127.0.0.1:8050. You may have to hit the refresh button. If, after some time doodling things seem odd or buggy, sometimes a browser refresh will fix those glitches.
+
+
 Results (label images and annotation images) are saved to the `results/` folder. The program creates a subfolder each time it is launched, timestamped. That folder contains your results images for a session.
 
 The default colormap is plotly's G10, found [here](https://plotly.com/python/discrete-color/). The hex (rgb) color sequence is:
