@@ -91,6 +91,32 @@ The default colormap is plotly's G10, found [here](https://plotly.com/python/dis
 
 (you can google search those hex codes and get a color picker view). If you have more than 10 classes, the program uses `Light24` instead. This will give you up to 24 classes. Remember to keep your class names short, so the buttons all fit on the screen!
 
+### Example screenshots of use with example dataset
+
+#### `doodler.py`
+
+![Example 1](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py.png)
+![Example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py1.png)
+![Example 3](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py2.png)
+![Example 4](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py3.png)
+![Example 5](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py4.png)
+![Example 6](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py5.png)
+
+
+#### `refine_labels.py`
+
+![Example 1](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/refine_py.png)
+![Example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/refine_py1.png)
+
+
+#### `predict_folder.py`
+
+![Example 1](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/predict_py.png)
+![Example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/predict_py1.png)
+![Example 3](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/predict_py2.png)
+
+
+
 ### Videos
 More demonstration videos:
 
@@ -242,6 +268,20 @@ Submit a pull request through the GitHub website.
 * By default now only uses 3 trees per image to update the RF model
 * Each setting default now displayed on control panel
 * class_weight="balanced_subsample", min_samples_split=3
+
+03/17/21
+* max samples now 1e5, subsampled thereafter from all values (new and concatenated from file)
+* crf_refine now loops through 5 different 'rolled' versions of the label/image combo and and an average is taken. Rolling (wot I made up) is shifting an image and unary potentials on the x axis and recomputing the label raster in the shifted position, then unrolling back and averaging down the stack of unrolled label rasters
+* min_samples_split=5 in RF
+* in `predict_folder.py`, now loops through 5 different 'rolled' versions of the label/image combo and a weighted average is taken
+* added a 'sample' set to test `predict_folder.py`, and provide model
+* provided a 'clean' yml file (no version numbers) and added tqdm as a dependency
+* program now reads in default values from `src\defaults.py` or `my_defaults.py`(see below)
+* program uses SIGMA_MAX and SIGMA_MIN from  `src\defaults.py` or `my_defaults.py`(see below) rather than hard-coded in
+* created `refine_labels.py` (not yet documented)
+* program now writes and reads `my_defaults.py` that keeps track of your settings preferences
+* IP address (http://127.0.0.1:8050/) now displayed in terminal window
+* added example workflow for sample dataset
 
 
 ## <a name="roadmap"></a>Roadmap

@@ -20,3 +20,4 @@ dependencies:
  - pandas==1.0.3
  - pydensecrf
  - cairo
+ - tqdm

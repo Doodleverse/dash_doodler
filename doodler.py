@@ -55,14 +55,30 @@ logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S
 ##========================================================
 DEFAULT_IMAGE_PATH = "assets/logos/dash-default.jpg"
 
-DEFAULT_PEN_WIDTH = 2  # gives line width of 2^2 = 4
-DEFAULT_CRF_DOWNSAMPLE = 2
-DEFAULT_RF_DOWNSAMPLE = 10
-DEFAULT_CRF_THETA = 40
-DEFAULT_CRF_MU = 100
-DEFAULT_MEDIAN_KERNEL = 3
-DEFAULT_RF_NESTIMATORS = 5
-DEFAULT_CRF_GTPROB = 0.9
+try:
+    from my_defaults import *
+except:
+    from defaults import *
+finally:
+    DEFAULT_PEN_WIDTH = 2
+
+    DEFAULT_CRF_DOWNSAMPLE = 2
+
+    DEFAULT_RF_DOWNSAMPLE = 10
+
+    DEFAULT_CRF_THETA = 40
+
+    DEFAULT_CRF_MU = 100
+
+    DEFAULT_MEDIAN_KERNEL = 3
+
+    DEFAULT_RF_NESTIMATORS = 3
+
+    DEFAULT_CRF_GTPROB = 0.9
+
+    SIGMA_MIN = 1
+
+    SIGMA_MAX = 16
 
 # SEG_FEATURE_TYPES = ["intensity", "edges", "texture"]
 
@@ -410,7 +426,7 @@ app.layout = html.Div(
                             min=1,
                             max=30,
                             step=1,
-                            value=[1, 16],
+                            value=[SIGMA_MIN, SIGMA_MAX], #1, 16],
                         ),
 
                         html.H6(id="rf-downsample-display"),
@@ -427,8 +443,8 @@ app.layout = html.Div(
                         # Slider for specifying pen width
                         dcc.Slider(
                             id="rf-nestimators-slider",
-                            min=3,
-                            max=6,
+                            min=1,
+                            max=5,
                             step=1,
                             value=DEFAULT_RF_NESTIMATORS,
                         ),
@@ -905,6 +921,26 @@ def update_output(
 
         image_list_data.append(select_image_value)
 
+        try:
+          os.remove('my_defaults.py')
+        except:
+          pass
+
+        with open('my_defaults.py', 'a') as the_file:
+            the_file.write('DEFAULT_PEN_WIDTH = {}\n'.format(pen_width))
+            the_file.write('DEFAULT_CRF_DOWNSAMPLE = {}\n'.format(crf_downsample_value))
+            the_file.write('DEFAULT_RF_DOWNSAMPLE = {}\n'.format(rf_downsample_value))
+            the_file.write('DEFAULT_CRF_THETA = {}\n'.format(crf_theta_slider_value))
+            the_file.write('DEFAULT_CRF_MU = {}\n'.format(crf_mu_slider_value))
+            the_file.write('DEFAULT_MEDIAN_KERNEL = {}\n'.format(median_filter_value))
+            the_file.write('DEFAULT_RF_NESTIMATORS = {}\n'.format(n_estimators))
+            the_file.write('DEFAULT_CRF_GTPROB = {}\n'.format(gt_prob))
+            the_file.write('SIGMA_MIN = {}\n'.format(sigma_range_slider_value[0]))
+            the_file.write('SIGMA_MAX = {}\n'.format(sigma_range_slider_value[1]))  
+
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('my_defaults.py overwritten with new parameter settings')
+
 
     if len(files) == 0:
         return [
@@ -964,4 +1000,5 @@ function(the_image_store_data) {
 ##========================================================
 
 if __name__ == "__main__":
+    print('Go to http://127.0.0.1:8050/ in your web browser to use Doodler')
     app.run_server()#debug=True) #debug=True, port=8888)

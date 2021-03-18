@@ -43,6 +43,7 @@ from matplotlib.colors import ListedColormap
 from skimage.filters.rank import median
 from skimage.morphology import disk
 from skimage.io import imsave
+from tqdm import tqdm
 
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename, askdirectory
@@ -51,22 +52,33 @@ from tkinter.filedialog import askopenfilename, askdirectory
 ## user defined parameters
 ##=========================================================
 
-multichannel = True
-intensity = True
-texture = True
-edges = True
-sigma_min=1
-sigma_max=8
-downsample_value = 2
-crf_theta_slider_value = 10
-crf_mu_slider_value = 1
-crf_downsample_factor = 1
-median_filter_value = 0
-gt_prob = 0.9
-# RF_model_file = 'RandomForestClassifier_water_land.pkl.z'
+try:
+    from my_defaults import *
+except:
+    from defaults import *
+finally:
+    DEFAULT_PEN_WIDTH = 2
+
+    DEFAULT_CRF_DOWNSAMPLE = 2
+
+    DEFAULT_RF_DOWNSAMPLE = 10
+
+    DEFAULT_CRF_THETA = 40
+
+    DEFAULT_CRF_MU = 100
+
+    DEFAULT_MEDIAN_KERNEL = 3
+
+    DEFAULT_RF_NESTIMATORS = 3
+
+    DEFAULT_CRF_GTPROB = 0.9
+
+    SIGMA_MIN = 1
+
+    SIGMA_MAX = 16
 
 Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-RF_model_file = askopenfilename(filetypes=[("Pick classifier file","R*.z")])
+RF_model_file = askopenfilename(filetypes=[("Pick classifier file","*.z")])
 
 ##========================================================
 
@@ -95,16 +107,25 @@ try:
 except:
     pass
 
-
+Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
 direc = askdirectory(title='Select directory of image samples', initialdir=os.getcwd())
 files = sorted(glob(direc+'/*.jpg'))
 
-
+multichannel = True
+intensity = True
+texture = True
+edges = True
 clf = load(RF_model_file) #load RF model from file
 
-for file in files:
+# DEFAULT_CRF_MU = 255
+# DEFAULT_CRF_THETA = 10
+
+for file in tqdm(files):
     print("Working on %s" % (file))
     img = img_to_ubyte_array(file) # read image into memory
+
+    Horig = img.shape[0]
+    Worig = img.shape[1]
 
     features = extract_features(
         img,
@@ -112,10 +133,11 @@ for file in files:
         intensity=intensity,
         edges=edges,
         texture=texture,
-        sigma_min=sigma_min,
-        sigma_max=sigma_max,
+        sigma_min=SIGMA_MIN,
+        sigma_max=SIGMA_MAX,
     ) # extract image features
 
+    print("Extracting features")
 
     # use model in predictive mode
     sh = features.shape
@@ -124,10 +146,50 @@ for file in files:
     del features
     result = result.reshape(sh[1:])
 
-    result, _ = crf_refine(result, img, crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #CRF refine
+    print("CRF refinement ")
+
+    # R = []
+    # for k in np.linspace(0,img.shape[0],5):
+    #     k = int(k)
+    #     result2, _ = crf_refine(np.roll(result,k), np.roll(img,k), DEFAULT_CRF_THETA, DEFAULT_CRF_MU, DEFAULT_CRF_DOWNSAMPLE, DEFAULT_CRF_GTPROB) #CRF refine
+    #     result2 = np.roll(result2, -k)
+    #     R.append(result2)
+
+    #result = np.floor(np.mean(np.dstack(R), axis=-1)).astype('uint8')
+
+    R = []; W = []
+    counter = 0
+    for k in np.linspace(0,int(img.shape[0]/5),5):
+        k = int(k)
+        result2, _ = crf_refine(np.roll(result,k), np.roll(img,k), DEFAULT_CRF_THETA, DEFAULT_CRF_MU, DEFAULT_CRF_DOWNSAMPLE, DEFAULT_CRF_GTPROB) #CRF refine
+
+        result2 = np.roll(result2, -k)
+        R.append(result2)
+        counter +=1
+        if k==0:
+            W.append(0.1)
+        else:
+            W.append(1/np.sqrt(k))
+
+    for k in np.linspace(0,int(img.shape[0]/5),5):
+        k = int(k)
+        result2, _ = crf_refine(np.roll(result,-k), np.roll(img,-k), DEFAULT_CRF_THETA, DEFAULT_CRF_MU, DEFAULT_CRF_DOWNSAMPLE, DEFAULT_CRF_GTPROB) #CRF refine
+
+        result2 = np.roll(result2, k)
+        R.append(result2)
+        counter +=1
+        if k==0:
+            W.append(0.1)
+        else:
+            W.append(1/np.sqrt(k))
+
+    #result2 = np.floor(np.mean(np.dstack(R), axis=-1)).astype('uint8')
+    result2 = np.round(np.average(np.dstack(R), axis=-1, weights = W)).astype('uint8')
 
     # median filter
-    result = median(result, disk(median_filter_value)).astype(np.uint8)
+    result = median(result, disk(DEFAULT_MEDIAN_KERNEL)).astype(np.uint8)
+
+    print("Printing to file ")
 
     imsave(file.replace(direc,results_folder).replace('.jpg','_label.png'),
             label_to_colors(result-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))

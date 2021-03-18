@@ -321,16 +321,31 @@ def do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture,sigma_
     except:
         pass
 
+    #print(training_data.shape)
+    #print(training_labels.shape)
+
+    if training_data.shape[0]>100000:
+        ind = np.round(np.linspace(0,training_data.shape[0]-1,100000)).astype('int')
+
+        training_data = training_data[ind,:]
+        training_labels = training_labels[ind]
+        print(training_data.shape)
+        print(training_labels.shape)
+
     try:
         clf = load(rf_file) #load last model from file
+
+        # path = clf.cost_complexity_pruning_path(training_data, training_labels)
+
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('Loading model from %s' % (rf_file))
         logging.info('Number of trees: %i' % (clf.n_estimators))
     except:
-        clf = RandomForestClassifier(n_estimators=n_estimators, n_jobs=-1,class_weight="balanced_subsample", min_samples_split=3)#, ccp_alpha=0.02) # 
+        clf = RandomForestClassifier(n_estimators=n_estimators, n_jobs=-1,class_weight="balanced_subsample", min_samples_split=5)#, ccp_alpha=0.02)
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('Initializing RF model')
     clf.n_estimators += n_estimators #add more trees for the new data
+    #print(clf.n_estimators)
     clf.fit(training_data, training_labels) # fit with with new data
     dump(clf, rf_file, compress=True) #save new file
 
@@ -347,6 +362,7 @@ def do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture,sigma_
     result = np.copy(mask)#+1
 
     labels = clf.predict(data)
+
     if mask is None:
         result = labels.reshape(img.shape[:2])
         result2 = result.copy()
@@ -405,10 +421,50 @@ def segmentation(
     else:
 
         result = do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture, sigma_min,sigma_max, rf_downsample_value, n_estimators) #
+
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('RF model applied with sigma range %f : %f' % (sigma_min,sigma_max))
 
-        result2, n = crf_refine(result, img, crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #result
+        # R = []
+        # for k in np.linspace(0,img.shape[0],5):
+        #     k = int(k)
+        #     #print("Loop %i" % (k))
+        #     result2, n = crf_refine(np.roll(result,k), np.roll(img,k), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #result
+        #     result2 = np.roll(result2, -k)
+        #     R.append(result2)
+        #
+        # result2 = np.round(np.mean(np.dstack(R), axis=-1)).astype('uint8')
+        # del R
+
+        R = []; W = []
+        counter = 0
+        for k in np.linspace(0,int(img.shape[0]/5),5):
+            k = int(k)
+            result2, _ = crf_refine(np.roll(result,k), np.roll(img,k), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #CRF refine
+            result2 = np.roll(result2, -k)
+            R.append(result2)
+            counter +=1
+            if k==0:
+                W.append(0.1)
+            else:
+                W.append(1/np.sqrt(k))
+
+        for k in np.linspace(0,int(img.shape[0]/5),5):
+            k = int(k)
+            result2, n = crf_refine(np.roll(result,-k), np.roll(img,-k), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #CRF refine
+            result2 = np.roll(result2, k)
+            R.append(result2)
+            counter +=1
+            if k==0:
+                W.append(0.1)
+            else:
+                W.append(1/np.sqrt(k))
+
+        #result2 = np.floor(np.mean(np.dstack(R), axis=-1)).astype('uint8')
+        result2 = np.round(np.average(np.dstack(R), axis=-1, weights = W)).astype('uint8')
+        del R
+
+        #result2, n = crf_refine(result, img, crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #result
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('CRF model applied with theta=%f and mu=%f' % ( crf_theta_slider_value, crf_mu_slider_value))
 
