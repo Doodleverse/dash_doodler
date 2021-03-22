@@ -39,7 +39,7 @@ import dash_core_components as dcc
 from annotations_to_segmentations import *
 from plot_utils import *
 
-import io, base64, PIL.Image, json, shutil, os
+import io, base64, PIL.Image, json, shutil, os, time
 from glob import glob
 from datetime import datetime
 from urllib.parse import quote as urlquote
@@ -57,30 +57,22 @@ DEFAULT_IMAGE_PATH = "assets/logos/dash-default.jpg"
 
 try:
     from my_defaults import *
+    print('Hyperparameters imported from my_defaults.py')
 except:
     from defaults import *
+    print('Default hyperparameters imported from src/my_defaults.py')
 finally:
     DEFAULT_PEN_WIDTH = 2
-
-    DEFAULT_CRF_DOWNSAMPLE = 2
-
+    DEFAULT_CRF_DOWNSAMPLE = 3
     DEFAULT_RF_DOWNSAMPLE = 10
-
     DEFAULT_CRF_THETA = 40
-
     DEFAULT_CRF_MU = 100
-
     DEFAULT_MEDIAN_KERNEL = 3
-
     DEFAULT_RF_NESTIMATORS = 3
-
     DEFAULT_CRF_GTPROB = 0.9
-
     SIGMA_MIN = 1
-
     SIGMA_MAX = 16
-
-# SEG_FEATURE_TYPES = ["intensity", "edges", "texture"]
+    print('Default hyperparameters imported set')
 
 # the number of different classes for labels
 DEFAULT_LABEL_CLASS = 0
@@ -353,7 +345,7 @@ app.layout = html.Div(
                         # html.Br(),
                         # html.P(['------------------------']),
                         dcc.Markdown(
-                            ">Advanced CRF settings"
+                            ">CRF settings"
                         ),
 
                         html.H6(id="theta-display"),
@@ -380,7 +372,7 @@ app.layout = html.Div(
                         # Slider for specifying pen width
                         dcc.Slider(
                             id="crf-downsample-slider",
-                            min=1,
+                            min=2,
                             max=6,
                             step=1,
                             value=DEFAULT_CRF_DOWNSAMPLE,
@@ -407,19 +399,9 @@ app.layout = html.Div(
                         ),
 
                         dcc.Markdown(
-                            ">Advanced Random Forest settings"
+                            ">Random Forest settings"
                         ),
 
-                        # html.H6("Image Feature Extraction:"),
-                        # dcc.Checklist(
-                        #     id="rf-segmentation-features",
-                        #     options=[
-                        #         {"label": l.capitalize(), "value": l}
-                        #         for l in SEG_FEATURE_TYPES
-                        #     ],
-                        #     value=["intensity", "edges", "texture"],
-                        #     labelStyle={'display': 'inline-block'}
-                        # ),
                         html.H6(id="sigma-display"),
                         dcc.RangeSlider(
                             id="rf-sigma-range-slider",
@@ -836,14 +818,6 @@ def update_output(
             ]
         )
 
-        # segmentation_features_value=[
-        #     {"label": l.capitalize(), "value": l}
-        #     for l in SEG_FEATURE_TYPES
-        # ]
-        # logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-        # for l in SEG_FEATURE_TYPES:
-        #     logging.info('Using %s for RF feature extraction' % (l))
-
         rf_file = 'RandomForestClassifier_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
         data_file = 'data_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
 
@@ -856,14 +830,11 @@ def update_output(
         segimgpng = None
         if 'median' not  in callback_context:
 
-            # dict_feature_opts = {
-            #     key: (key in segmentation_features_value)
-            #     for key in SEG_FEATURE_TYPES
-            # }
-
-            # dict_feature_opts["sigma_min"] = sigma_range_slider_value[0]
-            # dict_feature_opts["sigma_max"] = sigma_range_slider_value[1]
-            # dict_feature_opts["n_estimators"] = n_estimators
+            # start timer
+            if os.name=='posix': # true if linux/mac or cygwin on windows
+               start = time.time()
+            else: # windows
+               start = time.clock()
 
             segimgpng, seg, img = show_segmentation(
                 [select_image_value], masks_data["shapes"], median_filter_value, callback_context,
@@ -871,14 +842,25 @@ def update_output(
                  multichannel, intensity, edges, texture, sigma_range_slider_value[0], sigma_range_slider_value[1], n_estimators,
             )
 
+            if os.name=='posix': # true if linux/mac
+               elapsed = (time.time() - start)/60
+            else: # windows
+               elapsed = (time.clock() - start)/60
+            print("Processing took "+ str(elapsed) + " minutes")
+
             if type(select_image_value) is list:
                 colfile = select_image_value[0].replace('assets',results_folder).replace('.jpg','_label'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-                imsave(colfile,
-                        label_to_colors(seg-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
+                if np.ndim(img)==3:
+                    imsave(colfile,label_to_colors(seg-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
+                else:
+                    imsave(colfile,label_to_colors(seg-1, img==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
+
             else:
                 colfile = select_image_value.replace('assets',results_folder).replace('.jpg','_label'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-                imsave(colfile,
-                        label_to_colors(seg-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
+                if np.ndim(img)==3:
+                    imsave(colfile,label_to_colors(seg-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
+                else:
+                    imsave(colfile,label_to_colors(seg-1, img==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
 
             logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
             logging.info('RGB label image saved to %s' % (colfile))
@@ -936,10 +918,11 @@ def update_output(
             the_file.write('DEFAULT_RF_NESTIMATORS = {}\n'.format(n_estimators))
             the_file.write('DEFAULT_CRF_GTPROB = {}\n'.format(gt_prob))
             the_file.write('SIGMA_MIN = {}\n'.format(sigma_range_slider_value[0]))
-            the_file.write('SIGMA_MAX = {}\n'.format(sigma_range_slider_value[1]))  
+            the_file.write('SIGMA_MAX = {}\n'.format(sigma_range_slider_value[1]))
+        print('my_defaults.py overwritten with parameter settings')
 
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-        logging.info('my_defaults.py overwritten with new parameter settings')
+        logging.info('my_defaults.py overwritten with parameter settings')
 
 
     if len(files) == 0:
@@ -1002,3 +985,31 @@ function(the_image_store_data) {
 if __name__ == "__main__":
     print('Go to http://127.0.0.1:8050/ in your web browser to use Doodler')
     app.run_server()#debug=True) #debug=True, port=8888)
+
+
+        # segmentation_features_value=[
+        #     {"label": l.capitalize(), "value": l}
+        #     for l in SEG_FEATURE_TYPES
+        # ]
+        # logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        # for l in SEG_FEATURE_TYPES:
+        #     logging.info('Using %s for RF feature extraction' % (l))
+
+            # dict_feature_opts = {
+            #     key: (key in segmentation_features_value)
+            #     for key in SEG_FEATURE_TYPES
+            # }
+
+            # dict_feature_opts["sigma_min"] = sigma_range_slider_value[0]
+            # dict_feature_opts["sigma_max"] = sigma_range_slider_value[1]
+            # dict_feature_opts["n_estimators"] = n_estimators
+                        # html.H6("Image Feature Extraction:"),
+                        # dcc.Checklist(
+                        #     id="rf-segmentation-features",
+                        #     options=[
+                        #         {"label": l.capitalize(), "value": l}
+                        #         for l in SEG_FEATURE_TYPES
+                        #     ],
+                        #     value=["intensity", "edges", "texture"],
+                        #     labelStyle={'display': 'inline-block'}
+                        # ),

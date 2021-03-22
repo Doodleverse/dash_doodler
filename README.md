@@ -16,6 +16,7 @@ The video shows a basic usage of doodler. 1) Annotate the scene with a few examp
 
 ## Contents
 * [Rationale](#rationale)
+* [How does it work?](#intro)
 * [Installation](#install)
 * [Use](#use)
 * [Outputs](#outputs)
@@ -31,9 +32,22 @@ There are many great tools for exhaustive (i.e. whole image) image labeling for 
 
 What is generally required in the above case is a semi-supervised tool for efficient image labeling, based on sparse examples provided by a human annotator. Those sparse annotations are used by a secondary automated process to estimate the class of every pixel in the image. The number of pixels annotated by the human annotator is typically a small fraction of the total pixels in the image.  
 
-`Doodler` is a tool for sparse, not exhaustive, labeling. The approach taken here is to freehand label only some of the scene, then use a model to complete the scene. Sparse annotations are provided to a Conditional Random Field (CRF) model, that develops a scene-specific model for each class and creates a dense (i.e. per pixel) label image based on the information you provide it. This approach can reduce the time required for detailed labeling of large and complex scenes by an order of magnitude or more. Your annotations are first used to train and apply a random forest on the entire image. In another version (the recommended one), then a CRF is used to refine labels further based on the underlying image.
+`Doodler` is a tool for sparse, not exhaustive, labeling. The approach taken here is to freehand label only some of the scene, then use a model to complete the scene. Sparse annotations are provided to a Conditional Random Field (CRF) model, that develops a scene-specific model for each class and creates a dense (i.e. per pixel) label image based on the information you provide it. This approach can reduce the time required for detailed labeling of large and complex scenes by an order of magnitude or more. Your annotations are first used to train and apply a random forest on the entire image, then a CRF is used to refine labels further based on the underlying image.
 
-This is python software that is designed to be used from within a `conda` environment. After setting up that environment, create a `classes.txt` file that tells the program what classes will be labeled (and what buttons to create). The minimum number of classes is 2. There is no limit to the maximum number of classes, except screen real estate! The images that you upload will go into the `assets/` folder. The labels images you create are written to the `results` folder.
+This is python software that is designed to be used from within a `conda` environment. After setting up that environment, create a `classes.txt` file that tells the program what classes will be labeled (and what buttons to create). The minimum number of classes is 2. The maximum number of classes allowed is 24. The images that you upload will go into the `assets/` folder. The labels images you create are written to the `results` folder.
+
+
+## <a name="intro"></a>How does it work?
+The program uses two Machine Learning models in concert to segment images using user-provided annotations or 'doodles'. The two models are 1) Random Forest, or RF, and 2) Fully Connected Conditional Ransom Field (CRF). The program adopts a strategy similar to that described by Buscombe and Ritchie (2018), in that a 'global' model trained on many samples is used to provide an initial segmentation on each sample image, then that initial segmentation is refined by a CRF, which operates on a task specific level. In Buscombe and Ritchie (2018), the model was a deep neural network trained in advance on large numbers of samples and labels. Here, the model is built as we go, building progressively from user inputs. Doodler uses a Random Forest as the baseline global model, and the CRF implementation is the same as that desribed by Buscombe and Ritchie (2018).
+
+Images are labelled in sessions. During a session, a RF model is initialized then built progressively using provided labels from each image. The RF model uses features extracted from the image
+
+* Gaussian blur over a range of scales
+* Sobel filter of the Gaussian blurred images
+* Matrix of texture values extacted over a range of scales as the 1st eigenvalue of the Hessian Matrix
+* Matrix of texture values extacted over a range of scales as the 2nd eigenvalue of the Hessian Matrix
+
+and the relative pixel locations in x and y are also used as features in RF model fitting and for prediction. Each RF prediction (a label matrix of integer values, each integer corresponding to a unique class). The CRF builds a model for the likelihood of the RF-predicted labels based on the distributions of features it extracts from the imagery, and can reclassify pixels (it is intended to do so). Its feature extraction and decision making behavior is complex and governed by parameters. The user can control the parameter values for CRF and RF models using the graphical user interface.
 
 
 ## <a name="install"></a>Installation
@@ -269,7 +283,7 @@ Submit a pull request through the GitHub website.
 * Each setting default now displayed on control panel
 * class_weight="balanced_subsample", min_samples_split=3
 
-03/17/21
+03/17/21. *Release* version 1.1.0
 * max samples now 1e5, subsampled thereafter from all values (new and concatenated from file)
 * crf_refine now loops through 5 different 'rolled' versions of the label/image combo and and an average is taken. Rolling (wot I made up) is shifting an image and unary potentials on the x axis and recomputing the label raster in the shifted position, then unrolling back and averaging down the stack of unrolled label rasters
 * min_samples_split=5 in RF
@@ -283,10 +297,19 @@ Submit a pull request through the GitHub website.
 * IP address (http://127.0.0.1:8050/) now displayed in terminal window
 * added example workflow for sample dataset
 
+03/20/21. version 1.1.1
+* support for 1-band (greyscale) images (and tested on sidescan imagery)
+* adds rudimentary metric for RF and CRF to use space, the i.e. the pixel locations in x and y. seems to improve predictions in sidescan and water masking imagery
+* added some explanatory text to README on how Doodler works
+* increased max samples to 500,000
+* DEFAULT_CRF_DOWNSAMPLE = 3 (up from 2) to accomodate larger feature stack (two more, position in x, and position in y)
+* added more logging info in RF/VRF models
+* added timer to show how long each inference takes
+
 
 ## <a name="roadmap"></a>Roadmap
 
-* Maybe a button to reset the coefficients to the defaults? [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
+<!-- * Maybe a button to reset the coefficients to the defaults? [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2) -->
 
 * Delay running the model until all of the coefficients are adjusted...right now it jumps right into the calcs as soon a slider is moved, but maybe you want to adjust two sliders first. Maybe change the compute segmentation to a button that changes color if the model is out of date wrt to the current settings. [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 

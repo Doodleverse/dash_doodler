@@ -117,8 +117,6 @@ texture = True
 edges = True
 clf = load(RF_model_file) #load RF model from file
 
-# DEFAULT_CRF_MU = 255
-# DEFAULT_CRF_THETA = 10
 
 for file in tqdm(files):
     print("Working on %s" % (file))
@@ -127,15 +125,26 @@ for file in tqdm(files):
     Horig = img.shape[0]
     Worig = img.shape[1]
 
-    features = extract_features(
-        img,
-        multichannel=multichannel,
-        intensity=intensity,
-        edges=edges,
-        texture=texture,
-        sigma_min=SIGMA_MIN,
-        sigma_max=SIGMA_MAX,
-    ) # extract image features
+    if np.ndim(img)==3:
+        features = extract_features(
+            img,
+            multichannel=multichannel,
+            intensity=intensity,
+            edges=edges,
+            texture=texture,
+            sigma_min=SIGMA_MIN,
+            sigma_max=SIGMA_MAX,
+        )
+    else:
+        features = extract_features(
+            np.dstack((img,img,img)),
+            multichannel=multichannel,
+            intensity=intensity,
+            edges=edges,
+            texture=texture,
+            sigma_min=SIGMA_MIN,
+            sigma_max=SIGMA_MAX,
+        )
 
     print("Extracting features")
 
@@ -147,15 +156,6 @@ for file in tqdm(files):
     result = result.reshape(sh[1:])
 
     print("CRF refinement ")
-
-    # R = []
-    # for k in np.linspace(0,img.shape[0],5):
-    #     k = int(k)
-    #     result2, _ = crf_refine(np.roll(result,k), np.roll(img,k), DEFAULT_CRF_THETA, DEFAULT_CRF_MU, DEFAULT_CRF_DOWNSAMPLE, DEFAULT_CRF_GTPROB) #CRF refine
-    #     result2 = np.roll(result2, -k)
-    #     R.append(result2)
-
-    #result = np.floor(np.mean(np.dstack(R), axis=-1)).astype('uint8')
 
     R = []; W = []
     counter = 0
@@ -179,9 +179,12 @@ for file in tqdm(files):
         R.append(result2)
         counter +=1
         if k==0:
-            W.append(0.1)
+            W.append(.1)#np.nan)
         else:
             W.append(1/np.sqrt(k))
+
+    #W = np.array(W)
+    #W[0] = 2*np.nanmax(W)
 
     #result2 = np.floor(np.mean(np.dstack(R), axis=-1)).astype('uint8')
     result2 = np.round(np.average(np.dstack(R), axis=-1, weights = W)).astype('uint8')
@@ -191,15 +194,33 @@ for file in tqdm(files):
 
     print("Printing to file ")
 
-    imsave(file.replace(direc,results_folder).replace('.jpg','_label.png'),
-            label_to_colors(result-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
+    if np.ndim(img)==3:
+        imsave(file.replace(direc,results_folder).replace('.jpg','_label.png'),
+                label_to_colors(result-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
+    else:
+        imsave(file.replace(direc,results_folder).replace('.jpg','_label.png'),
+                label_to_colors(result-1, img==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
 
     imsave(file.replace(direc,results_folder).replace('.jpg','_label_greyscale.png'), result)
 
     plt.imshow(img); plt.axis('off')
-    plt.imshow(label_to_colors(result-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False), alpha=0.4)#, cmap=cmap, vmin=0, vmax=NUM_LABEL_CLASSES)
+    if np.ndim(img)==3:
+        plt.imshow(label_to_colors(result-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False), alpha=0.4)#, cmap=cmap, vmin=0, vmax=NUM_LABEL_CLASSES)
+    else:
+        plt.imshow(label_to_colors(result-1, img==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False), alpha=0.4)#, cmap=cmap, vmin=0, vmax=NUM_LABEL_CLASSES)
+
     plt.savefig(file.replace(direc,results_folder).replace('.jpg','_fig.png'), dpi=200, bbox_inches='tight'); plt.close('all')
     del result, img
 
 # turn to black and white / binary
 ###for file in *_greyscale.png; do convert -monochrome $file "${file%label_greyscale.png}mask.jpg"; done
+
+
+    # R = []
+    # for k in np.linspace(0,img.shape[0],5):
+    #     k = int(k)
+    #     result2, _ = crf_refine(np.roll(result,k), np.roll(img,k), DEFAULT_CRF_THETA, DEFAULT_CRF_MU, DEFAULT_CRF_DOWNSAMPLE, DEFAULT_CRF_GTPROB) #CRF refine
+    #     result2 = np.roll(result2, -k)
+    #     R.append(result2)
+
+    #result = np.floor(np.mean(np.dstack(R), axis=-1)).astype('uint8')

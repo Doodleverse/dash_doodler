@@ -40,6 +40,7 @@ from cairosvg import svg2png
 from datetime import datetime
 import logging
 
+##========================================================
 def shape_to_svg_code(shape, fig=None, width=None, height=None):
     """
     fig is the plotly.py figure which shape resides in (to get width and height)
@@ -77,7 +78,7 @@ def shape_to_svg_code(shape, fig=None, width=None, height=None):
         **fmt_dict
     )
 
-
+##========================================================
 def shape_to_png(fig=None, shape=None, width=None, height=None, write_to=None):
     """
     Like svg2png, if write_to is None, returns a bytestring. If it is a path
@@ -87,6 +88,7 @@ def shape_to_png(fig=None, shape=None, width=None, height=None, write_to=None):
     r = svg2png(bytestring=svg_code, write_to=write_to)
     return r
 
+##========================================================
 def shapes_to_mask(shape_args, shape_layers):
     """
     Returns numpy array (type uint8) with number of rows equal to maximum height
@@ -226,7 +228,10 @@ def compute_segmentations(
         shape_layers = [(n + 1) for n, _ in enumerate(shapes)]
     mask = shapes_to_mask(shape_args, shape_layers) #utils.
 
-    color_annos = label_to_colors(mask, img[:,:,0]==0, alpha=128, do_alpha=True, **label_to_colors_args)
+    if np.ndim(img)==3:
+        color_annos = label_to_colors(mask, img[:,:,0]==0, alpha=128, do_alpha=True, **label_to_colors_args)
+    else:
+        color_annos = label_to_colors(mask, img==0, alpha=128, do_alpha=True, **label_to_colors_args)
 
     annofile = img_path[0].replace('assets',results_folder).replace('.jpg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
     imsave(annofile, color_annos[:,:,:3]) #'_'+my_id_value+
@@ -239,7 +244,11 @@ def compute_segmentations(
                        sigma_min, sigma_max, n_estimators)
 
     #print(np.unique(seg))
-    color_seg = label_to_colors(seg, img[:,:,0]==0, alpha=128, do_alpha=True, **label_to_colors_args)
+    if np.ndim(img)==3:
+        color_seg = label_to_colors(seg, img[:,:,0]==0, alpha=128, do_alpha=True, **label_to_colors_args)
+    else:
+        color_seg = label_to_colors(seg, img==0, alpha=128, do_alpha=True, **label_to_colors_args)
+
 
     # color_seg is a 3d tensor representing a colored image whereas seg is a
     # matrix whose entries represent the classes
