@@ -54,6 +54,7 @@ from tkinter.filedialog import askopenfilename, askdirectory
 
 try:
     from my_defaults import *
+    print("Your session defaults loaded")
 except:
     from defaults import *
 finally:

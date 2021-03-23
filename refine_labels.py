@@ -239,6 +239,7 @@ def crf_refine(label,
 ###===========================================================
 try:
     from my_defaults import *
+    print("Your session defaults loaded")
 except:
     from defaults import *
 finally:
