@@ -59,23 +59,14 @@ except:
     from defaults import *
 finally:
     DEFAULT_PEN_WIDTH = 2
-
     DEFAULT_CRF_DOWNSAMPLE = 2
-
     DEFAULT_RF_DOWNSAMPLE = 10
-
     DEFAULT_CRF_THETA = 40
-
     DEFAULT_CRF_MU = 100
-
     DEFAULT_MEDIAN_KERNEL = 3
-
     DEFAULT_RF_NESTIMATORS = 3
-
     DEFAULT_CRF_GTPROB = 0.9
-
     SIGMA_MIN = 1
-
     SIGMA_MAX = 16
 
 Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
@@ -148,6 +139,13 @@ for file in tqdm(files):
         )
 
     print("Extracting features")
+
+    # counter = 1
+    # for k in features:
+    #     plt.subplot(15,6,counter)
+    #     plt.imshow(k, cmap='gray')
+    #     plt.axis('off')
+    #     counter +=1
 
     # use model in predictive mode
     sh = features.shape

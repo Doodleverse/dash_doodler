@@ -60,6 +60,12 @@ def features_sigma(img,
     """
 
     features = []
+
+    gx,gy = np.meshgrid(np.arange(img.shape[1]), np.arange(img.shape[0]))
+    # print(gx.shape)
+    #features.append(gx)
+    features.append(np.sqrt(gx**2 + gy**2)) #gy) #use polar radius of pixel locations as cartesian coordinates
+
     img_blur = filters.gaussian(img, sigma)
 
     if intensity:
@@ -184,6 +190,10 @@ def crf_refine(label,
     OUTPUTS: label [ndarray]: label image 2D matrix of integers
     """
 
+    gx,gy = np.meshgrid(np.arange(img.shape[1]), np.arange(img.shape[0]))
+    # print(gx.shape)
+    img = np.dstack((img,np.sqrt(gx**2 + gy**2))) #gx,gy))
+    
     #gt_prob = 0.9
     l_unique = np.unique(label.flatten())#.tolist()
     scale = 1+(5 * (np.array(img.shape).max() / 3000))

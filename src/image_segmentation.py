@@ -79,7 +79,7 @@ def crf_refine(label,
 
     gx,gy = np.meshgrid(np.arange(img.shape[1]), np.arange(img.shape[0]))
     # print(gx.shape)
-    img = np.dstack((img,gx,gy))
+    img = np.dstack((img,np.sqrt(gx**2 + gy**2))) #gx,gy))
     #print(img.shape)
 
     #gt_prob = 0.9
@@ -165,8 +165,8 @@ def features_sigma(img,
 
     gx,gy = np.meshgrid(np.arange(img.shape[1]), np.arange(img.shape[0]))
     # print(gx.shape)
-    features.append(gx)
-    features.append(gy)
+    #features.append(gx)
+    features.append(np.sqrt(gx**2 + gy**2)) #gy) #use polar radius of pixel locations as cartesian coordinates
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('Location features extracted')
 
