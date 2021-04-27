@@ -1,3 +1,6 @@
+![](doodler-logo.png)
+
+Check out the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/)
 
 > Daniel Buscombe, Marda Science daniel@mardascience.com
 

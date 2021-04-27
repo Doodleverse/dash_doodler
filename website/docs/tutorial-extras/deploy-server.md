@@ -1,7 +1,10 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 ---
 
+# [ADVANCED] Serving Doodler as a web application for others to use
+
+<!--
 # Create a Document
 
 Documents are **groups of pages** connected through:
@@ -53,4 +56,4 @@ module.exports = {
     },
   ],
 };
-```
+``` -->

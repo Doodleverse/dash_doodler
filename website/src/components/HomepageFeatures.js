@@ -12,6 +12,9 @@ const FeatureList = [
       <>
         With Doodler, you identify pixels of each of the 'classes' present in the scene
         and it does the rest, using a model to 'auto-complete' any pixel you didn't label.
+        <br></br>
+        <br></br>
+        Classes are a discrete label such as 'sky', 'water', 'sand', etc. Auto-completion refers to the process of classifying each pixel in the scene into a class using an automated process, or image 'segmentation'         
       </>
     ),
   },

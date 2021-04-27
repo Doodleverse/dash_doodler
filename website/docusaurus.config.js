@@ -2,8 +2,8 @@
 module.exports = {
   title: 'Doodler',
   tagline: 'An interactive "human in the loop" Machine Learning program for image segmentation',
-  url: 'https://dbuscombe-usgs.github.io/dash_doodler/',
-  baseUrl: '/',
+  url: 'https://dbuscombe-usgs.github.io',
+  baseUrl: '/dash_doodler/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
@@ -26,7 +26,7 @@ module.exports = {
         {to: '/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/dbuscombe-usgs/dash_doodler',
-          label: 'Doodler gitHub page',
+          label: 'Doodler github page',
           position: 'right',
         },
       ],
@@ -68,13 +68,21 @@ module.exports = {
               to: '/blog',
             },
             {
-              label: 'GitHub',
+              label: 'Github',
               href: 'https://github.com/dbuscombe-usgs/dash_doodler',
+            },
+            {
+              label: 'Makesense.ai (an alternative way to segment imagery)',
+              href: 'https://www.makesense.ai/',
             },
           ],
         },
+
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Marda Science, LLC.`,
+
+
+      copyright: `Doodler is written and maintained by Daniel Buscombe, Marda Science, LLC, contracted to the U.S. Geological Survey Pacific Coastal and Marine Science Center in Santa Cruz, CA. Doodler development is funded by the U.S. Geological Survey Coastal Hazards Program, and is for the primary usage of U.S. Geological Survey scientists, researchers and affiliated colleagues working on the Hurricane Florence Supplemental Project and other coastal hazards research. Thanks to Jon Warrick, Phil Wernette, Chris Sherwood, Jenna Brown, Andy Ritchie, Jin-Si Over, Christine Kranenburg, and the rest of the Florence Supplemental team; to Evan Goldstein and colleagues at University of North Carolina Greensboro; Leslie Hsu at the USGS Community for Data Integration; and LCDR Brodie Wells, formerly of Naval Postgraduate School, Monterey. Copyright © ${new Date().getFullYear()} Marda Science, LLC. `,
+
     },
   },
   presets: [

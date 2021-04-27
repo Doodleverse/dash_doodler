@@ -2,34 +2,36 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# What is Doodler for?
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Doodler is designed to do two things:
 
-## Getting Started
+1. It allows you to carry out image segmentation, quickly and effectively on any type of image.
+> This might suit somebody who does not want or need to train a model to acheive the same result completely automatically. You may only have a few images to label; doodler is perfect for this use case.
 
-Get started by **creating a new site**.
+2. It allows you to generate label data to train other types of machine learning models for image segmentation, quickly and effectively on any type of image.
+> By providing enough examples of images and their corresponding pixelwise labels, models can be trained to generate the same types of segmentations on other image collections, such as future data collections in regular image-based surveys.
 
-Or **try Docusaurus immediately** with **[new.docusaurus.io](https://new.docusaurus.io)**.
 
-## Generate a new site
+Training start-of-the-art deep learning models for image segmentation can require hundreds to thousands of example label images.
 
-Generate a new Docusaurus site using the **classic template**:
+For natural and other scenes, doodler can be a relatively quick (in terms of the hours you spend annotating) way to generate large numbers of label images. For high-resolution imagery with large spatial footprints and complex scenes, such as aerial and satellite imagery, exhaustive labeling using polygonal tools can be prohibitively time-consuming. Doodler offers a potential alternative.
 
-```shell
-npx @docusaurus/init@latest init my-website classic
-```
+### Using Doodler
 
-## Start your site
+This video shows a basic usage of doodler.
 
-Run the development server:
+![](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/quick-satshoreline-x2c.gif)
 
-```shell
-cd my-website
+1. Annotate the scene with a few examples of each class (colorful buttons).
+2. Check 'compute and show segmentation' and wait for the result.
+3. Add or remove doodles as necessary, repeating steps 1. and 2. above
+4. [if still not happy with the result] Modify the parameters and repeat step 2. above
 
-npx docusaurus start
-```
+Here are more examples of Doodler in action
 
-Your site starts at `http://localhost:3000`.
+![](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/quick-satshore2-x2c.gif)
 
-Open `docs/getting-started.md` and edit some lines: the site **reloads automatically** and display your changes.
+### Sounds good! How do I install?
+
+You have two options: use [locally on your own machine](tutorial-basics/deploy-local) or [deploy it on a virtual machine for others to use](tutorial-extras/deploy-server)

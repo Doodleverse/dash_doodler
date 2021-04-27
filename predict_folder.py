@@ -189,7 +189,7 @@ for file in tqdm(files):
     result2 = np.round(np.average(np.dstack(R), axis=-1, weights = W)).astype('uint8')
 
     # median filter
-    result = median(result, disk(DEFAULT_MEDIAN_KERNEL)).astype(np.uint8)
+    result = median(result2, disk(DEFAULT_MEDIAN_KERNEL)).astype(np.uint8)
 
     print("Printing to file ")
 

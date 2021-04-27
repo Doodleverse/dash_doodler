@@ -1,8 +1,23 @@
 ---
-sidebar_position: 1
+sidebar_position: 3
 ---
 
-# Create a Page
+
+# Frequently Asked Questions
+
+Please read this page before submitting your Issue on Github
+
+### Why are my results poor?
+
+### What is the maximum/minimum number of classes?
+
+### How should I choose classes?
+
+
+
+
+
+<!-- # Create a Page
 
 Add **Markdown or React** files to `src/pages` to create a **standalone page**:
 
@@ -40,4 +55,4 @@ Create a file at `src/pages/my-markdown-page.md`:
 This is a Markdown page
 ```
 
-A new page is now available at `http://localhost:3000/my-markdown-page`.
+A new page is now available at `http://localhost:3000/my-markdown-page`. -->
