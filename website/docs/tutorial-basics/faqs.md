@@ -7,14 +7,36 @@ sidebar_position: 3
 
 Please read this page before submitting your Issue on Github
 
+### Why is it taking so long?
+
+In typical order of importance:
+
+1. Use smaller images
+2. Make fewer doodles
+3. Use a larger RF downsample factor
+4. Use a larger CRF downsample factor
+5. If possible, use fewer classes
+
 ### Why are my results poor?
 
-### What is the maximum/minimum number of classes?
+<!-- Stop and ask yourself what you are hoping to achieve. Decide on an 'adequate' accuracy for your test case -->
+
+### What is the maximum number of classes?
+
+This is also called the 'impossible' question because it entirely depends on the nature and variability of your imagery, and the appearance of features assigned to your specific discrete classes.
+However, there are a few guidelines we can provide:
+
+1. The minimum number of classes is 2. Theoretically, there is no maximum number of classes
+2.
 
 ### How should I choose classes?
 
+See [this](how-to-doodle#how-to-decide-on-classes)
 
 
+### Okay, I can use Doodler to make label images. Now what?
+
+The primary purpose of Doodler is to create enough label images that Deep Learnng image segmentation workflows become viable. To get started, you may follow this self-guided course made by Dr Daniel Buscombe, called ["ML Mondays"](https://dbuscombe-usgs.github.io/MLMONDAYS/docs/doc1#week-3-supervised-image-segmentation).
 
 
 <!-- # Create a Page

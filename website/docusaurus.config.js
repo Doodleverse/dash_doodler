@@ -1,7 +1,7 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: 'Doodler',
-  tagline: 'An interactive "human in the loop" Machine Learning program for image segmentation',
+  tagline: 'An interactive "human in the loop" web application for image segmentation',
   url: 'https://dbuscombe-usgs.github.io',
   baseUrl: '/dash_doodler/',
   onBrokenLinks: 'throw',

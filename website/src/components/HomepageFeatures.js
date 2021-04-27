@@ -10,11 +10,11 @@ const FeatureList = [
     Svg: require('../../static/img/undraw_working_remotely_jh40.svg').default,
     description: (
       <>
-        With Doodler, you identify pixels of each of the 'classes' present in the scene
-        and it does the rest, using a model to 'auto-complete' any pixel you didn't label.
+        Identify pixels of each of the 'classes' present in the scene with a mouse/stylus,
+        and it does the rest, using a model to 'auto-complete' all the pixels you didn't label.
         <br></br>
         <br></br>
-        Classes are a discrete label such as 'sky', 'water', 'sand', etc. Auto-completion refers to the process of classifying each pixel in the scene into a class using an automated process, or image 'segmentation'         
+        A class is a discrete label such as 'sky', 'water', 'sand', etc. Auto-completion refers to the process of classifying each pixel in the scene into a class using an automated process, otherwise known as image 'segmentation'.
       </>
     ),
   },
@@ -23,15 +23,15 @@ const FeatureList = [
     Svg: require('../../static/img/undraw_nature_m5ll.svg').default,
     description: (
       <>
-        Doodler will work with any type of imagery, but it is designed primarily
-        to work with imagery consisting of natural landforms,
-        where land composition, cover, and use, are identifiable as characteristic
+        You can use any type of photos, but it is designed
+        to work best with imagery consisting of landscapes (natural environments),
+        where the surface composition, cover, and sometimes evidence of human and other animal uses, are identifiable as characteristic
         textures and colors.
         <br></br>
         <br></br>
-        The model Doodler uses to classify each pixel of the scene, i.e. segment the image,
-        is optimized for classifying such natural textures and colors, which can vary considerably for
-        any given class. Often the model needs most help (i.e. more doodles) near the boundaries where
+        Doodler uses Machine Learning to classify each pixel of the scene, i.e. segment the image,
+        which is optimized for classifying such natural textures and colors, which can vary considerably for
+        any given class. Often this 'model' needs most help (i.e. more doodles) near the boundaries where
         one class transitions to another.
       </>
     ),
@@ -42,13 +42,13 @@ const FeatureList = [
     description: (
       <>
       There are many great tools for exhaustive (i.e. whole image) image
-      labeling for segmentation tasks, using polygons, such as <a href="www.makesense.ai">makesense.ai</a>.
-      However, for high-resolution imagery with large spatial footprints and complex scenes,
+      labeling using polygons, such as <a href="www.makesense.ai">makesense.ai</a>.
+      However, for high-resolution imagery with large spatial footprints depicting complex natural scenes,
       such as imagery collected from airplanes or satellites,
       exhaustive labeling using polygonal tools can be very time-consuming and, well, exhausting!
       <br></br>
       <br></br>
-      Doodler is for rapid semi-supervised approximate segmentation of such imagery.
+      Doodler is as an alternative tool for rapid approximate segmentation of images that is semi-, not fully, supervised by you.
       </>
     ),
   },
