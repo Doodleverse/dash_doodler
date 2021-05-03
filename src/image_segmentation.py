@@ -37,7 +37,7 @@ from pydensecrf.utils import create_pairwise_bilateral, unary_from_labels
 from skimage.filters.rank import median
 from skimage.morphology import disk
 from skimage.transform import resize
-from joblib import dump, load
+from joblib import dump, load, Parallel, delayed
 import io, os, logging
 
 np.seterr(divide='ignore', invalid='ignore')
@@ -221,11 +221,14 @@ def extract_features_2d(
         endpoint=True,
     )
 
-    n_sigmas = len(sigmas)
+    #n_sigmas = len(sigmas)
     all_results = [
         features_sigma(img, sigma, intensity=intensity, edges=edges, texture=texture)
         for sigma in sigmas
     ]
+
+    all_results = Parallel(n_jobs=-1, verbose=0)(delayed(features_sigma)(img, sigma, intensity=intensity, edges=edges, texture=texture) for sigma in sigmas)
+
     return list(itertools.chain.from_iterable(all_results))
 
 ##========================================================
@@ -401,6 +404,11 @@ def segmentation(
     if np.ndim(img)!=3:
         img = np.dstack((img,img,img))
 
+    N = np.prod(np.shape(img))
+    s = np.maximum(np.sqrt(img), 1.0/np.sqrt(N))
+    m = np.mean(img)
+    img = (img - m) / s
+
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     for ni in np.unique(mask[1:]):
         logging.info('examples provided of %i' % (ni))
@@ -421,35 +429,45 @@ def segmentation(
 
         # result2 = result.copy()
 
-        R = []; W = []
-        counter = 0
-        for k in np.linspace(0,int(img.shape[0]/5),5):
+        # R = []; W = []
+        # counter = 0
+        # for k in np.linspace(0,int(img.shape[0]/5),5):
+        #     k = int(k)
+        #     result2, _ = crf_refine(np.roll(result,k), np.roll(img,k), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #CRF refine
+        #     result2 = np.roll(result2, -k)
+        #     R.append(result2)
+        #     logging.info('CRF model applied with roll of %i' % (k))
+        #     counter +=1
+        #     if k==0:
+        #         W.append(.1) #np.nan)
+        #     else:
+        #         W.append(1/np.sqrt(k))
+
+        # for k in np.linspace(0,int(img.shape[0]/5),5):
+        #     k = int(k)
+        #     result2, n = crf_refine(np.roll(result,-k), np.roll(img,-k), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #CRF refine
+        #     result2 = np.roll(result2, k)
+        #     R.append(result2)
+        #     logging.info('CRF model applied with roll of -%i' % (k))
+        #     counter +=1
+        #     if k==0:
+        #         W.append(.1) #np.nan)
+        #     else:
+        #         W.append(1/np.sqrt(k))
+
+        def tta_crf(img, result, k):
             k = int(k)
-            result2, _ = crf_refine(np.roll(result,k), np.roll(img,k), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #CRF refine
+            result2, n = crf_refine(np.roll(result,k), np.roll(img,k), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #CRF refine
             result2 = np.roll(result2, -k)
-            R.append(result2)
-            logging.info('CRF model applied with roll of %i' % (k))
-            counter +=1
             if k==0:
-                W.append(.1) #np.nan)
+                w=.1
             else:
-                W.append(1/np.sqrt(k))
+                w = 1/np.sqrt(k)
+            return result2, w,n
 
-        for k in np.linspace(0,int(img.shape[0]/5),5):
-            k = int(k)
-            result2, n = crf_refine(np.roll(result,-k), np.roll(img,-k), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #CRF refine
-            result2 = np.roll(result2, k)
-            R.append(result2)
-            logging.info('CRF model applied with roll of -%i' % (k))
-            counter +=1
-            if k==0:
-                W.append(.1) #np.nan)
-            else:
-                W.append(1/np.sqrt(k))
+        w = Parallel(n_jobs=-2, verbose=0)(delayed(tta_crf)(img, result, k) for k in np.linspace(0,int(img.shape[0]/5),5))
+        R,W,n = zip(*w)
 
-        #W = np.array(W)
-        #W[0] = 2*np.nanmax(W)
-        #result2 = np.floor(np.mean(np.dstack(R), axis=-1)).astype('uint8')
         result2 = np.round(np.average(np.dstack(R), axis=-1, weights = W)).astype('uint8')
         del R
 

@@ -63,10 +63,10 @@ except:
     print('Default hyperparameters imported from src/my_defaults.py')
 finally:
     DEFAULT_PEN_WIDTH = 2
-    DEFAULT_CRF_DOWNSAMPLE = 3
+    DEFAULT_CRF_DOWNSAMPLE = 4
     DEFAULT_RF_DOWNSAMPLE = 10
     DEFAULT_CRF_THETA = 40
-    DEFAULT_CRF_MU = 100
+    DEFAULT_CRF_MU = 40
     DEFAULT_MEDIAN_KERNEL = 3
     DEFAULT_RF_NESTIMATORS = 3
     DEFAULT_CRF_GTPROB = 0.9
@@ -144,7 +144,7 @@ logging.info("Results will be written to %s" % (results_folder))
 if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
 
-files = sorted(glob('assets/*.jpg'))
+files = sorted(glob('assets/*.jpg')) + sorted(glob('assets/*.JPG')) + sorted(glob('assets/*.jpeg'))
 
 files = [f for f in files if 'dash' not in f]
 
@@ -555,12 +555,20 @@ def uploaded_files():
         if os.path.isfile(path):
             if 'jpg' in filename:
                 files.append(filename)
+            if 'JPG' in filename:
+                files.append(filename)
+            if 'jpeg' in filename:
+                files.append(filename)
 
     labeled_files = []
     for filename in os.listdir(LABELED_DIRECTORY):
         path = os.path.join(LABELED_DIRECTORY, filename)
         if os.path.isfile(path):
             if 'jpg' in filename:
+                labeled_files.append(filename)
+            if 'JPG' in filename:
+                labeled_files.append(filename)
+            if 'jpeg' in filename:
                 labeled_files.append(filename)
 
     filelist = 'files_done.txt'
@@ -849,14 +857,27 @@ def update_output(
             print("Processing took "+ str(elapsed) + " minutes")
 
             if type(select_image_value) is list:
-                colfile = select_image_value[0].replace('assets',results_folder).replace('.jpg','_label'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                if 'jpg' in select_image_value[0]:
+                    colfile = select_image_value[0].replace('assets',results_folder).replace('.jpg','_label'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                if 'JPG' in select_image_value[0]:
+                    colfile = select_image_value[0].replace('assets',results_folder).replace('.JPG','_label'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                if 'jpeg' in select_image_value[0]:
+                    colfile = select_image_value[0].replace('assets',results_folder).replace('.jpeg','_label'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+
                 if np.ndim(img)==3:
                     imsave(colfile,label_to_colors(seg-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
                 else:
                     imsave(colfile,label_to_colors(seg-1, img==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
 
             else:
-                colfile = select_image_value.replace('assets',results_folder).replace('.jpg','_label'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                #colfile = select_image_value.replace('assets',results_folder).replace('.jpg','_label'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                if 'jpg' in select_image_value:
+                    colfile = select_image_value.replace('assets',results_folder).replace('.jpg','_label'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                if 'JPG' in select_image_value:
+                    colfile = select_image_value.replace('assets',results_folder).replace('.JPG','_label'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                if 'jpeg' in select_image_value:
+                    colfile = select_image_value.replace('assets',results_folder).replace('.jpeg','_label'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+
                 if np.ndim(img)==3:
                     imsave(colfile,label_to_colors(seg-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
                 else:
@@ -866,10 +887,24 @@ def update_output(
             logging.info('RGB label image saved to %s' % (colfile))
 
             if type(select_image_value) is list:
-                grayfile = select_image_value[0].replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                if 'jpg' in select_image_value[0]:
+                    grayfile = select_image_value[0].replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                if 'JPG' in select_image_value[0]:
+                    grayfile = select_image_value[0].replace('assets',results_folder).replace('.JPG','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                if 'jpeg' in select_image_value[0]:
+                    grayfile = select_image_value[0].replace('assets',results_folder).replace('.jpeg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+
+                #grayfile = select_image_value[0].replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
                 imsave(grayfile, seg)
             else:
-                grayfile = select_image_value.replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                if 'jpg' in select_image_value:
+                    grayfile = select_image_value.replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                if 'JPG' in select_image_value:
+                    grayfile = select_image_value.replace('assets',results_folder).replace('.JPG','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                if 'jpeg' in select_image_value:
+                    grayfile = select_image_value.replace('assets',results_folder).replace('.jpeg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+
+                #grayfile = select_image_value.replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
                 imsave(grayfile, seg)
             del img, seg
             logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
@@ -938,7 +973,7 @@ def update_output(
         "Blurring parameter for CRF image feature extraction (default: %d): %d" % (DEFAULT_CRF_THETA, crf_theta_slider_value),
         "CRF color class difference tolerance parameter (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value),
         "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
-        "Probability of doodle (default: %d): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
+        "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
         "Median filter kernel radius (default: %d): %d" % (DEFAULT_MEDIAN_KERNEL,median_filter_value),
         "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
         "RF downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
@@ -958,7 +993,7 @@ def update_output(
         "Blurring parameter for CRF image feature extraction (default: %d): %d" % (DEFAULT_CRF_THETA, crf_theta_slider_value),
         "CRF color class difference tolerance parameter (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value),
         "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
-        "Probability of doodle (default: %d): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
+        "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
         "Median filter kernel radius (default: %d): %d" % (DEFAULT_MEDIAN_KERNEL,median_filter_value),
         "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
         "RF downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),

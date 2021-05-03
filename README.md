@@ -309,6 +309,12 @@ Submit a pull request through the GitHub website.
 * added more logging info in RF/VRF models
 * added timer to show how long each inference takes
 
+05/03/21.
+* per image standardization
+* DEFAULT_CRF_DOWNSAMPLE = 4 by default
+* rf feature extraction now in parallel
+* CRF 'test time augmentation' now in parallel
+& accepts jpg, JPG, and jpeg
 
 ## <a name="roadmap"></a>Roadmap
 

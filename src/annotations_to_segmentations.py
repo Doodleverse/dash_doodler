@@ -233,7 +233,14 @@ def compute_segmentations(
     else:
         color_annos = label_to_colors(mask, img==0, alpha=128, do_alpha=True, **label_to_colors_args)
 
-    annofile = img_path[0].replace('assets',results_folder).replace('.jpg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+    if 'jpg' in img_path[0]:
+        annofile = img_path[0].replace('assets',results_folder).replace('.jpg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+    if 'JPG' in img_path[0]:
+        annofile = img_path[0].replace('assets',results_folder).replace('.JPG','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+    if 'jpeg' in img_path[0]:
+        annofile = img_path[0].replace('assets',results_folder).replace('.jpeg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+
+    #annofile = img_path[0].replace('assets',results_folder).replace('.jpg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
     imsave(annofile, color_annos[:,:,:3]) #'_'+my_id_value+
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('Saved annotations to '+annofile)
