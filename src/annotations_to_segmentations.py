@@ -27,6 +27,14 @@
 ##========================================================
 import PIL.Image
 import numpy as np
+# from functools import partial
+#
+# # save np.load
+# np_load_old = partial(np.load)
+#
+# # modify the default parameters of np.load
+# np.load = lambda *a,**k: np_load_old(*a, allow_pickle=True, **k)
+
 import skimage.util
 import skimage.io
 import skimage.color
@@ -196,7 +204,6 @@ def compute_segmentations(
     crf_theta_slider_value,
     crf_mu_slider_value,
     results_folder,
-    median_filter_value,
     rf_downsample_value,
     crf_downsample_factor,
     gt_prob,
@@ -233,20 +240,20 @@ def compute_segmentations(
     else:
         color_annos = label_to_colors(mask, img==0, alpha=128, do_alpha=True, **label_to_colors_args)
 
-    if 'jpg' in img_path[0]:
-        annofile = img_path[0].replace('assets',results_folder).replace('.jpg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-    if 'JPG' in img_path[0]:
-        annofile = img_path[0].replace('assets',results_folder).replace('.JPG','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-    if 'jpeg' in img_path[0]:
-        annofile = img_path[0].replace('assets',results_folder).replace('.jpeg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-
-    #annofile = img_path[0].replace('assets',results_folder).replace('.jpg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-    imsave(annofile, color_annos[:,:,:3]) #'_'+my_id_value+
-    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-    logging.info('Saved annotations to '+annofile)
+    # if 'jpg' in img_path[0]:
+    #     annofile = img_path[0].replace('assets',results_folder).replace('.jpg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+    # if 'JPG' in img_path[0]:
+    #     annofile = img_path[0].replace('assets',results_folder).replace('.JPG','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+    # if 'jpeg' in img_path[0]:
+    #     annofile = img_path[0].replace('assets',results_folder).replace('.jpeg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+    #
+    # #annofile = img_path[0].replace('assets',results_folder).replace('.jpg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+    # imsave(annofile, color_annos[:,:,:3]) #'_'+my_id_value+
+    # logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    # logging.info('Saved annotations to '+annofile)
 
     seg = segmentation(img, img_path, results_folder, rf_file, data_file, callback_context,
-                       crf_theta_slider_value, crf_mu_slider_value, median_filter_value, rf_downsample_value,
+                       crf_theta_slider_value, crf_mu_slider_value,  rf_downsample_value, #median_filter_value,
                        crf_downsample_factor, gt_prob, mask, multichannel, intensity, edges, texture,
                        sigma_min, sigma_max, n_estimators)
 
@@ -256,10 +263,9 @@ def compute_segmentations(
     else:
         color_seg = label_to_colors(seg, img==0, alpha=128, do_alpha=True, **label_to_colors_args)
 
-
     # color_seg is a 3d tensor representing a colored image whereas seg is a
     # matrix whose entries represent the classes
-    return (color_seg, seg, img)
+    return (color_seg, seg, img, color_annos[:,:,:3], mask ) #colored image, label image, input image, color annotations, greyscale annotations
 
 
 ##========================================================

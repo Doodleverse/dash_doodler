@@ -4,6 +4,7 @@ sidebar_position: 4
 
 # [ADVANCED] Next steps .... training a Deep Learning model for image segmentation
 
+(page under construction)
 
 There are two main drawbacks with neural networks consisting of only dense layers for classifying images:
 

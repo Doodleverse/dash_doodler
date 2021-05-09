@@ -1,7 +1,8 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 ---
 
+(page under construction)
 
 # Terminology
 
@@ -24,7 +25,7 @@ This is useful for things like:
 
 ## Random Forest
 
-Random forests are a non-parametric ensemble discriminative classifier
+<!-- Random forests are a non-parametric ensemble discriminative classifier
 
 Ensemble means that it relies on aggregating the results of an ensemble of simpler estimators.
 Random forests are an example of an ensemble learner built on decision trees. For this reason we'll start by discussing decision trees themselves.
@@ -33,7 +34,7 @@ However, decision trees suffer badly from overfitting.
 
 The use of multiple overfitting estimators can be combined to reduce the effect of this overfitting — this is what underlies an ensemble method called bagging.
 Bagging makes use of an ensemble of parallel estimators, each of which over-fits the data, and averages the results to find a better classification.
-An ensemble of randomized decision trees is known as a random forest.
+An ensemble of randomized decision trees is known as a random forest. -->
 
 ## Conditional Random Field
 

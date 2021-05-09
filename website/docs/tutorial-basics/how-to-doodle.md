@@ -1,8 +1,8 @@
 ---
-sidebar_position: 1
+sidebar_position: 3
 ---
 
-# How to Doodle
+# How to Doodle well
 
 :::tip Art or Science?
 

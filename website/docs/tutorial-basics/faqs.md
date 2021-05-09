@@ -1,9 +1,9 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 ---
 
-
 # Frequently Asked Questions
+(page under construction)
 
 Please read this page before submitting your Issue on Github
 
@@ -16,6 +16,7 @@ In typical order of importance:
 3. Use a larger RF downsample factor
 4. Use a larger CRF downsample factor
 5. If possible, use fewer classes
+6. If possible, use more and faster CPU cores
 
 ### Why are my results poor?
 

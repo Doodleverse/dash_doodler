@@ -80,7 +80,7 @@ pip install -r install/requirements.txt
 
 
 ## <a name="use"></a>Use
-Move your images into the `assets` folder. For the moment, they must be jpegs with the `.jpg` extension. Support for other image types forthcoming ...
+Move your images into the `assets` folder. For the moment, they must be jpegs with the `.jpg` (or `JPG` or `jpeg`) extension. Support for other image types forthcoming ...
 
 Run the app. An IP address where you can view the app in your browser will be displayed in the terminal. Some browsers will launch automatically, while others you may have to manually type (or copy/paste) the IP address into a browser. Tested so far with Chrome, Firefox, and Edge.
 
@@ -240,7 +240,6 @@ Submit a pull request through the GitHub website.
 * when an image is labeled, it disappears from the list when new images are uploaded
 * new videos
 
-
 11/04/20
 * fixed bug in how annotations were being generated and written to png file
 * new version uses a cumulatively trained random forest. First image annotated, builds RF, makes prediction. Then subsequent images build upon the last RF. Uses scikit-learn RandomForestClassifier's `warm_start` parameter and saving model to pickle file
@@ -248,7 +247,6 @@ Submit a pull request through the GitHub website.
 * fixed bug that was making it redo segmentations automatically on file change and other callbacks
 * time strings now ISO conformable (thanks Dan Nowacki)
 * image printing now in the main app function rather than subfunction, aids incorporation into more sophisticated callback workflows
-
 
 11/10/20
 * added sliders for CRF and RF downsample factors
@@ -309,12 +307,41 @@ Submit a pull request through the GitHub website.
 * added more logging info in RF/VRF models
 * added timer to show how long each inference takes
 
-05/03/21.
-* per image standardization
+05/09/21. version 1.2.1 (MAJOR UPGRADE)
+GUI:
+* `Model independence factor ` and `blur factor` now used for mu and theta respectively. More approachable, easier to explain
+* reordered crf controls so theta/mu, then downsample and probability of doodle (order of likelihood to tweak)
+* no longer median filter controls
+* made 'show/compute seg' button blue :)
+
+Modeling:
+* per image standardization and rescaling [0,1]
+* no antialiasing when resizing CRF label, and replacement of values not present in original
+* decreased max samples to 200,000
+* remove small holes and islands in the one-hote encoded CRF mask
+* median filtering now removed. not needed, creates problems, extra buttons/complexity. Instead ...
+* implements 'one-hot encoded mask spatial filtering'
+* implements inpainting on regions spatially filtered
+* pen width is used as-is, no longer exponentially scaled
+
+I/O:
+* greyscale and annotations no longer saved to png file, instead to numpy area (npz compressed), which encodes
+  * 'image'' = image
+  * 'label' = one-hot-encoded label array
+  * 'color_doodles' = color 3D or color doodles
+  * 'doodles' = 2D or greyscale doodles
+  * the npz file is overwritten, but old arrays are kept, prefixed with '0', and prepended with another '0', such that the more '0's the newer, but the above names without '0's are always the newest. Color images are still produced with time tags.
+
 * DEFAULT_CRF_DOWNSAMPLE = 4 by default
-* rf feature extraction now in parallel
+* accepts jpg, JPG, and jpeg
+* in implementation using `predict_folder.py`, user decides between two modes, saving either default basic outputs (final output label) or the full stack out outputs for debugging or optimizing
+
+Other:
+* RF feature extraction now in parallel
 * CRF 'test time augmentation' now in parallel
-& accepts jpg, JPG, and jpeg
+* `utils/plot_label_generation.py` is a new script that plots all the minutae of the steps involved in label generation, making plots and large npz files containing lots of variables I will explain later. By default each image is modeled with its own random forest. Uncomment "#do_sim = True" to run in 'chain simulation mode', where the model is updated in a chain, simulating what Doodler does.
+* `utils/convert_annotations2npz.py`
+* `utils/gen_npz_4_zoo.py`
 
 ## <a name="roadmap"></a>Roadmap
 
@@ -324,6 +351,12 @@ Submit a pull request through the GitHub website.
 
 * pymongo (mongoDB) database backend - thanks Evan and Shah @UNCG-DAISY! See [here](https://api.mongodb.com/python/current/tools.html), [here](https://strapi.io/pricing)
 
-* on Ctrl+C, clear 'labeled' flder, etc
+* on Ctrl+C, clear 'labeled' folder, etc
+
+* 'autocomplete' if only one class left in scene - randomly assign all unassigned pixels with the remaining label
+
+* 'label here' feature based on analysis of doodles in real time -- how?
+
+* visualize npz file script
 
 Use the issues tab to suggest new features!

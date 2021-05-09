@@ -26,6 +26,7 @@
 
 import itertools
 import numpy as np
+
 from skimage import filters, feature, img_as_float32
 from sklearn.ensemble import RandomForestClassifier
 import plotly.express as px
@@ -34,11 +35,13 @@ from datetime import datetime
 
 import pydensecrf.densecrf as dcrf
 from pydensecrf.utils import create_pairwise_bilateral, unary_from_labels
-from skimage.filters.rank import median
-from skimage.morphology import disk
 from skimage.transform import resize
 from joblib import dump, load, Parallel, delayed
 import io, os, logging
+from skimage.morphology import remove_small_holes, remove_small_objects
+from scipy import ndimage
+from scipy.signal import convolve2d
+# from sklearn.preprocessing import StandardScaler
 
 np.seterr(divide='ignore', invalid='ignore')
 
@@ -57,6 +60,78 @@ def rescale(dat,
     m = min(dat.flatten())
     M = max(dat.flatten())
     return (mx-mn)*(dat-m)/(M-m)+mn
+
+##====================================
+def standardize(img):
+    #standardization using adjusted standard deviation
+    N = np.shape(img)[0] * np.shape(img)[1]
+    s = np.maximum(np.std(img), 1.0/np.sqrt(N))
+    m = np.mean(img)
+    img = (img - m) / s
+    img = rescale(img, 0, 1)
+    del m, s, N
+
+    if np.ndim(img)!=3:
+        img = np.dstack((img,img,img))
+
+    return img
+
+##========================================================
+def filter_one_hot(label, blobsize):
+    #filter the one-hot encoded  binary masks
+    lstack = (np.arange(label.max()) == label[...,None]-1).astype(int) #one-hot encode
+
+    for kk in range(lstack.shape[-1]):
+        l = remove_small_objects(lstack[:,:,kk].astype('uint8')>0, blobsize)
+        l = remove_small_holes(lstack[:,:,kk].astype('uint8')>0, blobsize)
+        lstack[:,:,kk] = np.round(l).astype(np.uint8)
+        del l
+
+    label = np.argmax(lstack, -1)+1
+    del lstack
+    return label
+
+##========================================================
+def filter_one_hot_spatial(label, distance):
+    #filter the one-hot encoded  binary masks
+    lstack = (np.arange(label.max()) == label[...,None]-1).astype(int) #one-hot encode
+
+    tmp = np.zeros_like(label)
+    for kk in range(lstack.shape[-1]):
+        l = lstack[:,:,kk]
+        d = ndimage.distance_transform_edt(l)
+        l[d<distance] = 0
+        lstack[:,:,kk] = np.round(l).astype(np.uint8)
+        del l
+        tmp[d<=distance] += 1
+
+    label = np.argmax(lstack, -1)+1
+    label[tmp==label.max()] = 0
+    del lstack
+    return label
+
+# ##========================================================
+# def inpaint_zeros(label):
+#     valid_mask = label>0
+#     coords = np.array(np.nonzero(valid_mask)).T
+#     values = label[valid_mask]
+#     it = interpolate.LinearNDInterpolator(coords, values, fill_value=0)
+#     out = it(list(np.ndindex(label.shape))).reshape(label.shape)
+#     return out
+
+def inpaint_nans(im):
+    ipn_kernel = np.array([[1,1,1],[1,0,1],[1,1,1]]) # kernel for inpaint_nans
+    nans = np.isnan(im)
+    while np.sum(nans)>0:
+        im[nans] = 0
+        vNeighbors = convolve2d((nans==False),ipn_kernel,mode='same',boundary='symm')
+        im2 = convolve2d(im,ipn_kernel,mode='same',boundary='symm')
+        im2[vNeighbors>0] = im2[vNeighbors>0]/vNeighbors[vNeighbors>0]
+        im2[vNeighbors==0] = np.nan
+        im2[(nans==False)] = im[(nans==False)]
+        im = im2
+        nans = np.isnan(im)
+    return im
 
 ##========================================================
 def crf_refine(label,
@@ -77,19 +152,15 @@ def crf_refine(label,
     OUTPUTS: label [ndarray]: label image 2D matrix of integers
     """
 
-    gx,gy = np.meshgrid(np.arange(img.shape[1]), np.arange(img.shape[0]))
-    # print(gx.shape)
-    img = np.dstack((img,np.sqrt(gx**2 + gy**2))) #gx,gy))
-    #print(img.shape)
+    #gx,gy = np.meshgrid(np.arange(img.shape[1]), np.arange(img.shape[0]))
+    #img = np.dstack((img,np.sqrt(gx**2 + gy**2))) #gx,gy))
+    Horig = label.shape[0]
+    Worig = label.shape[1]
 
-    #gt_prob = 0.9
     l_unique = np.unique(label.flatten())#.tolist()
     scale = 1+(5 * (np.array(img.shape).max() / 3000))
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('CRF scale: %f' % (scale))
-
-    Horig = label.shape[0]
-    Worig = label.shape[1]
 
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('CRF downsample factor: %f' % (crf_downsample_factor))
@@ -102,17 +173,25 @@ def crf_refine(label,
     # do the same for the label image
     label = label[::crf_downsample_factor,::crf_downsample_factor]
 
+    Hnew = label.shape[0]
+    Wnew = label.shape[1]
+
     orig_mn = np.min(np.array(label).flatten())
     orig_mx = np.max(np.array(label).flatten())
 
-    n = 1+(orig_mx-orig_mn)
+    if l_unique[0]==0:
+        n = (orig_mx-orig_mn)#+1
 
-    label = 1+(label - orig_mn)
+    else:
 
-    mn = np.min(np.array(label).flatten())
-    mx = np.max(np.array(label).flatten())
+        n = (orig_mx-orig_mn)+1
 
-    n = 1+(mx-mn)
+        label = (label - orig_mn)+1
+
+        mn = np.min(np.array(label).flatten())
+        mx = np.max(np.array(label).flatten())
+
+        n = (mx-mn)+1
 
     H = label.shape[0]
     W = label.shape[1]
@@ -138,19 +217,20 @@ def crf_refine(label,
     logging.info('CRF feature extraction complete ... inference starting')
 
     Q = d.inference(10)
-    result = 1+np.argmax(Q, axis=0).reshape((H, W)).astype(np.uint8)
+    result = np.argmax(Q, axis=0).reshape((H, W)).astype(np.uint8) +1
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('CRF inference made')
 
-    result = resize(result, (Horig, Worig), order=0, anti_aliasing=True)
+    uniq = np.unique(result.flatten())
 
-    result = rescale(result, orig_mn, orig_mx).astype(np.uint8)
+    result = resize(result, (Horig, Worig), order=0, anti_aliasing=False) #True)
+
+    result = rescale(result, 1, orig_mx).astype(np.uint8)
 
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('label resized and rescaled ... CRF post-processing complete')
 
     return result, n
-
 
 ##========================================================
 def features_sigma(img,
@@ -167,6 +247,8 @@ def features_sigma(img,
     # print(gx.shape)
     #features.append(gx)
     features.append(np.sqrt(gx**2 + gy**2)) #gy) #use polar radius of pixel locations as cartesian coordinates
+    del gx, gy
+
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('Location features extracted')
 
@@ -185,9 +267,11 @@ def features_sigma(img,
         ]
 
         eigvals = feature.hessian_matrix_eigvals(H_elems)
+        del H_elems
 
         for eigval_mat in eigvals:
             features.append(eigval_mat)
+        del eigval_mat
 
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('Image features extracted using sigma= %f' % (sigma))
@@ -221,13 +305,13 @@ def extract_features_2d(
         endpoint=True,
     )
 
-    #n_sigmas = len(sigmas)
-    all_results = [
-        features_sigma(img, sigma, intensity=intensity, edges=edges, texture=texture)
-        for sigma in sigmas
-    ]
+    # #n_sigmas = len(sigmas)
+    # all_results = [
+    #     features_sigma(img, sigma, intensity=intensity, edges=edges, texture=texture)
+    #     for sigma in sigmas
+    # ]
 
-    all_results = Parallel(n_jobs=-1, verbose=0)(delayed(features_sigma)(img, sigma, intensity=intensity, edges=edges, texture=texture) for sigma in sigmas)
+    all_results = Parallel(n_jobs=-2, verbose=0)(delayed(features_sigma)(img, sigma, intensity=intensity, edges=edges, texture=texture) for sigma in sigmas)
 
     return list(itertools.chain.from_iterable(all_results))
 
@@ -322,11 +406,14 @@ def do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture,sigma_
     except:
         pass
 
+    # scaler = StandardScaler()
+    # training_data = scaler.fit_transform(training_data)
+
     #print(training_data.shape)
     #print(training_labels.shape)
 
-    if training_data.shape[0]>500000:
-        logging.info('Number of samples exceeds 500000')
+    if training_data.shape[0]>200000:
+        logging.info('Number of samples exceeds 200000')
         ind = np.round(np.linspace(0,training_data.shape[0]-1,500000)).astype('int')
         training_data = training_data[ind,:]
         training_labels = training_labels[ind]
@@ -387,7 +474,6 @@ def segmentation(
     callback_context,
     crf_theta_slider_value,
     crf_mu_slider_value,
-    median_filter_value,
     rf_downsample_value,
     crf_downsample_factor,
     gt_prob,
@@ -401,13 +487,19 @@ def segmentation(
     n_estimators,#=5
 ):
 
-    if np.ndim(img)!=3:
-        img = np.dstack((img,img,img))
+    # #standardization using adjusted standard deviation
+    # N = np.shape(img)[0] * np.shape(img)[1]
+    # s = np.maximum(np.std(img), 1.0/np.sqrt(N))
+    # m = np.mean(img)
+    # img = (img - m) / s
+    # img = rescale(img, 0, 1)
+    # if np.ndim(img)!=3:
+    #     img = np.dstack((img,img,img))
 
-    N = np.prod(np.shape(img))
-    s = np.maximum(np.sqrt(img), 1.0/np.sqrt(N))
-    m = np.mean(img)
-    img = (img - m) / s
+    img = standardize(img)
+
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('Image standardized')
 
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     for ni in np.unique(mask[1:]):
@@ -424,8 +516,124 @@ def segmentation(
 
         result = do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture, sigma_min,sigma_max, rf_downsample_value, n_estimators) #
 
+        Worig = img.shape[0]
+        result = filter_one_hot(result, 2*Worig)
+
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('One-hot labels filtered')
+
+        result = filter_one_hot_spatial(result, 2)
+
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('One-hot labels spatially filtered')
+
+        result = result.astype('float')
+        result[result==0] = np.nan
+        result = inpaint_nans(result).astype('uint8')
+
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('Spatially filtered values inpainted')
+
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('RF model applied with sigma range %f : %f' % (sigma_min,sigma_max))
+
+        def tta_crf_int(img, result, k):
+            k = int(k)
+            result2, n = crf_refine(np.roll(result,k), np.roll(img,k), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob)
+            result2 = np.roll(result2, -k)
+            if k==0:
+                w=.1
+            else:
+                w = 1/np.sqrt(k)
+
+            Worig = result2.shape[0]
+            result2 = filter_one_hot(result2, 2*Worig)
+
+            return result2, w,n
+
+        num_tta = 10
+        w = Parallel(n_jobs=-2, verbose=0)(delayed(tta_crf_int)(img, result, k) for k in np.linspace(0,int(img.shape[0]),num_tta))
+        R,W,n = zip(*w)
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('CRF model applied with %i test-time augmentations' % ( num_tta))
+
+        result2 = np.round(np.average(np.dstack(R), axis=-1, weights = W)).astype('uint8')
+        del R
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('Weighted average applied to test-time augmented outputs')
+
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('CRF model applied with theta=%f and mu=%f' % ( crf_theta_slider_value, crf_mu_slider_value))
+        #
+        # result2, n = crf_refine(result, img, crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #CRF refine
+
+        if ((n==1)):
+            result2[result>0] = np.unique(result)
+
+        result2 = result2.astype('float')
+        result2[result2==0] = np.nan
+        result2 = inpaint_nans(result2).astype('uint8')
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('Spatially filtered values inpainted')
+
+    return result2
+
+
+
+# from skimage.filters.rank import median
+# from skimage.morphology import disk
+# from scipy import interpolate
+# from functools import partial
+#
+# # save np.load
+# np_load_old = partial(np.load)
+#
+# # modify the default parameters of np.load
+# np.load = lambda *a,**k: np_load_old(*a, allow_pickle=True, **k)
+
+
+
+    # #zero out random patches
+    # rng = np.random.default_rng(12345)
+    # ind = rng.integers(low=0, high=Hnew, size= int(10*(Hnew/100)) )  #random 10% of rows
+    # #ind = np.random.choice(np.arange(Hnew), , replace=False)
+    # label[ind,:] = 0
+    # ind = rng.integers(low=0, high=Wnew, size= int(10*(Wnew/100)) )  #random 10% of cols
+    # #ind = np.random.choice(np.arange(Hnew), , replace=False)
+    # label[:,ind] = 0
+    # result[result<orig_mn] = orig_mn
+    # result[result>orig_mx] = orig_mx
+    # uniq2 = np.unique(result.flatten())
+    #
+    # for k in np.setdiff1d(uniq,uniq2): #for all values in resized not in original
+    #     #print('%i is different' % (k))
+    #     result[result==k] = uniq[np.argmin(k-uniq)] #replace with closest value in orig
+
+    # #filter the one-hot encoded  binary masks
+    # lstack = (np.arange(result.max()) == result[...,None]-1).astype(int) #one-hot encode
+    # for kk in range(lstack.shape[-1]):
+    #     l = remove_small_objects(lstack[:,:,kk].astype('uint8')>0, 2*Worig)
+    #     l = remove_small_holes(lstack[:,:,kk].astype('uint8')>0, 2*Worig)
+    #     lstack[:,:,kk] = np.round(l).astype(np.uint8)
+    #     del l
+    # result = np.argmax(lstack, -1)+1 #reconstruct
+    # del lstack
+
+
+        #inpaint
+        # valid_mask = crf_result_filt>0
+        # coords = np.array(np.nonzero(valid_mask)).T
+        # values = crf_result_filt[valid_mask]
+        #
+        # it = interpolate.LinearNDInterpolator(coords, values, fill_value=0)
+        #
+        # crf_result_filt_inp = it(list(np.ndindex(crf_result_filt.shape))).reshape(crf_result_filt.shape)
+
+        # if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
+        #     result2 = median(result2, disk(median_filter_value)).astype(np.uint8)
+        #
+        #     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        #     logging.info('Median filter of radius %i applied' % (median_filter_value))
 
         # result2 = result.copy()
 
@@ -454,38 +662,6 @@ def segmentation(
         #         W.append(.1) #np.nan)
         #     else:
         #         W.append(1/np.sqrt(k))
-
-        def tta_crf(img, result, k):
-            k = int(k)
-            result2, n = crf_refine(np.roll(result,k), np.roll(img,k), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #CRF refine
-            result2 = np.roll(result2, -k)
-            if k==0:
-                w=.1
-            else:
-                w = 1/np.sqrt(k)
-            return result2, w,n
-
-        w = Parallel(n_jobs=-2, verbose=0)(delayed(tta_crf)(img, result, k) for k in np.linspace(0,int(img.shape[0]/5),5))
-        R,W,n = zip(*w)
-
-        result2 = np.round(np.average(np.dstack(R), axis=-1, weights = W)).astype('uint8')
-        del R
-
-        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-        logging.info('CRF model applied with theta=%f and mu=%f' % ( crf_theta_slider_value, crf_mu_slider_value))
-        #
-        # result2, n = crf_refine(result, img, crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #CRF refine
-
-        if ((n==1)):
-            result2[result>0] = np.unique(result)
-
-        if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
-            result2 = median(result2, disk(median_filter_value)).astype(np.uint8)
-
-            logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-            logging.info('Median filter of radius %i applied' % (median_filter_value))
-    return result2
-
 
 # ##========================================================
 # def expand_img(img):

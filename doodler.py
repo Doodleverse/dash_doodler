@@ -61,28 +61,33 @@ try:
 except:
     from defaults import *
     print('Default hyperparameters imported from src/my_defaults.py')
-finally:
-    DEFAULT_PEN_WIDTH = 2
-    DEFAULT_CRF_DOWNSAMPLE = 4
-    DEFAULT_RF_DOWNSAMPLE = 10
-    DEFAULT_CRF_THETA = 40
-    DEFAULT_CRF_MU = 40
-    DEFAULT_MEDIAN_KERNEL = 3
-    DEFAULT_RF_NESTIMATORS = 3
-    DEFAULT_CRF_GTPROB = 0.9
-    SIGMA_MIN = 1
-    SIGMA_MAX = 16
-    print('Default hyperparameters imported set')
+# finally:
+#     DEFAULT_PEN_WIDTH = 2
+#     DEFAULT_CRF_DOWNSAMPLE = 4
+#     DEFAULT_RF_DOWNSAMPLE = 10
+#     DEFAULT_CRF_THETA = 10
+#     DEFAULT_CRF_MU = 10
+#     DEFAULT_MEDIAN_KERNEL = 3
+#     DEFAULT_RF_NESTIMATORS = 3
+#     DEFAULT_CRF_GTPROB = 0.9
+#     SIGMA_MIN = 1
+#     SIGMA_MAX = 16
+#     print('Default hyperparameters imported set')
 
 # the number of different classes for labels
 DEFAULT_LABEL_CLASS = 0
 
 UPLOAD_DIRECTORY = os.getcwd()+os.sep+"assets"
 LABELED_DIRECTORY = os.getcwd()+os.sep+"labeled"
+
 ##========================================================
 
-with open('classes.txt') as f:
-    classes = f.readlines()
+try:
+    with open('classes.txt') as f:
+        classes = f.readlines()
+except: #in case classes.txt does not exist
+    print("classes.txt not found or badly formatted. Exit the program and fix the classes.txt file ... otherwie, will continue using default classes. ")
+    classes = ['water', 'land']
 
 class_label_names = [c.strip() for c in classes]
 
@@ -94,7 +99,7 @@ else:
     class_label_colormap = px.colors.qualitative.Light24
 
 
-# we can't have less colors than classes
+# we can't have fewer colors than classes
 assert NUM_LABEL_CLASSES <= len(class_label_colormap)
 
 class_labels = list(range(NUM_LABEL_CLASSES))
@@ -231,7 +236,7 @@ app.layout = html.Div(
         html.Div(
             id="banner",
             children=[
-                html.H1(
+                html.H2(
             "Doodler: Fast Interactive Segmentation of Imagery",
             id="title",
             className="seven columns",
@@ -243,7 +248,7 @@ app.layout = html.Div(
         dcc.Upload(
             id="upload-data",
             children=html.Div(
-                ["Drag and drop or click to select a file to upload."]
+                ["                                 Label all classes that are present, in all regions of the image those classes occur."]
             ),
             style={
                 "width": "100%",
@@ -324,8 +329,8 @@ app.layout = html.Div(
                         dcc.Slider(
                             id="pen-width",
                             min=0,
-                            max=4,
-                            step=0.1,
+                            max=5,
+                            step=1,
                             value=DEFAULT_PEN_WIDTH,
                         ),
 
@@ -352,9 +357,9 @@ app.layout = html.Div(
                         # Slider for specifying pen width
                         dcc.Slider(
                             id="crf-theta-slider",
-                            min=10,
-                            max=220,
-                            step=10,
+                            min=1,
+                            max=100,
+                            step=1,
                             value=DEFAULT_CRF_THETA,
                         ),
 
@@ -363,10 +368,20 @@ app.layout = html.Div(
                         dcc.Slider(
                             id="crf-mu-slider",
                             min=1,
-                            max=255,
+                            max=100,
                             step=1,
                             value=DEFAULT_CRF_MU,
                         ),
+
+                        # html.H6(id="median-filter-display"),
+                        # # Slider for specifying pen width
+                        # dcc.Slider(
+                        #     id="median-filter",
+                        #     min=0.1,
+                        #     max=100,
+                        #     step=0.1,
+                        #     value=DEFAULT_MEDIAN_KERNEL,
+                        # ),
 
                         html.H6(id="crf-downsample-display"),
                         # Slider for specifying pen width
@@ -386,16 +401,6 @@ app.layout = html.Div(
                             max=0.95,
                             step=0.05,
                             value=DEFAULT_CRF_GTPROB,
-                        ),
-
-                        html.H6(id="median-filter-display"),
-                        # Slider for specifying pen width
-                        dcc.Slider(
-                            id="median-filter",
-                            min=0.1,
-                            max=100,
-                            step=0.1,
-                            value=DEFAULT_MEDIAN_KERNEL,
                         ),
 
                         dcc.Markdown(
@@ -467,7 +472,7 @@ app.layout = html.Div(
             html.Button('Submit', id='button'),
             html.Div(id='my-div'),
 
-            html.H6("Select Image"),
+            html.H3("Select Image"),
             dcc.Dropdown(
                 id="select-image",
                 optionHeight=15,
@@ -492,9 +497,8 @@ app.layout = html.Div(
             """
     **Instructions:**
     * Before you begin, make a new 'classes.txt' file that contains a list of the classes you'd like to label
-    * Optionally, you can copy the images you wish to label into the 'assets' folder (just .jpg lower case extension for now)
+    * Optionally, you can copy the images you wish to label into the 'assets' folder (just jpg, JPG or jpeg extension, or mixtures of those, for now)
     * Enter a user ID (initials or similar). This will get appended to your results to identify you. Results are also timestamped. You may enter a user ID at any time (or not at all)
-    * Launch the program (optionally, upload imagery by dragging it into the area above)
     * Select an image from the list (often you need to select the image twice: make sure the image selected matches the image name shown in the box)
     * Make some brief annotations ('doodles') of every class present in the image, in every region of the image that class is present
     * Check 'Show/compute segmentation'. The computation time depends on image size, and the number of classes and doodles. Larger image or more doodles/classes = greater time and memory required
@@ -573,6 +577,10 @@ def uploaded_files():
 
     filelist = 'files_done.txt'
 
+
+#### REMOVE LABELED FOLDER / REQUIREMENT
+
+
     with open(filelist, 'w') as filehandle:
         for listitem in labeled_files:
             filehandle.write('%s\n' % listitem)
@@ -591,7 +599,6 @@ def file_download_link(filename):
 ##========================================================
 def show_segmentation(image_path,
     mask_shapes,
-    median_filter_value,
     callback_context,
     crf_theta_slider_value,
     crf_mu_slider_value,
@@ -621,9 +628,9 @@ def show_segmentation(image_path,
         "color_class_offset": -1,
     }
 
-    segimg, seg, img = compute_segmentations(
+    segimg, seg, img, color_doodles, doodles = compute_segmentations(
         mask_shapes, crf_theta_slider_value,crf_mu_slider_value,
-        results_folder,  median_filter_value, rf_downsample_value,
+        results_folder, rf_downsample_value, # median_filter_value,
         crf_downsample_factor, gt_prob, my_id_value, callback_context, rf_file, data_file,
         multichannel, intensity, edges, texture, sigma_min, sigma_max, n_estimators,
         img_path=image_path,
@@ -634,7 +641,7 @@ def show_segmentation(image_path,
     # get the classifier that we can later store in the Store
     segimgpng = img_array_2_pil(segimg) #plot_utils.
 
-    return (segimgpng, seg, img)
+    return (segimgpng, seg, img, color_doodles, doodles )
 
 
 def parse_contents(contents, filename, date):
@@ -682,7 +689,6 @@ def listToString(s):
     Output("mu-display", "children"),
     Output("crf-downsample-display", "children"),
     Output("crf-gtprob-display", "children"),
-    Output("median-filter-display", "children"),
     Output("sigma-display", "children"),
     Output("rf-downsample-display", "children"),
     Output("rf-nestimators-display", "children"),
@@ -700,7 +706,6 @@ def listToString(s):
     Input('crf-mu-slider', "value"),
     Input("pen-width", "value"),
     Input("crf-show-segmentation", "value"),
-    Input("median-filter", "value"),
     Input("crf-downsample-slider", "value"),
     Input("crf-gtprob-slider", "value"),
     Input("rf-sigma-range-slider", "value"),
@@ -729,7 +734,6 @@ def update_output(
     crf_mu_slider_value,
     pen_width_value,
     show_segmentation_value,
-    median_filter_value,
     crf_downsample_value,
     gt_prob,
     sigma_range_slider_value,
@@ -746,7 +750,7 @@ def update_output(
     """Save uploaded files and regenerate the file list."""
 
     callback_context = [p["prop_id"] for p in dash.callback_context.triggered][0]
-    print(callback_context)
+    #print(callback_context)
 
     multichannel = True
     intensity = True
@@ -794,7 +798,7 @@ def update_output(
        masks_data={"shapes": []}
        segmentation_data={}
 
-    pen_width = int(round(2 ** (pen_width_value)))
+    pen_width = pen_width_value #int(round(2 ** (pen_width_value)))
 
     # find label class value by finding button with the greatest n_clicks
     if any_label_class_button_value is None:
@@ -844,8 +848,8 @@ def update_output(
             else: # windows
                start = time.clock()
 
-            segimgpng, seg, img = show_segmentation(
-                [select_image_value], masks_data["shapes"], median_filter_value, callback_context,
+            segimgpng, seg, img, color_doodles, doodles  = show_segmentation(
+                [select_image_value], masks_data["shapes"], callback_context,#median_filter_value,
                  crf_theta_slider_value, crf_mu_slider_value, results_folder, rf_downsample_value, crf_downsample_value, gt_prob, my_id_value, rf_file, data_file,
                  multichannel, intensity, edges, texture, sigma_range_slider_value[0], sigma_range_slider_value[1], n_estimators,
             )
@@ -855,6 +859,10 @@ def update_output(
             else: # windows
                elapsed = (time.clock() - start)/60
             print("Processing took "+ str(elapsed) + " minutes")
+
+            lstack = (np.arange(seg.max()) == seg[...,None]-1).astype(int) #one-hot encode
+
+            #np.savez('test', img.astype(np.uint8), lstack.astype(np.uint8), color_doodles.astype(np.uint8), doodles.astype(np.uint8) )
 
             if type(select_image_value) is list:
                 if 'jpg' in select_image_value[0]:
@@ -886,29 +894,83 @@ def update_output(
             logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
             logging.info('RGB label image saved to %s' % (colfile))
 
+            settings_dict = np.array([pen_width, crf_downsample_value, rf_downsample_value, crf_theta_slider_value, crf_mu_slider_value,  n_estimators, gt_prob, sigma_range_slider_value[0], sigma_range_slider_value[1]])#median_filter_value,
+
             if type(select_image_value) is list:
                 if 'jpg' in select_image_value[0]:
-                    grayfile = select_image_value[0].replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                    numpyfile = select_image_value[0].replace('assets',results_folder).replace('.jpg','_'+my_id_value+'.npz') #datetime.now().strftime("%Y-%m-%d-%H-%M")+
                 if 'JPG' in select_image_value[0]:
-                    grayfile = select_image_value[0].replace('assets',results_folder).replace('.JPG','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                    numpyfile = select_image_value[0].replace('assets',results_folder).replace('.JPG','_'+my_id_value+'.npz') #datetime.now().strftime("%Y-%m-%d-%H-%M")+
                 if 'jpeg' in select_image_value[0]:
-                    grayfile = select_image_value[0].replace('assets',results_folder).replace('.jpeg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                    numpyfile = select_image_value[0].replace('assets',results_folder).replace('.jpeg','_'+my_id_value+'.npz') #datetime.now().strftime("%Y-%m-%d-%H-%M")+
 
-                #grayfile = select_image_value[0].replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-                imsave(grayfile, seg)
+
+                if os.path.exists(numpyfile):
+                    saved_data = np.load(numpyfile)
+                    savez_dict = dict()
+                    for k in saved_data.keys():
+                        tmp = saved_data[k]
+                        name = str(k)
+                        savez_dict['0'+name] = tmp
+                        del tmp
+
+                    savez_dict['image'] = img.astype(np.uint8)
+                    savez_dict['label'] = lstack.astype(np.uint8)
+                    savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
+                    savez_dict['doodles'] = doodles.astype(np.uint8)
+                    savez_dict['settings'] = settings_dict
+                    np.savez(numpyfile, **savez_dict )
+
+                    #np.savez(numpyfile, img.astype(np.uint8), lstack.astype(np.uint8), color_doodles.astype(np.uint8), doodles.astype(np.uint8), saved_img, saved_label, )
+                else:
+                    savez_dict = dict()
+                    savez_dict['image'] = img.astype(np.uint8)
+                    savez_dict['label'] = lstack.astype(np.uint8)
+                    savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
+                    savez_dict['doodles'] = doodles.astype(np.uint8)
+                    savez_dict['settings'] = settings_dict
+
+                    np.savez(numpyfile, **savez_dict ) #save settings too
+
             else:
                 if 'jpg' in select_image_value:
-                    grayfile = select_image_value.replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                    numpyfile = select_image_value.replace('assets',results_folder).replace('.jpg','_'+my_id_value+'.npz') #datetime.now().strftime("%Y-%m-%d-%H-%M")+
                 if 'JPG' in select_image_value:
-                    grayfile = select_image_value.replace('assets',results_folder).replace('.JPG','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                    numpyfile = select_image_value.replace('assets',results_folder).replace('.JPG','_'+my_id_value+'.npz') #datetime.now().strftime("%Y-%m-%d-%H-%M")+
                 if 'jpeg' in select_image_value:
-                    grayfile = select_image_value.replace('assets',results_folder).replace('.jpeg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+                    numpyfile = select_image_value.replace('assets',results_folder).replace('.jpeg','_'+my_id_value+'.npz') #datetime.now().strftime("%Y-%m-%d-%H-%M")+
 
-                #grayfile = select_image_value.replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-                imsave(grayfile, seg)
-            del img, seg
+                if os.path.exists(numpyfile):
+                    saved_data = np.load(numpyfile)
+                    savez_dict = dict()
+                    for k in saved_data.keys():
+                        tmp = saved_data[k]
+                        name = str(k)
+                        savez_dict['0'+name] = tmp
+                        del tmp
+
+                    savez_dict['image'] = img.astype(np.uint8)
+                    savez_dict['label'] = lstack.astype(np.uint8)
+                    savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
+                    savez_dict['doodles'] = doodles.astype(np.uint8)
+                    savez_dict['settings'] = settings_dict
+
+                    np.savez(numpyfile, **savez_dict )#save settings too
+
+                    #np.savez(numpyfile, img.astype(np.uint8), lstack.astype(np.uint8), color_doodles.astype(np.uint8), doodles.astype(np.uint8), saved_img, saved_label, )
+                else:
+                    savez_dict = dict()
+                    savez_dict['image'] = img.astype(np.uint8)
+                    savez_dict['label'] = lstack.astype(np.uint8)
+                    savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
+                    savez_dict['doodles'] = doodles.astype(np.uint8)
+                    savez_dict['settings'] = settings_dict
+
+                    np.savez(numpyfile, **savez_dict )#save settings too
+
+            del img, seg, lstack, doodles, color_doodles
             logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-            logging.info('Greyscale label image saved to %s' % (grayfile))
+            logging.info('Numpy arrays saved to %s' % (numpyfile))
 
             segmentation_data = shapes_seg_pair_as_dict(
                 segmentation_data, sh, segimgpng
@@ -949,7 +1011,6 @@ def update_output(
             the_file.write('DEFAULT_RF_DOWNSAMPLE = {}\n'.format(rf_downsample_value))
             the_file.write('DEFAULT_CRF_THETA = {}\n'.format(crf_theta_slider_value))
             the_file.write('DEFAULT_CRF_MU = {}\n'.format(crf_mu_slider_value))
-            the_file.write('DEFAULT_MEDIAN_KERNEL = {}\n'.format(median_filter_value))
             the_file.write('DEFAULT_RF_NESTIMATORS = {}\n'.format(n_estimators))
             the_file.write('DEFAULT_CRF_GTPROB = {}\n'.format(gt_prob))
             the_file.write('SIGMA_MIN = {}\n'.format(sigma_range_slider_value[0]))
@@ -970,11 +1031,10 @@ def update_output(
         'User ID: "{}"'.format(my_id_value) ,
         select_image_value,
         "Pen width (default: %d): %d" % (DEFAULT_PEN_WIDTH,pen_width),
-        "Blurring parameter for CRF image feature extraction (default: %d): %d" % (DEFAULT_CRF_THETA, crf_theta_slider_value),
-        "CRF color class difference tolerance parameter (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value),
+        "Blur factor (default: %d): %d" % (DEFAULT_CRF_THETA, crf_theta_slider_value), #"Blurring parameter for CRF image feature extraction (default: %d): %d"
+        "Model independence factor (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value), #CRF color class difference tolerance parameter (default: %d)
         "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
         "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
-        "Median filter kernel radius (default: %d): %d" % (DEFAULT_MEDIAN_KERNEL,median_filter_value),
         "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
         "RF downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
         "RF estimators per image (default: %d): %d" % (DEFAULT_RF_NESTIMATORS,n_estimators),
@@ -990,11 +1050,10 @@ def update_output(
         'User ID: "{}"'.format(my_id_value) ,
         select_image_value,
         "Pen width (default: %d): %d" % (DEFAULT_PEN_WIDTH,pen_width),
-        "Blurring parameter for CRF image feature extraction (default: %d): %d" % (DEFAULT_CRF_THETA, crf_theta_slider_value),
-        "CRF color class difference tolerance parameter (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value),
+        "Blur factor (default: %d): %d" % (DEFAULT_CRF_THETA, crf_theta_slider_value),
+        "Model independence factor  (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value),
         "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
         "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
-        "Median filter kernel radius (default: %d): %d" % (DEFAULT_MEDIAN_KERNEL,median_filter_value),
         "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
         "RF downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
         "RF estimators per image (default: %d): %d" % (DEFAULT_RF_NESTIMATORS,n_estimators),
@@ -1021,6 +1080,48 @@ if __name__ == "__main__":
     print('Go to http://127.0.0.1:8050/ in your web browser to use Doodler')
     app.run_server()#debug=True) #debug=True, port=8888)
 
+
+            # settings_dict = dict()
+            # settings_dict['pen_width'] = pen_width
+            # settings_dict['crf_downsample_value'] = crf_downsample_value
+            # settings_dict['rf_downsample_value'] = rf_downsample_value
+            # settings_dict['crf_theta_slider_value'] = crf_theta_slider_value
+            # settings_dict['crf_mu_slider_value'] = crf_mu_slider_value
+            # settings_dict['median_filter_value'] = median_filter_value
+            # settings_dict['n_estimators'] = n_estimators
+            # settings_dict['gt_prob'] = gt_prob
+            # settings_dict['sigma_range_slider_value'] = sigma_range_slider_value
+
+            # if type(select_image_value) is list:
+            #     if 'jpg' in select_image_value[0]:
+            #         grayfile = select_image_value[0].replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+            #     if 'JPG' in select_image_value[0]:
+            #         grayfile = select_image_value[0].replace('assets',results_folder).replace('.JPG','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+            #     if 'jpeg' in select_image_value[0]:
+            #         grayfile = select_image_value[0].replace('assets',results_folder).replace('.jpeg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+            #
+            #     #grayfile = select_image_value[0].replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+            #     imsave(grayfile, seg)
+            # else:
+            #     if 'jpg' in select_image_value:
+            #         grayfile = select_image_value.replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+            #     if 'JPG' in select_image_value:
+            #         grayfile = select_image_value.replace('assets',results_folder).replace('.JPG','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+            #     if 'jpeg' in select_image_value:
+            #         grayfile = select_image_value.replace('assets',results_folder).replace('.jpeg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+            #
+            #     #grayfile = select_image_value.replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
+            #     imsave(grayfile, seg)
+            # del img, seg
+            # logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+            # logging.info('Greyscale label image saved to %s' % (grayfile))
+
+                # savez_dict = dict()
+                # savez_dict['image'] = img.astype(np.uint8)
+                # savez_dict['label'] = lstack.astype(np.uint8)
+                # savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
+                # savez_dict['doodles'] = doodles.astype(np.uint8)
+                # np.savez(numpyfile, savez_dict )
 
         # segmentation_features_value=[
         #     {"label": l.capitalize(), "value": l}

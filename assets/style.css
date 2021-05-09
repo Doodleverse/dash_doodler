@@ -559,3 +559,8 @@ div.date {
     text-align: right;
     display: inline-block;
 }
+
+#crf-show-segmentation label{
+  color: blue;
+  flex: 1;
+}
