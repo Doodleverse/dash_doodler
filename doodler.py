@@ -407,14 +407,14 @@ app.layout = html.Div(
                             ">Random Forest settings"
                         ),
 
-                        html.H6(id="sigma-display"),
-                        dcc.RangeSlider(
-                            id="rf-sigma-range-slider",
-                            min=1,
-                            max=30,
-                            step=1,
-                            value=[SIGMA_MIN, SIGMA_MAX], #1, 16],
-                        ),
+                        # html.H6(id="sigma-display"),
+                        # dcc.RangeSlider(
+                        #     id="rf-sigma-range-slider",
+                        #     min=1,
+                        #     max=30,
+                        #     step=1,
+                        #     value=[SIGMA_MIN, SIGMA_MAX], #1, 16],
+                        # ),
 
                         html.H6(id="rf-downsample-display"),
                         # Slider for specifying pen width
@@ -613,8 +613,8 @@ def show_segmentation(image_path,
     intensity,
     edges,
     texture,
-    sigma_min,
-    sigma_max,
+    # sigma_min,
+    # sigma_max,
     n_estimators,
     ):
 
@@ -628,11 +628,13 @@ def show_segmentation(image_path,
         "color_class_offset": -1,
     }
 
+    sigma_min=1; sigma_max=16
+
     segimg, seg, img, color_doodles, doodles = compute_segmentations(
         mask_shapes, crf_theta_slider_value,crf_mu_slider_value,
         results_folder, rf_downsample_value, # median_filter_value,
         crf_downsample_factor, gt_prob, my_id_value, callback_context, rf_file, data_file,
-        multichannel, intensity, edges, texture, sigma_min, sigma_max, n_estimators,
+        multichannel, intensity, edges, texture, 1, 16, n_estimators,
         img_path=image_path,
         shape_layers=shape_layers,
         label_to_colors_args=label_to_colors_args,
@@ -689,7 +691,7 @@ def listToString(s):
     Output("mu-display", "children"),
     Output("crf-downsample-display", "children"),
     Output("crf-gtprob-display", "children"),
-    Output("sigma-display", "children"),
+    # Output("sigma-display", "children"),
     Output("rf-downsample-display", "children"),
     Output("rf-nestimators-display", "children"),
     Output("classified-image-store", "data"),
@@ -708,7 +710,7 @@ def listToString(s):
     Input("crf-show-segmentation", "value"),
     Input("crf-downsample-slider", "value"),
     Input("crf-gtprob-slider", "value"),
-    Input("rf-sigma-range-slider", "value"),
+    # Input("rf-sigma-range-slider", "value"),
     Input("rf-downsample-slider", "value"),
     Input("rf-nestimators-slider", "value"),
     Input("select-image", "value"),
@@ -736,7 +738,7 @@ def update_output(
     show_segmentation_value,
     crf_downsample_value,
     gt_prob,
-    sigma_range_slider_value,
+    # sigma_range_slider_value,
     rf_downsample_value,
     n_estimators,
     select_image_value,
@@ -851,7 +853,7 @@ def update_output(
             segimgpng, seg, img, color_doodles, doodles  = show_segmentation(
                 [select_image_value], masks_data["shapes"], callback_context,#median_filter_value,
                  crf_theta_slider_value, crf_mu_slider_value, results_folder, rf_downsample_value, crf_downsample_value, gt_prob, my_id_value, rf_file, data_file,
-                 multichannel, intensity, edges, texture, sigma_range_slider_value[0], sigma_range_slider_value[1], n_estimators,
+                 multichannel, intensity, edges, texture,n_estimators, # sigma_range_slider_value[0], sigma_range_slider_value[1],
             )
 
             if os.name=='posix': # true if linux/mac
@@ -894,7 +896,7 @@ def update_output(
             logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
             logging.info('RGB label image saved to %s' % (colfile))
 
-            settings_dict = np.array([pen_width, crf_downsample_value, rf_downsample_value, crf_theta_slider_value, crf_mu_slider_value,  n_estimators, gt_prob, sigma_range_slider_value[0], sigma_range_slider_value[1]])#median_filter_value,
+            settings_dict = np.array([pen_width, crf_downsample_value, rf_downsample_value, crf_theta_slider_value, crf_mu_slider_value,  n_estimators, gt_prob])#median_filter_value,sigma_range_slider_value[0], sigma_range_slider_value[1]
 
             if type(select_image_value) is list:
                 if 'jpg' in select_image_value[0]:
@@ -1013,8 +1015,8 @@ def update_output(
             the_file.write('DEFAULT_CRF_MU = {}\n'.format(crf_mu_slider_value))
             the_file.write('DEFAULT_RF_NESTIMATORS = {}\n'.format(n_estimators))
             the_file.write('DEFAULT_CRF_GTPROB = {}\n'.format(gt_prob))
-            the_file.write('SIGMA_MIN = {}\n'.format(sigma_range_slider_value[0]))
-            the_file.write('SIGMA_MAX = {}\n'.format(sigma_range_slider_value[1]))
+            # the_file.write('SIGMA_MIN = {}\n'.format(sigma_range_slider_value[0]))
+            # the_file.write('SIGMA_MAX = {}\n'.format(sigma_range_slider_value[1]))
         print('my_defaults.py overwritten with parameter settings')
 
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
@@ -1035,7 +1037,7 @@ def update_output(
         "Model independence factor (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value), #CRF color class difference tolerance parameter (default: %d)
         "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
         "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
-        "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
+        # "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
         "RF downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
         "RF estimators per image (default: %d): %d" % (DEFAULT_RF_NESTIMATORS,n_estimators),
         segmentation_store_data,
@@ -1054,7 +1056,7 @@ def update_output(
         "Model independence factor  (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value),
         "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
         "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
-        "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
+        # "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
         "RF downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
         "RF estimators per image (default: %d): %d" % (DEFAULT_RF_NESTIMATORS,n_estimators),
         segmentation_store_data,

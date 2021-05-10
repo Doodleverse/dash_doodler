@@ -176,8 +176,8 @@ def gen_plot_seq(orig_distance, save_mode):
                     intensity=True,
                     edges=True,
                     texture=True,
-                    sigma_min=SIGMA_MIN,
-                    sigma_max=SIGMA_MAX,
+                    sigma_min=1, #SIGMA_MIN,
+                    sigma_max=16, #SIGMA_MAX,
                 )
             else:
                 features = extract_features(
@@ -186,8 +186,8 @@ def gen_plot_seq(orig_distance, save_mode):
                     intensity=True,
                     edges=True,
                     texture=True,
-                    sigma_min=SIGMA_MIN,
-                    sigma_max=SIGMA_MAX,
+                    sigma_min=1, #SIGMA_MIN,
+                    sigma_max=16, #SIGMA_MAX,
                 )
 
             counter=1
@@ -378,8 +378,10 @@ def gen_plot_seq(orig_distance, save_mode):
             plt.subplot(222); plt.imshow(rf_result_filt, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
             plt.title('b) Filtered', loc='left', fontsize=7)
 
-            ## filter based on distance
-            rf_result_filt = filter_one_hot_spatial(rf_result_filt, orig_distance)
+            if rf_result_filt.shape[0]>512:
+                ## filter based on distance
+                rf_result_filt = filter_one_hot_spatial(rf_result_filt, orig_distance)
+
             if save_mode:
                 savez_dict['rf_result_spatfilt'] = rf_result_filt
 
@@ -518,7 +520,7 @@ def gen_plot_seq(orig_distance, save_mode):
             #     W.append(out2)
             #     n.append(out3)
             # this parallel call replaces the above commented out loop
-            w = Parallel(n_jobs=-2, verbose=0)(delayed(tta_crf)(img, rf_result_filt_inp, k) for k in np.linspace(0,int(img.shape[0]),10))
+            w = Parallel(n_jobs=-2, verbose=0)(delayed(tta_crf)(img, rf_result_filt_inp, k) for k in np.linspace(0,int(img.shape[0])/5,10))
             R,W,n = zip(*w)
             del rf_result_filt_inp
 
@@ -552,8 +554,10 @@ def gen_plot_seq(orig_distance, save_mode):
             plt.subplot(222); plt.imshow(crf_result_filt, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
             plt.title('b) Filtered', loc='left', fontsize=7)
 
-            ## filter based on distance
-            crf_result_filt = filter_one_hot_spatial(crf_result_filt, distance)
+            if crf_result_filt.shape[0]>512:
+                ## filter based on distance
+                crf_result_filt = filter_one_hot_spatial(crf_result_filt, distance)
+                
             if save_mode:
                 savez_dict['rf_result_spatfilt'] = crf_result_filt
 

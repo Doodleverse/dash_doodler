@@ -158,8 +158,8 @@ def segment_images(save_mode,do_plot,print_labels,distance):
                 intensity=intensity,
                 edges=edges,
                 texture=texture,
-                sigma_min=SIGMA_MIN,
-                sigma_max=SIGMA_MAX,
+                sigma_min=1,#SIGMA_MIN,
+                sigma_max=16,#SIGMA_MAX,
             )
         else:
             features = extract_features(
@@ -168,8 +168,8 @@ def segment_images(save_mode,do_plot,print_labels,distance):
                 intensity=intensity,
                 edges=edges,
                 texture=texture,
-                sigma_min=SIGMA_MIN,
-                sigma_max=SIGMA_MAX,
+                sigma_min=1,#SIGMA_MIN,
+                sigma_max=16,#SIGMA_MAX,
             )
 
         outfile2 = TemporaryFile()

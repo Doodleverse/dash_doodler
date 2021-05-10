@@ -24,11 +24,11 @@ In typical order of importance:
 
 ### What is the maximum number of classes?
 
-This is also called the 'impossible' question because it entirely depends on the nature and variability of your imagery, and the appearance of features assigned to your specific discrete classes.
+<!-- This is also called the 'impossible' question because it entirely depends on the nature and variability of your imagery, and the appearance of features assigned to your specific discrete classes.
 However, there are a few guidelines we can provide:
 
 1. The minimum number of classes is 2. Theoretically, there is no maximum number of classes
-2.
+2. -->
 
 ### How should I choose classes?
 
@@ -37,7 +37,7 @@ See [this](how-to-doodle#how-to-decide-on-classes)
 
 ### Okay, I can use Doodler to make label images. Now what?
 
-The primary purpose of Doodler is to create enough label images that Deep Learnng image segmentation workflows become viable. To get started, you may follow this self-guided course made by Dr Daniel Buscombe, called ["ML Mondays"](https://dbuscombe-usgs.github.io/MLMONDAYS/docs/doc1#week-3-supervised-image-segmentation).
+The primary purpose of Doodler is to create enough label images that Deep Learning image segmentation workflows become viable. To get started, you may follow this self-guided course made by Dr Daniel Buscombe, called ["ML Mondays"](https://dbuscombe-usgs.github.io/MLMONDAYS/docs/doc1#week-3-supervised-image-segmentation).
 
 
 <!-- # Create a Page

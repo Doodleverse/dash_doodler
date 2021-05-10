@@ -2,13 +2,12 @@
 sidebar_position: 6
 ---
 
-(page under construction)
-
 # Terminology
+(page under construction)
 
 (If you find a phrase or word in these documents that you want better explained, submit an [issue](https://github.com/dbuscombe-usgs/dash_doodler/issues) on github, or better yet, [contribute to the docs yourself](../tutorial-extras/how-to-contribute))
 
-## Image segmentation
+### Image segmentation
 
 ![](https://dbuscombe-usgs.github.io/MLMONDAYS/img/seg_ex.png)
 
@@ -23,7 +22,7 @@ This is useful for things like:
 * quantifying everything in the scene as a unique class, with no features or objects unlabelled
 
 
-## Random Forest
+### Random Forest
 
 <!-- Random forests are a non-parametric ensemble discriminative classifier
 
@@ -36,10 +35,10 @@ The use of multiple overfitting estimators can be combined to reduce the effect 
 Bagging makes use of an ensemble of parallel estimators, each of which over-fits the data, and averages the results to find a better classification.
 An ensemble of randomized decision trees is known as a random forest. -->
 
-## Conditional Random Field
+### Conditional Random Field
 
 
-## Test-time augmentation
+### Test-time augmentation
 
 <!-- # Create a Page
 

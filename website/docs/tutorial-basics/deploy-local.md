@@ -2,7 +2,6 @@
 sidebar_position: 1
 ---
 
-
 # Installing Doodler on a PC for your own use
 
 These instructions are for regular python and command line users.
@@ -14,8 +13,13 @@ Conda environments are created in various ways, but the following instructions a
 ### Install
 Open a CLI (see above) - if in doubt, we recommend using the Anaconda shell that is installed by the Anaconda installation process.
 
+![](/img/install/install1.PNG)
 
+#### Download repository from github
 Navigate to a suitable place on your PC using shell navigation commands (`cd`) and clone/download the repository
+
+![](/img/install/install2.PNG)
+
 
 ```shell
 git clone --depth 1 https://github.com/dbuscombe-usgs/dash_doodler.git
@@ -23,13 +27,15 @@ git clone --depth 1 https://github.com/dbuscombe-usgs/dash_doodler.git
 
 (the `--depth 1` just means it will pull only the latest version of the software, saving time and disk space)
 
+![](/img/install/install3.PNG)
+
 Then change directory (`cd`) to the dash_doodler folder that you just downloaded
 
 ```shell
 cd dash_doodler
 ```
 
-Install the requirements
+#### Install the requirements
 
 :::tip Tip
 
@@ -76,6 +82,40 @@ If you are a Windows user (only) who wishes to use unix style commands, addition
 conda install m2-base
 ```
 :::
+
+### The Doodler files and file structure
+
+It's important you know what the various files do. It's also important to stress that all these files are arranged in folders whose precise relative location matters, so please no moving or deleting of files - it will cause you problems
+
+![](/img/install/install4.PNG)
+
+#### Assets folder
+This is the `assets` folder where you should put the images you want to label. The program comes with a set of default files that look like this:
+
+![](/img/install/install5.PNG)
+
+... before you start labeling your images you should move or delete these default images.
+
+#### Results folder
+This is the results folder. When you start "doodling", the program will automatically create a new timestamped folder like this containing your results
+
+![](/img/install/install6.PNG)
+
+#### Labeled folder
+This is the 'labeled' folder, where the program copies the images you have labeled to. It does this so it can keep track of which images you have labeled and which remain in the assets folder. It's also sometimes useful for you to see what and how many images you have labeled during a session.
+
+![](/img/install/install9.PNG)
+
+#### Sample folder
+The program also comes with a `sample` directory to test the default classifier (water/land). However, your sample images don't need to be located here; they can be anywhere you have read and write access to on your computer
+
+![](/img/install/install7.PNG)
+
+#### Utils folder
+Finally, these python scripts are run from the command line, and are a handy collection of things once you have some data, so we'll talk about them later
+![](/img/install/install8.PNG)
+
+
 
 
 <!-- A video is available that covers the installation process:

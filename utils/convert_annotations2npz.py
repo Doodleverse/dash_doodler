@@ -106,8 +106,8 @@ def op2_features(img):
             intensity=True,
             edges=True,
             texture=True,
-            sigma_min=SIGMA_MIN,
-            sigma_max=SIGMA_MAX,
+            sigma_min=1, #SIGMA_MIN,
+            sigma_max=16, #SIGMA_MAX,
         )
     else:
         features = extract_features(
@@ -116,8 +116,8 @@ def op2_features(img):
             intensity=True,
             edges=True,
             texture=True,
-            sigma_min=SIGMA_MIN,
-            sigma_max=SIGMA_MAX,
+            sigma_min=1, #SIGMA_MIN,
+            sigma_max=16, #SIGMA_MAX,
         )
 
     return features
@@ -130,7 +130,7 @@ def extract_features(
     intensity=True,
     edges=True,
     texture=True,
-    sigma_min=0.5,
+    sigma_min=1, #0.5,
     sigma_max=16,
 ):
     """Features for a single- or multi-channel image.
@@ -168,7 +168,7 @@ def extract_features_2d(
     intensity=True,
     edges=True,
     texture=True,
-    sigma_min=0.5,
+    sigma_min=1,#0.5,
     sigma_max=16
 ):
     """Features for a single channel image. ``img`` can be 2d or 3d.
@@ -343,19 +343,21 @@ for direc in direcs[1:]:
         rf_result = op3_rf(data['doodles'], features)
         del features
         rf_result_filt = filter_one_hot(rf_result, 2*rf_result.shape[0])
-        rf_result_filt = filter_one_hot_spatial(rf_result_filt, orig_distance)
+        if rf_result_filt.shape[0]>512:
+            rf_result_filt = filter_one_hot_spatial(rf_result_filt, orig_distance)
         rf_result_filt = rf_result_filt.astype('float')
         rf_result_filt[rf_result_filt==0] = np.nan
         rf_result_filt_inp = inpaint_nans(rf_result_filt).astype('uint8')
         del rf_result_filt, rf_result
 
-        w = Parallel(n_jobs=-2, verbose=0)(delayed(tta_crf)(img, rf_result_filt_inp, k) for k in np.linspace(0,int(img.shape[0]),10))
+        w = Parallel(n_jobs=-2, verbose=0)(delayed(tta_crf)(img, rf_result_filt_inp, k) for k in np.linspace(0,int(img.shape[0])/5,10))
         R,W,n = zip(*w)
         del rf_result_filt_inp
         crf_result = np.round(np.average(np.dstack(R), axis=-1, weights = W)).astype('uint8')
         del R,W,n
         crf_result_filt = filter_one_hot(crf_result, 2*crf_result.shape[0])
-        crf_result_filt = filter_one_hot_spatial(crf_result_filt, orig_distance)
+        if crf_result_filt.shape[0]>512:
+            crf_result_filt = filter_one_hot_spatial(crf_result_filt, orig_distance)
         crf_result_filt = crf_result_filt.astype('float')
         crf_result_filt[crf_result_filt==0] = np.nan
         crf_result_filt_inp = inpaint_nans(crf_result_filt).astype('uint8')

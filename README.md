@@ -313,6 +313,7 @@ GUI:
 * reordered crf controls so theta/mu, then downsample and probability of doodle (order of likelihood to tweak)
 * no longer median filter controls
 * made 'show/compute seg' button blue :)
+* no longer the sigma for 'sigma range'
 
 Modeling:
 * per image standardization and rescaling [0,1]
@@ -323,6 +324,7 @@ Modeling:
 * implements 'one-hot encoded mask spatial filtering'
 * implements inpainting on regions spatially filtered
 * pen width is used as-is, no longer exponentially scaled
+* SIGMA_MAX=16; SIGMA_MIN=1. Hardcoded. Easier to manage number of features, which now have to be 75. Also, they make very little difference
 
 I/O:
 * greyscale and annotations no longer saved to png file, instead to numpy area (npz compressed), which encodes
@@ -340,8 +342,11 @@ Other:
 * RF feature extraction now in parallel
 * CRF 'test time augmentation' now in parallel
 * `utils/plot_label_generation.py` is a new script that plots all the minutae of the steps involved in label generation, making plots and large npz files containing lots of variables I will explain later. By default each image is modeled with its own random forest. Uncomment "#do_sim = True" to run in 'chain simulation mode', where the model is updated in a chain, simulating what Doodler does.
-* `utils/convert_annotations2npz.py`
-* `utils/gen_npz_4_zoo.py`
+* `utils/convert_annotations2npz.py` is a new script that will convert annotation label images and associated images (created and used respectively by/during a previous incarnation of Doodler)
+* `utils/gen_npz_4_zoo.py` is a new script that will strip just the image and one-hot encoded label stack image for model training with Zoo
+
+Website:
+https://dbuscombe-usgs.github.io/dash_doodler/
 
 ## <a name="roadmap"></a>Roadmap
 
@@ -357,6 +362,6 @@ Other:
 
 * 'label here' feature based on analysis of doodles in real time -- how?
 
-* visualize npz file script
-
+* consolidate data/models script
+ 
 Use the issues tab to suggest new features!

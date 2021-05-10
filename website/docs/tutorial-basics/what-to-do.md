@@ -26,77 +26,24 @@ After setting up that environment, create a new `classes.txt` file that tells th
 * The file MUST be called `classes.txt` and must be in the top-level directory
 * The file can be created using any text editor (e.g. Notepad, Notepad ++) or IDE (e.g. Atom, VScode, spyder)
 
-The default colormap is plotly's G10, found here. The hex (rgb) color sequence is:
+Here is how you would use Notepad to edit on Windows:
+![](/img/install/install11.PNG)
 
-```shell
-    #3366CC (51, 102, 204)
-    #DC3912 (220, 57, 18)
-    #FF9900 (255, 153, 0)
-    #109618 (16, 150, 24)
-    #990099 (153, 0, 153)
-    #0099C6 (0, 153, 198)
-    #DD4477 (221, 68, 119)
-    #66AA00 (102, 170, 0)
-    #B82E2E (184, 46, 46)
-    #316395 (49, 99, 149)
-```
-(you can google search those hex codes and get a color picker view).
-
-export const Highlight = ({children, color}) => (
-  <span
-    style={{
-      backgroundColor: color,
-      borderRadius: '20px',
-      color: '#fff',
-      padding: '10px',
-      cursor: 'pointer',
-    }}
-    onClick={() => {
-      alert(`You clicked the color ${color} with label ${children}`)
-    }}>
-    {children}
-  </span>
-);
-
-
-This is <Highlight color="#3366CC">class 1</Highlight>, <Highlight color="#DC3912">class 2</Highlight>, <Highlight color="#B82E2E">class 9</Highlight>, etc
-
-
-If you have more than 10 classes, the program uses Light24 instead. This will give you up to 24 classes, which are (hex / RGB)
-
-```shell
-    #FD3216 (253,50,22)
-    #00FE35 (0,254,53)
-    #6A76FC (106,118,252)
-    #FED4C4 (254,212,196)
-    #FE00CE (254,0,206)
-    #0DF9FF (13,249,255)
-    #F6F926 (246,249,38)
-    #FF9616 (255,150,22)
-    #479B55 (71,155,85)
-    #EEA6FB (238,166,251)
-    #DC587D (220,88,125)
-    #D626FF (214,38,255)
-    #6E899C (110,137,156)
-    #00B5F7 (0,181,247)
-    #B68E00 (182,142,0)
-    #C9FBE5 (201,251,229)
-    #FF0092 (255,0,146)
-    #22FFA7 (34,255,167)
-    #E3EE9E (227,238,158)
-    #86CE00 (134,206,0)
-    #BC7196 (188,113,150)
-    #7E7DCD (126,125,205)
-    #FC6955 (252,105,85)
-    #E48F72 (228,143,114)
-```
-
-In that colorscheme, this is <Highlight color="#FD3216">class 1</Highlight>, <Highlight color="#D626FF">class 12</Highlight>, <Highlight color="#E48F72">class 24</Highlight>
+![](/img/install/install12.PNG)
 
 
 :::tip Tip
 
 Remember to keep your class names short, so the buttons all fit on the screen! We don't recommend using more than 24 classes
+
+Also, no spaces! Use underscores
+
+:::
+
+
+:::warning Please
+
+no spaces! Use underscores
 
 :::
 
@@ -117,11 +64,15 @@ Open a terminal (shell) and make sure you are in the `dash_doodler` conda enviro
 ```cmd
 (base)me@computer:/home/me/$ conda activate dashdoodler
 ```
+
+
 then run the program like this
 
 ```cmd
 (dashdoodler)me@computer:/home/me/$ python doodler.py
 ```
+
+![](/img/install/install10.PNG)
 
 ### Head to the browser
 Doodler is a web application you can access using any web browser.
@@ -249,8 +200,6 @@ Finally, some doodles to fill that hole
 
 ![](/img/screenshots/19.png)
 
-
-
 <!-- ![](/img/screenshots/20.png)
 
 ![](/img/screenshots/21.png) -->
@@ -262,6 +211,76 @@ In Doodler, less is often more. Keep your doodles small and strategic; do not at
 :::
 
 ![](/img/screenshots/22.png)
+
+
+### A word on those default label colors ...
+
+The default colormap is plotly's G10, found here. The hex (rgb) color sequence is:
+
+```shell
+    #3366CC (51, 102, 204)
+    #DC3912 (220, 57, 18)
+    #FF9900 (255, 153, 0)
+    #109618 (16, 150, 24)
+    #990099 (153, 0, 153)
+    #0099C6 (0, 153, 198)
+    #DD4477 (221, 68, 119)
+    #66AA00 (102, 170, 0)
+    #B82E2E (184, 46, 46)
+    #316395 (49, 99, 149)
+```
+(you can google search those hex codes and get a color picker view).
+
+export const Highlight = ({children, color}) => (
+  <span
+    style={{
+      backgroundColor: color,
+      borderRadius: '20px',
+      color: '#fff',
+      padding: '10px',
+      cursor: 'pointer',
+    }}
+    onClick={() => {
+      alert(`You clicked the color ${color} with label ${children}`)
+    }}>
+    {children}
+  </span>
+);
+
+
+This is <Highlight color="#3366CC">class 1</Highlight>, <Highlight color="#DC3912">class 2</Highlight>, <Highlight color="#B82E2E">class 9</Highlight>, etc
+
+
+If you have more than 10 classes, the program uses Light24 instead. This will give you up to 24 classes, which are (hex / RGB)
+
+```shell
+    #FD3216 (253,50,22)
+    #00FE35 (0,254,53)
+    #6A76FC (106,118,252)
+    #FED4C4 (254,212,196)
+    #FE00CE (254,0,206)
+    #0DF9FF (13,249,255)
+    #F6F926 (246,249,38)
+    #FF9616 (255,150,22)
+    #479B55 (71,155,85)
+    #EEA6FB (238,166,251)
+    #DC587D (220,88,125)
+    #D626FF (214,38,255)
+    #6E899C (110,137,156)
+    #00B5F7 (0,181,247)
+    #B68E00 (182,142,0)
+    #C9FBE5 (201,251,229)
+    #FF0092 (255,0,146)
+    #22FFA7 (34,255,167)
+    #E3EE9E (227,238,158)
+    #86CE00 (134,206,0)
+    #BC7196 (188,113,150)
+    #7E7DCD (126,125,205)
+    #FC6955 (252,105,85)
+    #E48F72 (228,143,114)
+```
+
+In that colorscheme, this is <Highlight color="#FD3216">class 1</Highlight>, <Highlight color="#D626FF">class 12</Highlight>, <Highlight color="#E48F72">class 24</Highlight>
 
 
 ### Inspect the results
@@ -294,7 +313,6 @@ where
 -p: print figures to screen. 0=no, 1=yes
 -l: print figures to file. 0=no, 1=yes
 ```
-
 
 ### Ongoing use and maintenance
 
@@ -342,3 +360,9 @@ A one-liner with no stash checking is:
 ```shell
 git stash && git pull && git stash pop
 ```
+
+### Edit/create `my_defaults.py`
+
+The program will make this file, but if you ever need to create or make this file, here is one way how:
+![](/img/install/install13.PNG)
+![](/img/install/install14.PNG)

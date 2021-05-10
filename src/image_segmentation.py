@@ -522,7 +522,9 @@ def segmentation(
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('One-hot labels filtered')
 
-        result = filter_one_hot_spatial(result, 2)
+        if Worig>512:
+            result = filter_one_hot_spatial(result, 2)
+
 
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('One-hot labels spatially filtered')
@@ -552,7 +554,7 @@ def segmentation(
             return result2, w,n
 
         num_tta = 10
-        w = Parallel(n_jobs=-2, verbose=0)(delayed(tta_crf_int)(img, result, k) for k in np.linspace(0,int(img.shape[0]),num_tta))
+        w = Parallel(n_jobs=-2, verbose=0)(delayed(tta_crf_int)(img, result, k) for k in np.linspace(0,int(img.shape[0])/5,num_tta))
         R,W,n = zip(*w)
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('CRF model applied with %i test-time augmentations' % ( num_tta))
