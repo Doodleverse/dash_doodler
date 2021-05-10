@@ -4,9 +4,65 @@
         <title>Doodler Blog</title>
         <link>https://dbuscombe-usgs.github.io/blog</link>
         <description>Doodler Blog</description>
-        <lastBuildDate>Sat, 01 Aug 2020 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 16 May 2021 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[What's new in version 1.2.1 (May 9, 2021)]]></title>
+            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/05/16/blog-post</link>
+            <guid>What's new in version 1.2.1 (May 9, 2021)</guid>
+            <pubDate>Sun, 16 May 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula nunc sit amet augue vehicula, ut rutrum felis accumsan. Cras a magna porttitor nunc imperdiet ultricies. Donec egestas sed quam vel convallis. Duis magna ipsum, hendrerit molestie risus pretium, sagittis fringilla libero. Maecenas convallis accumsan velit, rhoncus pulvinar ante vulputate non. Vestibulum consectetur interdum purus eu ultricies. Proin finibus, nibh sed consectetur egestas, sapien sem tempus dui, eget cursus ex lacus non massa. Praesent vestibulum justo a risus ultricies, nec feugiat eros ultrices. Ut laoreet velit eu aliquet dignissim. Suspendisse dignissim, tellus quis eleifend rhoncus, ante urna feugiat lorem, nec volutpat sapien odio ac magna. Duis ornare scelerisque metus, at sodales orci pulvinar at. Quisque id nisi a ante congue malesuada. Nulla venenatis nisi sed neque facilisis, ac condimentum quam egestas. Nam eros ex, sagittis ac dignissim nec, lobortis vitae nibh. Suspendisse risus felis, luctus vitae mauris id, placerat consectetur nulla. Proin mauris dui, euismod sed lectus scelerisque, malesuada sagittis mauris.]]></description>
+        </item>
+        <item>
+            <title><![CDATA[viz_npz.py]]></title>
+            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/05/15/blog-post</link>
+            <guid>viz_npz.py</guid>
+            <pubDate>Sat, 15 May 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula nunc sit amet augue vehicula, ut rutrum felis accumsan. Cras a magna porttitor nunc imperdiet ultricies. Donec egestas sed quam vel convallis. Duis magna ipsum, hendrerit molestie risus pretium, sagittis fringilla libero. Maecenas convallis accumsan velit, rhoncus pulvinar ante vulputate non. Vestibulum consectetur interdum purus eu ultricies. Proin finibus, nibh sed consectetur egestas, sapien sem tempus dui, eget cursus ex lacus non massa. Praesent vestibulum justo a risus ultricies, nec feugiat eros ultrices. Ut laoreet velit eu aliquet dignissim. Suspendisse dignissim, tellus quis eleifend rhoncus, ante urna feugiat lorem, nec volutpat sapien odio ac magna. Duis ornare scelerisque metus, at sodales orci pulvinar at. Quisque id nisi a ante congue malesuada. Nulla venenatis nisi sed neque facilisis, ac condimentum quam egestas. Nam eros ex, sagittis ac dignissim nec, lobortis vitae nibh. Suspendisse risus felis, luctus vitae mauris id, placerat consectetur nulla. Proin mauris dui, euismod sed lectus scelerisque, malesuada sagittis mauris.]]></description>
+        </item>
+        <item>
+            <title><![CDATA[The blur and model independence factors]]></title>
+            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/05/14/blog-post</link>
+            <guid>The blur and model independence factors</guid>
+            <pubDate>Fri, 14 May 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula nunc sit amet augue vehicula, ut rutrum felis accumsan. Cras a magna porttitor nunc imperdiet ultricies. Donec egestas sed quam vel convallis. Duis magna ipsum, hendrerit molestie risus pretium, sagittis fringilla libero. Maecenas convallis accumsan velit, rhoncus pulvinar ante vulputate non. Vestibulum consectetur interdum purus eu ultricies. Proin finibus, nibh sed consectetur egestas, sapien sem tempus dui, eget cursus ex lacus non massa. Praesent vestibulum justo a risus ultricies, nec feugiat eros ultrices. Ut laoreet velit eu aliquet dignissim. Suspendisse dignissim, tellus quis eleifend rhoncus, ante urna feugiat lorem, nec volutpat sapien odio ac magna. Duis ornare scelerisque metus, at sodales orci pulvinar at. Quisque id nisi a ante congue malesuada. Nulla venenatis nisi sed neque facilisis, ac condimentum quam egestas. Nam eros ex, sagittis ac dignissim nec, lobortis vitae nibh. Suspendisse risus felis, luctus vitae mauris id, placerat consectetur nulla. Proin mauris dui, euismod sed lectus scelerisque, malesuada sagittis mauris.]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Your imagery is too big]]></title>
+            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/05/13/blog-post</link>
+            <guid>Your imagery is too big</guid>
+            <pubDate>Thu, 13 May 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula nunc sit amet augue vehicula, ut rutrum felis accumsan. Cras a magna porttitor nunc imperdiet ultricies. Donec egestas sed quam vel convallis. Duis magna ipsum, hendrerit molestie risus pretium, sagittis fringilla libero. Maecenas convallis accumsan velit, rhoncus pulvinar ante vulputate non. Vestibulum consectetur interdum purus eu ultricies. Proin finibus, nibh sed consectetur egestas, sapien sem tempus dui, eget cursus ex lacus non massa. Praesent vestibulum justo a risus ultricies, nec feugiat eros ultrices. Ut laoreet velit eu aliquet dignissim. Suspendisse dignissim, tellus quis eleifend rhoncus, ante urna feugiat lorem, nec volutpat sapien odio ac magna. Duis ornare scelerisque metus, at sodales orci pulvinar at. Quisque id nisi a ante congue malesuada. Nulla venenatis nisi sed neque facilisis, ac condimentum quam egestas. Nam eros ex, sagittis ac dignissim nec, lobortis vitae nibh. Suspendisse risus felis, luctus vitae mauris id, placerat consectetur nulla. Proin mauris dui, euismod sed lectus scelerisque, malesuada sagittis mauris.]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Long, stringy things]]></title>
+            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/05/12/blog-post</link>
+            <guid>Long, stringy things</guid>
+            <pubDate>Wed, 12 May 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula nunc sit amet augue vehicula, ut rutrum felis accumsan. Cras a magna porttitor nunc imperdiet ultricies. Donec egestas sed quam vel convallis. Duis magna ipsum, hendrerit molestie risus pretium, sagittis fringilla libero. Maecenas convallis accumsan velit, rhoncus pulvinar ante vulputate non. Vestibulum consectetur interdum purus eu ultricies. Proin finibus, nibh sed consectetur egestas, sapien sem tempus dui, eget cursus ex lacus non massa. Praesent vestibulum justo a risus ultricies, nec feugiat eros ultrices. Ut laoreet velit eu aliquet dignissim. Suspendisse dignissim, tellus quis eleifend rhoncus, ante urna feugiat lorem, nec volutpat sapien odio ac magna. Duis ornare scelerisque metus, at sodales orci pulvinar at. Quisque id nisi a ante congue malesuada. Nulla venenatis nisi sed neque facilisis, ac condimentum quam egestas. Nam eros ex, sagittis ac dignissim nec, lobortis vitae nibh. Suspendisse risus felis, luctus vitae mauris id, placerat consectetur nulla. Proin mauris dui, euismod sed lectus scelerisque, malesuada sagittis mauris.]]></description>
+        </item>
+        <item>
+            <title><![CDATA[When things go wrong ...]]></title>
+            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/05/11/blog-post</link>
+            <guid>When things go wrong ...</guid>
+            <pubDate>Tue, 11 May 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula nunc sit amet augue vehicula, ut rutrum felis accumsan. Cras a magna porttitor nunc imperdiet ultricies. Donec egestas sed quam vel convallis. Duis magna ipsum, hendrerit molestie risus pretium, sagittis fringilla libero. Maecenas convallis accumsan velit, rhoncus pulvinar ante vulputate non. Vestibulum consectetur interdum purus eu ultricies. Proin finibus, nibh sed consectetur egestas, sapien sem tempus dui, eget cursus ex lacus non massa. Praesent vestibulum justo a risus ultricies, nec feugiat eros ultrices. Ut laoreet velit eu aliquet dignissim. Suspendisse dignissim, tellus quis eleifend rhoncus, ante urna feugiat lorem, nec volutpat sapien odio ac magna. Duis ornare scelerisque metus, at sodales orci pulvinar at. Quisque id nisi a ante congue malesuada. Nulla venenatis nisi sed neque facilisis, ac condimentum quam egestas. Nam eros ex, sagittis ac dignissim nec, lobortis vitae nibh. Suspendisse risus felis, luctus vitae mauris id, placerat consectetur nulla. Proin mauris dui, euismod sed lectus scelerisque, malesuada sagittis mauris.]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Let's talk about zooming]]></title>
+            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/05/10/blog-post</link>
+            <guid>Let's talk about zooming</guid>
+            <pubDate>Mon, 10 May 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula nunc sit amet augue vehicula, ut rutrum felis accumsan. Cras a magna porttitor nunc imperdiet ultricies. Donec egestas sed quam vel convallis. Duis magna ipsum, hendrerit molestie risus pretium, sagittis fringilla libero. Maecenas convallis accumsan velit, rhoncus pulvinar ante vulputate non. Vestibulum consectetur interdum purus eu ultricies. Proin finibus, nibh sed consectetur egestas, sapien sem tempus dui, eget cursus ex lacus non massa. Praesent vestibulum justo a risus ultricies, nec feugiat eros ultrices. Ut laoreet velit eu aliquet dignissim. Suspendisse dignissim, tellus quis eleifend rhoncus, ante urna feugiat lorem, nec volutpat sapien odio ac magna. Duis ornare scelerisque metus, at sodales orci pulvinar at. Quisque id nisi a ante congue malesuada. Nulla venenatis nisi sed neque facilisis, ac condimentum quam egestas. Nam eros ex, sagittis ac dignissim nec, lobortis vitae nibh. Suspendisse risus felis, luctus vitae mauris id, placerat consectetur nulla. Proin mauris dui, euismod sed lectus scelerisque, malesuada sagittis mauris.]]></description>
+        </item>
+        <item>
+            <title><![CDATA[How to split up large photos]]></title>
+            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/05/09/blog-post</link>
+            <guid>How to split up large photos</guid>
+            <pubDate>Sun, 09 May 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula nunc sit amet augue vehicula, ut rutrum felis accumsan. Cras a magna porttitor nunc imperdiet ultricies. Donec egestas sed quam vel convallis. Duis magna ipsum, hendrerit molestie risus pretium, sagittis fringilla libero. Maecenas convallis accumsan velit, rhoncus pulvinar ante vulputate non. Vestibulum consectetur interdum purus eu ultricies. Proin finibus, nibh sed consectetur egestas, sapien sem tempus dui, eget cursus ex lacus non massa. Praesent vestibulum justo a risus ultricies, nec feugiat eros ultrices. Ut laoreet velit eu aliquet dignissim. Suspendisse dignissim, tellus quis eleifend rhoncus, ante urna feugiat lorem, nec volutpat sapien odio ac magna. Duis ornare scelerisque metus, at sodales orci pulvinar at. Quisque id nisi a ante congue malesuada. Nulla venenatis nisi sed neque facilisis, ac condimentum quam egestas. Nam eros ex, sagittis ac dignissim nec, lobortis vitae nibh. Suspendisse risus felis, luctus vitae mauris id, placerat consectetur nulla. Proin mauris dui, euismod sed lectus scelerisque, malesuada sagittis mauris.]]></description>
+        </item>
         <item>
             <title><![CDATA[Splitting up large geoTIFF orthomosaics]]></title>
             <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2020/08/01/blog-post</link>
