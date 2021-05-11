@@ -239,10 +239,10 @@ def features_sigma(img,
 do_proc = True
 orig_distance =2 #3
 
-# Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-# classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
+Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
 
-classfile = '/media/marda/TWOTB/USGS/DATA/FloSup/water_masks/dash_doodler-mar15/classes.txt'
+# classfile = '/media/marda/TWOTB/USGS/DATA/FloSup/water_masks/dash_doodler-mar15/classes.txt'
 
 with open(classfile) as f:
     classes = f.readlines()
@@ -257,20 +257,20 @@ uniqs = [
 ][:NCLASSES]
 
 
-# Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-# imagedirec = askdirectory(title='Select directory of images', initialdir=os.getcwd()+os.sep+'results')
+Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+imagedirec = askdirectory(title='Select directory of images', initialdir=os.getcwd()+os.sep+'results')
 # imagedirec = '/media/marda/TWOTB/USGS/DATA/FloSup/water_masks/dash_doodler-mar15/labeled'
 
-imagedirec = '/media/marda/TWOTB/USGS/DATA/FloSup/water_masks/oblique-binary/images/images'
+# imagedirec = '/media/marda/TWOTB/USGS/DATA/FloSup/water_masks/oblique-binary/images/images'
 
 # get the assocuated images
 imagefiles = sorted(glob(imagedirec+os.sep+'*.jpg'))
 
-# Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-# direc = askdirectory(title='Select directory of results (annotations)', initialdir=os.getcwd()+os.sep+'results')
+Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+direc = askdirectory(title='Select directory of results (annotations)', initialdir=os.getcwd()+os.sep+'results')
 # direc = '/media/marda/TWOTB/USGS/DATA/FloSup/water_masks/dash_doodler-mar15/results/results2021-02-23-20-02'
 
-direc = '/media/marda/TWOTB/USGS/DATA/FloSup/water_masks/oblique-binary/dash_doodler/results'
+# direc = '/media/marda/TWOTB/USGS/DATA/FloSup/water_masks/oblique-binary/dash_doodler/results'
 
 direcs = [x[0] for x in os.walk(direc)]
 
@@ -301,11 +301,11 @@ for direc in direcs[1:]:
         print("Working on %s" % (file))
 
         data = dict()
-        data['settings'] = np.array([ 3. ,  4. , 10. ,  1. ,  1. ,  3. ,  0.9,  1. , 16. ])
+        data['settings'] = np.array([ 3. ,  4. , 10. ,  1. ,  1. ,  3. ,  0.9 ])
 
         for value,name in zip( data['settings'],['DEFAULT_PEN_WIDTH', 'DEFAULT_CRF_DOWNSAMPLE',\
                 'DEFAULT_RF_DOWNSAMPLE', 'DEFAULT_CRF_THETA', 'DEFAULT_CRF_MU', \
-                'DEFAULT_RF_NESTIMATORS', 'DEFAULT_CRF_GTPROB', 'SIGMA_MIN', 'SIGMA_MAX']):
+                'DEFAULT_RF_NESTIMATORS', 'DEFAULT_CRF_GTPROB']):
                 if name is not 'DEFAULT_CRF_GTPROB':
                     exec(name+'='+str(int(value)))
                 else:

@@ -104,8 +104,10 @@ def gen_plot_seq(orig_distance, save_mode):
     files = [f for f in files if 'labelgen' not in f]
     files = [f for f in files if '4zoo' not in f]
 
-    data_file = 'tmp.npz'
-    rf_file = 'tmp.pkl.z'
+    do_sim = False #True
+    if do_sim:
+        data_file = 'tmp.npz'
+        rf_file = 'tmp.pkl.z'
 
     #### loop through each file
     for anno_file in tqdm(files):
@@ -226,7 +228,7 @@ def gen_plot_seq(orig_distance, save_mode):
             del data
 
             #================================
-            do_sim = False #True
+
             if do_sim:
                 try: #first time around
                     file_training_data, file_training_labels = load(data_file)
@@ -557,7 +559,7 @@ def gen_plot_seq(orig_distance, save_mode):
             if crf_result_filt.shape[0]>512:
                 ## filter based on distance
                 crf_result_filt = filter_one_hot_spatial(crf_result_filt, distance)
-                
+
             if save_mode:
                 savez_dict['rf_result_spatfilt'] = crf_result_filt
 

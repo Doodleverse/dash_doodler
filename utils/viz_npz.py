@@ -47,9 +47,8 @@ try:
 except:
     from defaults import *
 
-
 ###===========================================================
-def do_viz_npz(npz_type,show_plot,print_fig):
+def do_viz_npz(npz_type):
 
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     direc = askdirectory(title='Select directory of results (annotations)', initialdir=os.getcwd()+os.sep+'results')
@@ -67,6 +66,10 @@ def do_viz_npz(npz_type,show_plot,print_fig):
 
     if npz_type==3:
         files = [f for f in files if 'proc' in f]
+
+    if len(files)==0:
+        print('No files - check npz code. Exiting')
+        sys.exit(2)
 
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
@@ -93,14 +96,15 @@ def do_viz_npz(npz_type,show_plot,print_fig):
         for h in [c.replace("#", "") for c in class_label_colormap]
     ]
 
-    cmap = matplotlib.colors.ListedColormap(class_label_colormap[:NUM_LABEL_CLASSES])
+    cmap = matplotlib.colors.ListedColormap(class_label_colormap[:NUM_LABEL_CLASSES+1])
+    cmap2 = matplotlib.colors.ListedColormap(['#000000']+class_label_colormap[:NUM_LABEL_CLASSES])
 
     #### loop through each file
     for anno_file in tqdm(files):
 
         # print("Working on %s" % (file))
         print("Working on %s" % (anno_file))
-        dat = np.load(anno_file)
+        dat = np.load(anno_file, allow_pickle=True)
         data = dict()
         for k in dat.keys():
             try:
@@ -112,98 +116,59 @@ def do_viz_npz(npz_type,show_plot,print_fig):
         if npz_type==0:
         #if 'image' in data.keys():
 
-            if print_fig:
-                plt.subplot(121)
-                plt.imshow(data['image']); plt.axis('off')
-                plt.imshow(data['doodles'], alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
-                plt.axis('off')
+            plt.subplot(121)
+            plt.imshow(data['image']); plt.axis('off')
+            doodles = data['doodles'].astype('float')
+            doodles[doodles==0] = np.nan
+            plt.imshow(data['doodles'], alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2) #'inferno')
+            plt.axis('off')
 
-                plt.subplot(122)
-                plt.imshow(data['image']); plt.axis('off')
-                plt.imshow(np.argmax(data['label'],-1), alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
-                plt.axis('off')
-                plt.savefig(anno_file.replace('.npz','_disp.png'), dpi=200, bbox_inches='tight')
-                plt.close()
+            plt.subplot(122)
+            plt.imshow(data['image']); plt.axis('off')
+            plt.imshow(np.argmax(data['label'],-1)+1, alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2) #'inferno')
+            plt.axis('off')
+            plt.savefig(anno_file.replace('.npz','_disp.png'), dpi=200, bbox_inches='tight')
+            plt.close()
 
-            if show_plot:
-                plt.subplot(121)
-                plt.imshow(data['image']); plt.axis('off')
-                plt.imshow(data['doodles'], alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
-                plt.axis('off')
-
-                plt.subplot(122)
-                plt.imshow(data['image']); plt.axis('off')
-                plt.imshow(np.argmax(data['label'],-1), alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
-                plt.axis('off')
-                plt.show()
 
         if npz_type==1: ##labelgen
 
-            if print_fig:
-                plt.subplot(121)
-                plt.imshow(data['image']); plt.axis('off')
-                plt.imshow(data['doodles'], alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
-                plt.axis('off')
+            plt.subplot(131)
+            plt.imshow(data['image']); plt.axis('off')
+            doodles = data['doodles'].astype('float')
+            doodles[doodles==0] = np.nan
+            plt.imshow(data['doodles'], alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2) #'inferno')
+            plt.axis('off'); plt.title('Doodles', fontsize=7)
 
-                plt.subplot(122)
-                plt.imshow(data['image']); plt.axis('off')
-                plt.imshow(np.argmax(data['label'],-1), alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
-                plt.axis('off')
-                plt.savefig(anno_file.replace('.npz','_disp.png'), dpi=200, bbox_inches='tight')
-                plt.close()
-
-            if show_plot:
-                plt.subplot(131)
-                plt.imshow(data['image']); plt.axis('off')
-                plt.imshow(data['doodles'], alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
-                plt.axis('off')
-
+            try:
                 plt.subplot(132)
                 plt.imshow(data['image']); plt.axis('off')
-                plt.imshow(np.argmax(data['label'],-1), alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
-                plt.axis('off')
+                plt.imshow(data['rf_result_filt_inp'], alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2) #'inferno')
+                plt.axis('off'); plt.title('RF label', fontsize=7)
+            except:
+                pass
 
-                plt.subplot(133)
-                plt.imshow(data['image']); plt.axis('off')
-                # try:
-                plt.imshow(np.argmax(data['final_label'],-1), alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
-                # except:
-                #     plt.imshow(np.argmax(data['final_label'][:,:,:NUM_LABEL_CLASSES,0],-1), alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
+            plt.subplot(133)
+            plt.imshow(data['image']); plt.axis('off')
+            label=np.argmax(data['final_label'],-1)+1
+            if len(np.unique(label))==1:
+                plt.imshow(label, alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
+            else:
+                plt.imshow(label, alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2) #'inferno')
+            plt.axis('off'); plt.title('CRF/final label', fontsize=7)
 
-                plt.axis('off')
+            plt.savefig(anno_file.replace('.npz','_disp.png'), dpi=200, bbox_inches='tight')
+            plt.close()
 
-                plt.show()
 
         if npz_type==2: #4zoo
 
-            if print_fig:
-                plt.imshow(data['arr_0']); plt.axis('off')
-                plt.imshow(np.argmax(data['arr_1'],-1), alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
-                plt.axis('off')
-                plt.savefig(anno_file.replace('.npz','_disp.png'), dpi=200, bbox_inches='tight')
-                plt.close()
+            plt.imshow(data['arr_0']); plt.axis('off')
+            plt.imshow(np.argmax(data['arr_1'],-1), alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
+            plt.axis('off')
+            plt.savefig(anno_file.replace('.npz','_disp.png'), dpi=200, bbox_inches='tight')
+            plt.close()
 
-            if show_plot:
-                plt.imshow(data['arr_0']); plt.axis('off')
-                plt.imshow(np.argmax(data['arr_1'],-1), alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
-                plt.axis('off')
-                plt.show()
-
-
-        if npz_type==3: #pred
-
-            if print_fig:
-                plt.imshow(data['image']); plt.axis('off')
-                plt.imshow(data['final_label'], alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
-                plt.axis('off')
-                plt.savefig(anno_file.replace('.npz','_disp.png'), dpi=200, bbox_inches='tight')
-                plt.close()
-
-            if show_plot:
-                plt.imshow(data['image']); plt.axis('off')
-                plt.imshow(data['final_label'], alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
-                plt.axis('off')
-                plt.show()
 
 ###==================================================================
 #===============================================================
@@ -211,10 +176,10 @@ if __name__ == '__main__':
 
     argv = sys.argv[1:]
     try:
-        opts, args = getopt.getopt(argv,"h:t:p:l:")
+        opts, args = getopt.getopt(argv,"h:t:")
     except getopt.GetoptError:
         print('======================================')
-        print('python viz_npz.py [-t npz type {0}/1/2 -p show plot {1}/0 -l print fig 1/{0} ]') #
+        print('python viz_npz.py [-t npz type {0}/1/2/3 ]') #
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
@@ -223,22 +188,12 @@ if __name__ == '__main__':
             print('npz_type codes. 0 (default) = normal, 1=labelgen, 2=npz_zoo, 3=pred')
             print('======================================')
             sys.exit()
-        elif opt in ("-p"):
-            show_plot = arg
-            show_plot = bool(show_plot)
-        elif opt in ("-l"):
-            print_fig = arg
-            print_fig = bool(print_fig)
         elif opt in ("-t"):
             npz_type = arg
             npz_type = int(npz_type)
 
-    if 'show_plot' not in locals():
-        show_plot = True
-    if 'print_fig' not in locals():
-        print_fig = False
     if 'npz_type' not in locals():
         npz_type = 0
 
     #ok, dooo it
-    do_viz_npz(npz_type,show_plot,print_fig)
+    do_viz_npz(npz_type)

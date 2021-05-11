@@ -333,10 +333,10 @@ I/O:
   * 'color_doodles' = color 3D or color doodles
   * 'doodles' = 2D or greyscale doodles
   * the npz file is overwritten, but old arrays are kept, prefixed with '0', and prepended with another '0', such that the more '0's the newer, but the above names without '0's are always the newest. Color images are still produced with time tags.
-
 * DEFAULT_CRF_DOWNSAMPLE = 4 by default
 * accepts jpg, JPG, and jpeg
 * in implementation using `predict_folder.py`, user decides between two modes, saving either default basic outputs (final output label) or the full stack out outputs for debugging or optimizing
+* in `predict_folder`, extracted features are memory mapped to save RAM
 
 Other:
 * RF feature extraction now in parallel
@@ -363,5 +363,5 @@ https://dbuscombe-usgs.github.io/dash_doodler/
 * 'label here' feature based on analysis of doodles in real time -- how?
 
 * consolidate data/models script
- 
+
 Use the issues tab to suggest new features!

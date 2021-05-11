@@ -19,6 +19,7 @@ In typical order of importance:
 6. If possible, use more and faster CPU cores
 
 ### Why are my results poor?
+See [this](../../blog/2021/05/11/blog-post)
 
 <!-- Stop and ask yourself what you are hoping to achieve. Decide on an 'adequate' accuracy for your test case -->
 
@@ -38,6 +39,20 @@ See [this](how-to-doodle#how-to-decide-on-classes)
 ### Okay, I can use Doodler to make label images. Now what?
 
 The primary purpose of Doodler is to create enough label images that Deep Learning image segmentation workflows become viable. To get started, you may follow this self-guided course made by Dr Daniel Buscombe, called ["ML Mondays"](https://dbuscombe-usgs.github.io/MLMONDAYS/docs/doc1#week-3-supervised-image-segmentation).
+
+### How do I visualize my labels?
+
+See [this](../../blog/2021/05/15/blog-post)
+
+
+### What do the blur and model independence parameters dp?
+
+See [this](../../blog/2021/05/14/blog-post)
+
+## My images are too big. How to I tile them?
+
+See [this](../../blog/2021/05/09/blog-post) for regular imagery, and [this](../../blog/2020/08/01/blog-post) for geotiffs
+
 
 
 <!-- # Create a Page

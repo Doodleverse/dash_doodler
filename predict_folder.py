@@ -29,7 +29,7 @@
 import sys
 sys.path.insert(1, 'src')
 import plotly.express as px
-import os, sys, getopt
+import os, sys, getopt, shutil
 from glob import glob
 from datetime import datetime
 
@@ -309,11 +309,14 @@ def segment_images(save_mode,do_plot,print_labels,distance):
 
             ## npz
             if 'jpg' in file:
-                np.savez(file.replace(direc,results_folder).replace('.jpg','_proc.npz'), **savez_dict )
+                outfile = file.replace(direc,results_folder).replace('.jpg','_proc.npz')
+                np.savez(outfile, **savez_dict )
             elif 'jpeg' in file:
-                np.savez(file.replace(direc,results_folder).replace('.jpeg','_proc.npz'), **savez_dict )
+                outfile = file.replace(direc,results_folder).replace('.jpeg','_proc.npz')
+                np.savez(outfile, **savez_dict )
             elif 'JPG' in file:
-                np.savez(file.replace(direc,results_folder).replace('.JPG','_proc.npz'), **savez_dict )
+                outfile = file.replace(direc,results_folder).replace('.JPG','_proc.npz')
+                np.savez(outfile, **savez_dict )
             del savez_dict
 
             ## label images ti png
@@ -330,6 +333,11 @@ def segment_images(save_mode,do_plot,print_labels,distance):
                         imsave(file.replace(direc,results_folder).replace('.JPG','_label.png'),
                                 label_to_colors(crf_result_filt_inp, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
 
+                    #load RF label and print that too
+                    dat = np.load(outfile)['rf_result_filt_inp']
+                    imsave(outfile.replace('.npz','_rf_label.png'),
+                            label_to_colors(dat-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
+                    del dat
 
                 else:
                     if 'jpg' in file:
@@ -341,6 +349,12 @@ def segment_images(save_mode,do_plot,print_labels,distance):
                     elif 'JPG' in file:
                         imsave(file.replace(direc,results_folder).replace('.JPG','_label.png'),
                                 label_to_colors(crf_result_filt_inp, img==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
+
+                    #load RF label and print that too
+                    dat = np.load(outfile)['rf_result_filt_inp']
+                    imsave(outfile.replace('.npz','_rf_label.png'),
+                            label_to_colors(dat-1, img==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
+                    del dat
 
                 if 'jpg' in file:
                     imsave(file.replace(direc,results_folder).replace('.jpg','_label_greyscale.png'), crf_result_filt_inp)
@@ -365,7 +379,33 @@ def segment_images(save_mode,do_plot,print_labels,distance):
                 elif 'JPG' in file:
                     plt.savefig(file.replace(direc,results_folder).replace('.JPG','_overlay.png'), dpi=200, bbox_inches='tight'); plt.close('all')
 
+                #load RF label and print that too
+                dat = np.load(outfile)['rf_result_filt_inp']
+                plt.imshow(img); plt.axis('off')
+                if np.ndim(img)==3:
+                    plt.imshow(label_to_colors(dat-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False), alpha=0.4)#, cmap=cmap, vmin=0, vmax=NUM_LABEL_CLASSES)
+                else:
+                    plt.imshow(label_to_colors(dat-1, img==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False), alpha=0.4)#, cmap=cmap, vmin=0, vmax=NUM_LABEL_CLASSES)
+
+                plt.savefig(outfile.replace('.npz','_rf_overlay.png'), dpi=200, bbox_inches='tight'); plt.close('all')
+
+                del dat
+
+
             del crf_result_filt_inp, img
+
+            ## move all these results to their own folder
+            directomake = file.split(os.sep)[-1].split('.jpg')[0].split('.JPG')[0].split('.jpeg')[0]
+            try:
+                os.mkdir(results_folder+os.sep+directomake)
+            except:
+                print("Failed to make directory %s to store results" % (results_folder+os.sep+directomake))
+
+            try:
+                for f in glob(results_folder+os.sep+directomake+'*.*'):
+                    shutil.move(f,results_folder+os.sep+directomake+os.sep+f.split(os.sep)[-1])
+            except:
+                pass
 
 
 
@@ -418,9 +458,9 @@ if __name__ == '__main__':
     if 'do_plot' not in locals():
         do_plot = False
     if 'print_labels' not in locals():
-        print_labels = False
+        print_labels = True
     if 'distance' not in locals():
-        distance = 3
+        distance = 2
 
     print("save mode: %i" % (save_mode))
     print("make plots: %i" % (do_plot))
