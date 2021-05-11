@@ -39,20 +39,6 @@ What is generally required in the above case is a semi-supervised tool for effic
 
 This is python software that is designed to be used from within a `conda` environment. After setting up that environment, create a `classes.txt` file that tells the program what classes will be labeled (and what buttons to create). The minimum number of classes is 2. The maximum number of classes allowed is 24. The images that you upload will go into the `assets/` folder. The labels images you create are written to the `results` folder.
 
-
-## <a name="intro"></a>How does it work?
-The program uses two Machine Learning models in concert to segment images using user-provided annotations or 'doodles'. The two models are 1) Random Forest, or RF, and 2) Fully Connected Conditional Ransom Field (CRF). The program adopts a strategy similar to that described by Buscombe and Ritchie (2018), in that a 'global' model trained on many samples is used to provide an initial segmentation on each sample image, then that initial segmentation is refined by a CRF, which operates on a task specific level. In Buscombe and Ritchie (2018), the model was a deep neural network trained in advance on large numbers of samples and labels. Here, the model is built as we go, building progressively from user inputs. Doodler uses a Random Forest as the baseline global model, and the CRF implementation is the same as that desribed by Buscombe and Ritchie (2018).
-
-Images are labelled in sessions. During a session, a RF model is initialized then built progressively using provided labels from each image. The RF model uses features extracted from the image
-
-* Gaussian blur over a range of scales
-* Sobel filter of the Gaussian blurred images
-* Matrix of texture values extacted over a range of scales as the 1st eigenvalue of the Hessian Matrix
-* Matrix of texture values extacted over a range of scales as the 2nd eigenvalue of the Hessian Matrix
-
-and the relative pixel locations in x and y are also used as features in RF model fitting and for prediction. Each RF prediction (a label matrix of integer values, each integer corresponding to a unique class). The CRF builds a model for the likelihood of the RF-predicted labels based on the distributions of features it extracts from the imagery, and can reclassify pixels (it is intended to do so). Its feature extraction and decision making behavior is complex and governed by parameters. The user can control the parameter values for CRF and RF models using the graphical user interface.
-
-
 ## <a name="install"></a>Installation
 
 Clone/download this repository
@@ -78,7 +64,6 @@ conda install -c conda-forge pydensecrf cairo
 pip install -r install/requirements.txt
 ```
 
-
 ## <a name="use"></a>Use
 Move your images into the `assets` folder. For the moment, they must be jpegs with the `.jpg` (or `JPG` or `jpeg`) extension. Support for other image types forthcoming ...
 
@@ -90,24 +75,6 @@ python doodler.py
 
 Open a browser and go to 127.0.0.1:8050. You may have to hit the refresh button. If, after some time doodling things seem odd or buggy, sometimes a browser refresh will fix those glitches.
 
-
-Results (label images and annotation images) are saved to the `results/` folder. The program creates a subfolder each time it is launched, timestamped. That folder contains your results images for a session.
-
-The default colormap is plotly's G10, found [here](https://plotly.com/python/discrete-color/). The hex (rgb) color sequence is:
-
-* #3366CC (51, 102, 204)
-* #DC3912 (220, 57, 18)
-* #FF9900 (255, 153, 0)
-* #109618 (16, 150, 24)
-* #990099 (153, 0, 153)
-* #0099C6 (0, 153, 198)
-* #DD4477 (221, 68, 119)
-* #66AA00 (102, 170, 0)
-* #B82E2E (184, 46, 46)
-* #316395 (49, 99, 149)
-
-(you can google search those hex codes and get a color picker view). If you have more than 10 classes, the program uses `Light24` instead. This will give you up to 24 classes. Remember to keep your class names short, so the buttons all fit on the screen!
-
 ### Example screenshots of use with example dataset
 
 #### `doodler.py`
@@ -118,21 +85,6 @@ The default colormap is plotly's G10, found [here](https://plotly.com/python/dis
 ![Example 4](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py3.png)
 ![Example 5](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py4.png)
 ![Example 6](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py5.png)
-
-
-#### `refine_labels.py`
-
-![Example 1](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/refine_py.png)
-![Example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/refine_py1.png)
-
-
-#### `predict_folder.py`
-
-![Example 1](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/predict_py.png)
-![Example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/predict_py1.png)
-![Example 3](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/predict_py2.png)
-
-
 
 ### Videos
 More demonstration videos:
@@ -147,13 +99,6 @@ More demonstration videos:
 
 ![Coast Train example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short-coast2.gif)
 
-
-## <a name="outputs"></a>Outputs
-Each classified image will result in three files within the `/results` folder, with XXXXXXXX_ representing the image filename root:
-
-* `XXXXXXXX_label.png`: color version of the label image
-* `XXXXXXXX_label_greyscale.png`: greyscale version of the above. Note this will always appear very dark because the full range of an 8-bit image is 0 to 255. Your classes will be represented as integers
-* `XXXXXXXX_annotations.png`: this is mostly for debugging/analysis and may disappear in a future version. It shows your doodles.
 
 ## <a name="ack"></a>Acknowledgements
 
