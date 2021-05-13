@@ -219,14 +219,16 @@ if not os.path.exists(UPLOAD_DIRECTORY):
 ##========================================================
 # Normally, Dash creates its own Flask server internally. By creating our own,
 # we can create a route for downloading files directly:
-server = Flask(__name__)
-app = dash.Dash(server=server)
+# server = Flask(__name__)
+# app = dash.Dash(server=server)
+
+# @server.route("/download/<path:path>")
+# def download(path):
+#     """Serve a file from the upload directory."""
+#     return send_from_directory(UPLOAD_DIRECTORY, path, as_attachment=True)
 
 
-@server.route("/download/<path:path>")
-def download(path):
-    """Serve a file from the upload directory."""
-    return send_from_directory(UPLOAD_DIRECTORY, path, as_attachment=True)
+app = dash.Dash(__name__)
 
 ##========================================================
 
@@ -576,10 +578,6 @@ def uploaded_files():
                 labeled_files.append(filename)
 
     filelist = 'files_done.txt'
-
-
-#### REMOVE LABELED FOLDER / REQUIREMENT
-
 
     with open(filelist, 'w') as filehandle:
         for listitem in labeled_files:
@@ -1080,7 +1078,9 @@ function(the_image_store_data) {
 
 if __name__ == "__main__":
     print('Go to http://127.0.0.1:8050/ in your web browser to use Doodler')
-    app.run_server()#debug=True) #debug=True, port=8888)
+    app.run_server()
+    #app.run(host='0.0.0.0', port=8050) #()
+    #debug=True) #debug=True, port=8888)
 
 
             # settings_dict = dict()
