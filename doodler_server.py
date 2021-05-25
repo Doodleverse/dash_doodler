@@ -23,8 +23,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# ##========================================================
 
+########################################################
+############ IMPORTS ############################################
+########################################################
+
+# ##========================================================
 # allows loading of functions from the src directory
 import sys
 sys.path.insert(1, 'src')
@@ -41,7 +45,7 @@ import dash_core_components as dcc
 
 from annotations_to_segmentations import *
 from plot_utils import *
-
+import fsspec
 import io, base64, PIL.Image, json, shutil, os, time
 from glob import glob
 from datetime import datetime
@@ -53,35 +57,39 @@ import logging
 logging.basicConfig(filename=os.getcwd()+os.sep+'logs/'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'.log',  level=logging.INFO) #DEBUG) #encoding='utf-8',
 logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
 
+
+########################################################
+############ SETTINGS / FILES ############################################
+########################################################
+
 #========================================================
+fs = fsspec.filesystem('s3', profile='default')
+s3files = fs.ls('s3://cmgp-upload-download-bucket/watermasker1/')
+s3files = [f for f in s3files if 'jpg' in f]
+Ns3files = len(s3files)
 
 ##========================================================
 DEFAULT_IMAGE_PATH = "assets/logos/dash-default.jpg"
 
-try:
-    from my_defaults import *
-    print('Hyperparameters imported from my_defaults.py')
-except:
-    from defaults import *
-    print('Default hyperparameters imported from src/my_defaults.py')
-# finally:
-#     DEFAULT_PEN_WIDTH = 2
-#     DEFAULT_CRF_DOWNSAMPLE = 4
-#     DEFAULT_RF_DOWNSAMPLE = 10
-#     DEFAULT_CRF_THETA = 10
-#     DEFAULT_CRF_MU = 10
-#     DEFAULT_MEDIAN_KERNEL = 3
-#     DEFAULT_RF_NESTIMATORS = 3
-#     DEFAULT_CRF_GTPROB = 0.9
-#     SIGMA_MIN = 1
-#     SIGMA_MAX = 16
-#     print('Default hyperparameters imported set')
+# from defaults import *
+# print('Default hyperparameters imported from src/defaults.py')
+
+DEFAULT_PEN_WIDTH = 3
+DEFAULT_CRF_DOWNSAMPLE = 4
+DEFAULT_RF_DOWNSAMPLE = 8
+DEFAULT_CRF_THETA = 1
+DEFAULT_CRF_MU = 1
+DEFAULT_RF_NESTIMATORS = 3
+DEFAULT_CRF_GTPROB = 0.9
 
 # the number of different classes for labels
 DEFAULT_LABEL_CLASS = 0
 
 UPLOAD_DIRECTORY = os.getcwd()+os.sep+"assets"
 LABELED_DIRECTORY = os.getcwd()+os.sep+"labeled"
+
+if not os.path.exists(UPLOAD_DIRECTORY):
+    os.makedirs(UPLOAD_DIRECTORY)
 
 ##========================================================
 
@@ -126,13 +134,6 @@ try:
 except:
     pass
 
-##========================================================
-def convert_integer_class_to_color(n):
-    return class_label_colormap[n]
-
-def convert_color_class(c):
-    return class_label_colormap.index(c)
-
 
 ##========================================================
 
@@ -149,8 +150,17 @@ logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
 logging.info("Results will be written to %s" % (results_folder))
 
 
-if not os.path.exists(UPLOAD_DIRECTORY):
-    os.makedirs(UPLOAD_DIRECTORY)
+## while file not in assets/ ...
+usefile = np.random.randint(Ns3files)
+file = s3files[usefile]
+# print(file.split(os.sep)[-1])
+fp = 's3://'+file
+with fs.open(fp, 'rb') as f:
+    img = np.array(PIL.Image.open(f))[:,:,:3]
+    f.close()
+    imsave('assets/'+file.split(os.sep)[-1], img)
+
+# downloads 1 image
 
 files = sorted(glob('assets/*.jpg')) + sorted(glob('assets/*.JPG')) + sorted(glob('assets/*.jpeg'))
 
@@ -160,6 +170,19 @@ logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
 logging.info('loaded files:')
 for f in files:
     logging.info(f)
+
+
+########################################################
+############ FUNCTIONS ############################################
+########################################################
+
+##========================================================
+def convert_integer_class_to_color(n):
+    return class_label_colormap[n]
+
+def convert_color_class(c):
+    return class_label_colormap.index(c)
+
 
 ##========================================================
 def make_and_return_default_figure(
@@ -220,20 +243,15 @@ if not os.path.exists(UPLOAD_DIRECTORY):
 
 
 ##========================================================
-# Normally, Dash creates its own Flask server internally. By creating our own,
-# we can create a route for downloading files directly:
-# server = Flask(__name__)
-# app = dash.Dash(server=server)
 
 # @server.route("/download/<path:path>")
 # def download(path):
 #     """Serve a file from the upload directory."""
 #     return send_from_directory(UPLOAD_DIRECTORY, path, as_attachment=True)
 
-# server = Flask(__name__)
-# app = dash.Dash(server=server)
+server = Flask(__name__)
+app = dash.Dash(server=server)
 
-app = dash.Dash(__name__)
 
 # # Keep this out of source code repository - save in a file or a database
 # VALID_USERNAME_PASSWORD_PAIRS = {
@@ -326,6 +344,30 @@ app.layout = html.Div(
                        id="right-column",
                        children=[
 
+                dcc.Input(id='my-id', value='Enter-user-ID', type="text"),
+                html.Button('Submit', id='button'),
+                html.Div(id='my-div'),
+
+                # html.H3("Select Image"),
+                dcc.Dropdown(
+                    id="select-image",
+                    optionHeight=15,
+                    style={'display': 'none'},#{'fontSize': 13},
+                    options = [
+                        {'label': image.split('assets/')[-1], 'value': image } \
+                        for image in files
+                    ],
+
+                    value='assets/logos/dash-default.jpg', #
+                    multi=False,
+                ),
+                # html.Div([html.Div(id='live-update-text'),
+                #           dcc.Interval(id='interval-component', interval=2000, n_intervals=0)]),
+
+
+                # html.P(children="This image/Copy"),
+                dcc.Textarea(id="thisimage_output", cols=80, style={'display': 'none'}),
+                # html.Br(),
 
                         html.H6("Label class"),
                         # Label class chosen with buttons
@@ -353,12 +395,14 @@ app.layout = html.Div(
                         ),
 
 
+                        # html.Button('Submit', id='submitbutton'),
+
                         # Indicate showing most recently computed segmentation
                         dcc.Checklist(
                             id="crf-show-segmentation",
                             options=[
                                 {
-                                    "label": "Compute/Show segmentation",
+                                    "label": "SEGMENT IMAGE",
                                     "value": "Show segmentation",
                                 }
                             ],
@@ -391,15 +435,6 @@ app.layout = html.Div(
                             value=DEFAULT_CRF_MU,
                         ),
 
-                        # html.H6(id="median-filter-display"),
-                        # # Slider for specifying pen width
-                        # dcc.Slider(
-                        #     id="median-filter",
-                        #     min=0.1,
-                        #     max=100,
-                        #     step=0.1,
-                        #     value=DEFAULT_MEDIAN_KERNEL,
-                        # ),
 
                         html.H6(id="crf-downsample-display"),
                         # Slider for specifying pen width
@@ -411,28 +446,20 @@ app.layout = html.Div(
                             value=DEFAULT_CRF_DOWNSAMPLE,
                         ),
 
-                        html.H6(id="crf-gtprob-display"),
-                        # Slider for specifying pen width
-                        dcc.Slider(
-                            id="crf-gtprob-slider",
-                            min=0.5,
-                            max=0.95,
-                            step=0.05,
-                            value=DEFAULT_CRF_GTPROB,
-                        ),
+                        # html.H6(id="crf-gtprob-display"),
+                        # # Slider for specifying pen width
+                        # dcc.Slider(
+                        #     id="crf-gtprob-slider",
+                        #     min=0.5,
+                        #     max=0.95,
+                        #     step=0.05,
+                        #     value=DEFAULT_CRF_GTPROB,
+                        # ),
 
                         dcc.Markdown(
                             ">Random Forest settings"
                         ),
 
-                        # html.H6(id="sigma-display"),
-                        # dcc.RangeSlider(
-                        #     id="rf-sigma-range-slider",
-                        #     min=1,
-                        #     max=30,
-                        #     step=1,
-                        #     value=[SIGMA_MIN, SIGMA_MAX], #1, 16],
-                        # ),
 
                         html.H6(id="rf-downsample-display"),
                         # Slider for specifying pen width
@@ -444,30 +471,30 @@ app.layout = html.Div(
                             value=DEFAULT_RF_DOWNSAMPLE,
                         ),
 
-                        html.H6(id="rf-nestimators-display"),
-                        # Slider for specifying pen width
-                        dcc.Slider(
-                            id="rf-nestimators-slider",
-                            min=1,
-                            max=5,
-                            step=1,
-                            value=DEFAULT_RF_NESTIMATORS,
-                        ),
+                        # html.H6(id="rf-nestimators-display"),
+                        # # Slider for specifying pen width
+                        # dcc.Slider(
+                        #     id="rf-nestimators-slider",
+                        #     min=1,
+                        #     max=5,
+                        #     step=1,
+                        #     value=DEFAULT_RF_NESTIMATORS,
+                        # ),
 
-                        dcc.Markdown(
-                            ">Note that all segmentations are saved automatically. This download button is for quick checks only e.g. when dense annotations obscure the segmentation view"
-                        ),
-
-                        html.A(
-                            id="download-image",
-                            download="classified-image-"+datetime.now().strftime("%d-%m-%Y-%H-%M")+".png",
-                            children=[
-                                html.Button(
-                                    "Download Label Image (optional)",
-                                    id="download-image-button",
-                                )
-                            ],
-                        ),
+                        # dcc.Markdown(
+                        #     ">Note that all segmentations are saved automatically. This download button is for quick checks only e.g. when dense annotations obscure the segmentation view"
+                        # ),
+                        #
+                        # html.A(
+                        #     id="download-image",
+                        #     download="classified-image-"+datetime.now().strftime("%d-%m-%Y-%H-%M")+".png",
+                        #     children=[
+                        #         html.Button(
+                        #             "Download Label Image (optional)",
+                        #             id="download-image-button",
+                        #         )
+                        #     ],
+                        # ),
 
                     ],
                     className="three columns app-background",
@@ -475,71 +502,74 @@ app.layout = html.Div(
             ],
             className="ten columns",
         ), #main content Div
+        ]),
+
+
+    #     dcc.Tab(label='File List and Instructions', children=[
+    #
+    #     html.H4(children="Doodler"),
+    #     dcc.Markdown(
+    #         "> A user-interactive tool for fast segmentation of imagery (designed for natural environments), using a combined Random Forest (RF) - Conditional Random Field (CRF) method. \
+    #         Doodles are used to make a RF model, which maps image features to classes to create an initial image segmentation. The segmentation is then refined using a CRF model. \
+    #         The RF model is updated each time a new image is doodled in a session, building a more generic model cumulatively for a collection of similar images/classes. CRF post-processing is image-specific"
+    #     ),
+    #
+    #         dcc.Input(id='my-id', value='Enter-user-ID', type="text"),
+    #         html.Button('Submit', id='button'),
+    #         html.Div(id='my-div'),
+    #
+    #         html.H3("Select Image"),
+    #         dcc.Dropdown(
+    #             id="select-image",
+    #             optionHeight=15,
+    #             style={'fontSize': 13},
+    #             options = [
+    #                 {'label': image.split('assets/')[-1], 'value': image } \
+    #                 for image in files
+    #             ],
+    #
+    #             value='assets/logos/dash-default.jpg', #
+    #             multi=False,
+    #         ),
+    #         html.Div([html.Div(id='live-update-text'),
+    #                   dcc.Interval(id='interval-component', interval=2000, n_intervals=0)]),
+    #
+    #
+    #     html.P(children="This image/Copy"),
+    #     dcc.Textarea(id="thisimage_output", cols=80),
+    #     html.Br(),
+    #
+    #     dcc.Markdown(
+    #         """
+    # **Instructions:**
+    # * Before you begin, make a new 'classes.txt' file that contains a list of the classes you'd like to label
+    # * Optionally, you can copy the images you wish to label into the 'assets' folder (just jpg, JPG or jpeg extension, or mixtures of those, for now)
+    # * Enter a user ID (initials or similar). This will get appended to your results to identify you. Results are also timestamped. You may enter a user ID at any time (or not at all)
+    # * Select an image from the list (often you need to select the image twice: make sure the image selected matches the image name shown in the box)
+    # * Make some brief annotations ('doodles') of every class present in the image, in every region of the image that class is present
+    # * Check 'Show/compute segmentation'. The computation time depends on image size, and the number of classes and doodles. Larger image or more doodles/classes = greater time and memory required
+    # * If you're not happy, uncheck 'Show/compute segmentation' and play with the parameters. However, it is often better to leave the parameters and correct mistakes by adding or removing doodles, or using a different pen width.
+    # * Once you're happy, you can download the label image, but it is already saved in the 'results' folder.
+    # * Before you move onto the next image from the list, uncheck 'Show/compute segmentation'.
+    # * Repeat. Happy doodling! Press Ctrl+C to end the program. Results are in the 'results' folder, timestamped. Session logs are also timestamped and found in the 'logs' directory.
+    # * As you go, the program only lists files that are yet to be labeled. It does this irrespective of your opinion of the segmentation, so you get 'one shot' before you select another image (i.e. you cant go back to redo)
+    # * [Code on GitHub](https://github.com/dbuscombe-usgs/dash_doodler).
+    # """
+    #     ),
+    #     dcc.Markdown(
+    #         """
+    # **Tips:** 1) Works best for small imagery, typically much smaller than 3000 x 3000 px images. This prevents out-of-memory errors, and also helps you identify small features\
+    # 2) Less is usually more! It is often best to use small pen width and relatively few annotations. Don't be tempted to spend too long doodling; extra doodles can be strategically added to correct segmentations \
+    # 3) Make doodles of every class present in the image, and also every region of the image (i.e. avoid label clusters) \
+    # 4) If things get weird, hit the refresh button on your browser and it should reset the application. Don't worry, all your previous work is saved!\
+    # 5) Remember to uncheck 'Show/compute segmentation' before you change parameter values or change image\
+    # """
+    #     ),
+    #
+    #
+    #     ]), #tab 2
 
         ]),
-        dcc.Tab(label='File List and Instructions', children=[
-
-        html.H4(children="Doodler"),
-        dcc.Markdown(
-            "> A user-interactive tool for fast segmentation of imagery (designed for natural environments), using a combined Random Forest (RF) - Conditional Random Field (CRF) method. \
-            Doodles are used to make a RF model, which maps image features to classes to create an initial image segmentation. The segmentation is then refined using a CRF model. \
-            The RF model is updated each time a new image is doodled in a session, building a more generic model cumulatively for a collection of similar images/classes. CRF post-processing is image-specific"
-        ),
-
-            dcc.Input(id='my-id', value='Enter-user-ID', type="text"),
-            html.Button('Submit', id='button'),
-            html.Div(id='my-div'),
-
-            html.H3("Select Image"),
-            dcc.Dropdown(
-                id="select-image",
-                optionHeight=15,
-                style={'fontSize': 13},
-                options = [
-                    {'label': image.split('assets/')[-1], 'value': image } \
-                    for image in files
-                ],
-
-                value='assets/logos/dash-default.jpg', #
-                multi=False,
-            ),
-            html.Div([html.Div(id='live-update-text'),
-                      dcc.Interval(id='interval-component', interval=2000, n_intervals=0)]),
-
-
-        html.P(children="This image/Copy"),
-        dcc.Textarea(id="thisimage_output", cols=80),
-        html.Br(),
-
-        dcc.Markdown(
-            """
-    **Instructions:**
-    * Before you begin, make a new 'classes.txt' file that contains a list of the classes you'd like to label
-    * Optionally, you can copy the images you wish to label into the 'assets' folder (just jpg, JPG or jpeg extension, or mixtures of those, for now)
-    * Enter a user ID (initials or similar). This will get appended to your results to identify you. Results are also timestamped. You may enter a user ID at any time (or not at all)
-    * Select an image from the list (often you need to select the image twice: make sure the image selected matches the image name shown in the box)
-    * Make some brief annotations ('doodles') of every class present in the image, in every region of the image that class is present
-    * Check 'Show/compute segmentation'. The computation time depends on image size, and the number of classes and doodles. Larger image or more doodles/classes = greater time and memory required
-    * If you're not happy, uncheck 'Show/compute segmentation' and play with the parameters. However, it is often better to leave the parameters and correct mistakes by adding or removing doodles, or using a different pen width.
-    * Once you're happy, you can download the label image, but it is already saved in the 'results' folder.
-    * Before you move onto the next image from the list, uncheck 'Show/compute segmentation'.
-    * Repeat. Happy doodling! Press Ctrl+C to end the program. Results are in the 'results' folder, timestamped. Session logs are also timestamped and found in the 'logs' directory.
-    * As you go, the program only lists files that are yet to be labeled. It does this irrespective of your opinion of the segmentation, so you get 'one shot' before you select another image (i.e. you cant go back to redo)
-    * [Code on GitHub](https://github.com/dbuscombe-usgs/dash_doodler).
-    """
-        ),
-        dcc.Markdown(
-            """
-    **Tips:** 1) Works best for small imagery, typically much smaller than 3000 x 3000 px images. This prevents out-of-memory errors, and also helps you identify small features\
-    2) Less is usually more! It is often best to use small pen width and relatively few annotations. Don't be tempted to spend too long doodling; extra doodles can be strategically added to correct segmentations \
-    3) Make doodles of every class present in the image, and also every region of the image (i.e. avoid label clusters) \
-    4) If things get weird, hit the refresh button on your browser and it should reset the application. Don't worry, all your previous work is saved!\
-    5) Remember to uncheck 'Show/compute segmentation' before you change parameter values or change image\
-    """
-        ),
-
-
-        ]),]),
 
         html.Div(
             id="no-display",
@@ -619,7 +649,7 @@ def show_segmentation(image_path,
     results_folder,
     rf_downsample_value,
     crf_downsample_factor,
-    gt_prob,
+    # gt_prob,
     my_id_value,
     rf_file,
     data_file,
@@ -629,8 +659,11 @@ def show_segmentation(image_path,
     texture,
     # sigma_min,
     # sigma_max,
-    n_estimators,
+    # n_estimators,
     ):
+
+    gt_prob = .9
+    n_estimators = 3
 
     """ adds an image showing segmentations to a figure's layout """
 
@@ -704,10 +737,9 @@ def listToString(s):
     Output("theta-display", "children"),
     Output("mu-display", "children"),
     Output("crf-downsample-display", "children"),
-    Output("crf-gtprob-display", "children"),
-    # Output("sigma-display", "children"),
+    # Output("crf-gtprob-display", "children"),
     Output("rf-downsample-display", "children"),
-    Output("rf-nestimators-display", "children"),
+    # Output("rf-nestimators-display", "children"),
     Output("classified-image-store", "data"),
     ],
     [
@@ -723,12 +755,10 @@ def listToString(s):
     Input("pen-width", "value"),
     Input("crf-show-segmentation", "value"),
     Input("crf-downsample-slider", "value"),
-    Input("crf-gtprob-slider", "value"),
-    # Input("rf-sigma-range-slider", "value"),
+    # Input("crf-gtprob-slider", "value"),
     Input("rf-downsample-slider", "value"),
-    Input("rf-nestimators-slider", "value"),
-    Input("select-image", "value"),
-    Input('interval-component', 'n_intervals'),
+    # Input("rf-nestimators-slider", "value"),
+    # Input("select-image", "value"),
     ],
     [
     State("image-list-store", "data"),
@@ -751,12 +781,10 @@ def update_output(
     pen_width_value,
     show_segmentation_value,
     crf_downsample_value,
-    gt_prob,
-    # sigma_range_slider_value,
+    # gt_prob,
     rf_downsample_value,
-    n_estimators,
-    select_image_value,
-    n_intervals,
+    # n_estimators,
+    # select_image_value,
     image_list_data,
     my_id_value,
     masks_data,
@@ -765,37 +793,46 @@ def update_output(
     ):
     """Save uploaded files and regenerate the file list."""
 
+    #select_image_value = 'D800_20160308_222135lr03-1.jpg'
+
     callback_context = [p["prop_id"] for p in dash.callback_context.triggered][0]
-    #print(callback_context)
+    print(callback_context)
 
     multichannel = True
     intensity = True
     edges = True
     texture = True
 
-    if uploaded_filenames is not None and uploaded_file_contents is not None:
-        for name, data in zip(uploaded_filenames, uploaded_file_contents):
-            save_file(name, data)
-        image_list_data = []
-        all_image_value = ''
-        files = ''
-        options = []
+    # if uploaded_filenames is not None and uploaded_file_contents is not None:
+    #     for name, data in zip(uploaded_filenames, uploaded_file_contents):
+    #         save_file(name, data)
+    #     image_list_data = []
+    #     all_image_value = ''
+    #     files = ''
+    #     options = []
+    # else:
+    image_list_data = []
+    all_image_value = ''
+    files = ''
+    options = []
+
+    # if callback_context=='interval-component.n_intervals':
+    files, labeled_files = uploaded_files()
+
+    files = [f.split('assets/')[-1] for f in files]
+    labeled_files = [f.split('labeled/')[-1] for f in labeled_files]
+
+    files = list(set(files) - set(labeled_files))
+    files = sorted(files)
+
+    options = [{'label': image, 'value': image } for image in files]
+
+    print(files)
+
+    if len(files)>0:
+        select_image_value = files[0]
     else:
-        image_list_data = []
-        all_image_value = ''
-        files = ''
-        options = []
-
-    if callback_context=='interval-component.n_intervals':
-        files, labeled_files = uploaded_files()
-
-        files = [f.split('assets/')[-1] for f in files]
-        labeled_files = [f.split('labeled/')[-1] for f in labeled_files]
-
-        files = list(set(files) - set(labeled_files))
-        files = sorted(files)
-
-        options = [{'label': image, 'value': image } for image in files]
+        print("No more files")
 
 
     if 'assets' not in select_image_value:
@@ -810,9 +847,10 @@ def update_output(
         except:
             return dash.no_update
 
-    elif callback_context == "select-image.value":
-       masks_data={"shapes": []}
-       segmentation_data={}
+    # elif callback_context == "select-image.value":
+    #
+    #    masks_data={"shapes": []}
+    #    segmentation_data={}
 
     pen_width = pen_width_value #int(round(2 ** (pen_width_value)))
 
@@ -834,6 +872,8 @@ def update_output(
 
     if ("Show segmentation" in show_segmentation_value) and (
         len(masks_data["shapes"]) > 0):
+    # if ('submitbutton' in callback_context) and (
+    #     len(masks_data["shapes"]) > 0):
         # to store segmentation data in the store, we need to base64 encode the
         # PIL.Image and hash the set of shapes to use this as the key
         # to retrieve the segmentation data, we need to base64 decode to a PIL.Image
@@ -866,8 +906,8 @@ def update_output(
 
             segimgpng, seg, img, color_doodles, doodles  = show_segmentation(
                 [select_image_value], masks_data["shapes"], callback_context,#median_filter_value,
-                 crf_theta_slider_value, crf_mu_slider_value, results_folder, rf_downsample_value, crf_downsample_value, gt_prob, my_id_value, rf_file, data_file,
-                 multichannel, intensity, edges, texture,n_estimators, # sigma_range_slider_value[0], sigma_range_slider_value[1],
+                 crf_theta_slider_value, crf_mu_slider_value, results_folder, rf_downsample_value, crf_downsample_value, my_id_value, rf_file, data_file, #gt_prob,
+                 multichannel, intensity, edges, texture,#n_estimators, # sigma_range_slider_value[0], sigma_range_slider_value[1],
             )
 
             if os.name=='posix': # true if linux/mac
@@ -910,6 +950,8 @@ def update_output(
             logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
             logging.info('RGB label image saved to %s' % (colfile))
 
+            gt_prob = .9
+            n_estimators = 3
             settings_dict = np.array([pen_width, crf_downsample_value, rf_downsample_value, crf_theta_slider_value, crf_mu_slider_value,  n_estimators, gt_prob])#median_filter_value,sigma_range_slider_value[0], sigma_range_slider_value[1]
 
             if type(select_image_value) is list:
@@ -1012,29 +1054,23 @@ def update_output(
 
         fig = add_layout_images_to_fig(fig, images_to_draw) #plot_utils.
 
-        show_segmentation_value = []
+        # show_segmentation_value = []
 
         image_list_data.append(select_image_value)
 
-        try:
-          os.remove('my_defaults.py')
-        except:
-          pass
+        masks_data={"shapes": []}
+        segmentation_data={}
 
-        with open('my_defaults.py', 'a') as the_file:
-            the_file.write('DEFAULT_PEN_WIDTH = {}\n'.format(pen_width))
-            the_file.write('DEFAULT_CRF_DOWNSAMPLE = {}\n'.format(crf_downsample_value))
-            the_file.write('DEFAULT_RF_DOWNSAMPLE = {}\n'.format(rf_downsample_value))
-            the_file.write('DEFAULT_CRF_THETA = {}\n'.format(crf_theta_slider_value))
-            the_file.write('DEFAULT_CRF_MU = {}\n'.format(crf_mu_slider_value))
-            the_file.write('DEFAULT_RF_NESTIMATORS = {}\n'.format(n_estimators))
-            the_file.write('DEFAULT_CRF_GTPROB = {}\n'.format(gt_prob))
-            # the_file.write('SIGMA_MIN = {}\n'.format(sigma_range_slider_value[0]))
-            # the_file.write('SIGMA_MAX = {}\n'.format(sigma_range_slider_value[1]))
-        print('my_defaults.py overwritten with parameter settings')
 
-        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-        logging.info('my_defaults.py overwritten with parameter settings')
+        ## while file not in assets/ ...
+        usefile = np.random.randint(Ns3files)
+        file = s3files[usefile]
+        #print(file.split(os.sep)[-1])
+        fp = 's3://'+file
+        with fs.open(fp, 'rb') as f:
+            img = np.array(PIL.Image.open(f))[:,:,:3]
+            f.close()
+            imsave('assets/'+file.split(os.sep)[-1], img)
 
 
     if len(files) == 0:
@@ -1050,10 +1086,9 @@ def update_output(
         "Blur factor (default: %d): %d" % (DEFAULT_CRF_THETA, crf_theta_slider_value), #"Blurring parameter for CRF image feature extraction (default: %d): %d"
         "Model independence factor (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value), #CRF color class difference tolerance parameter (default: %d)
         "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
-        "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
-        # "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
+        # "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
         "RF downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
-        "RF estimators per image (default: %d): %d" % (DEFAULT_RF_NESTIMATORS,n_estimators),
+        # "RF estimators per image (default: %d): %d" % (DEFAULT_RF_NESTIMATORS,n_estimators),
         segmentation_store_data,
         ]
     else:
@@ -1069,10 +1104,9 @@ def update_output(
         "Blur factor (default: %d): %d" % (DEFAULT_CRF_THETA, crf_theta_slider_value),
         "Model independence factor  (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value),
         "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
-        "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
-        # "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
+        # "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
         "RF downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
-        "RF estimators per image (default: %d): %d" % (DEFAULT_RF_NESTIMATORS,n_estimators),
+        # "RF estimators per image (default: %d): %d" % (DEFAULT_RF_NESTIMATORS,n_estimators),
         segmentation_store_data,
         ]
 
@@ -1080,15 +1114,15 @@ def update_output(
 ##========================================================
 # set the download url to the contents of the classified-image-store (so they can be
 # downloaded from the browser's memory)
-app.clientside_callback(
-    """
-function(the_image_store_data) {
-    return the_image_store_data;
-}
-""",
-    Output("download-image", "href"),
-    [Input("classified-image-store", "data")],
-)
+# app.clientside_callback(
+#     """
+# function(the_image_store_data) {
+#     return the_image_store_data;
+# }
+# """,
+#     Output("download-image", "href"),
+#     [Input("classified-image-store", "data")],
+# )
 
 ##========================================================
 

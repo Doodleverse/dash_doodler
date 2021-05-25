@@ -1,0 +1,133 @@
+INFO:botocore.credentials:Found credentials in shared credentials file: ~/.aws/credentials
+INFO:root:24-05-2021-14-59-29
+INFO:root:loaded class labels:
+INFO:root:water
+INFO:root:land
+INFO:root:24-05-2021-14-59-29
+INFO:root:Folder created: results/results2021-05-24-14-59
+INFO:root:24-05-2021-14-59-29
+INFO:root:Results will be written to results/results2021-05-24-14-59
+INFO:root:24-05-2021-14-59-30
+INFO:root:loaded files:
+INFO:root:assets/chunk11_m_3507664_se_18_060_20181013_20190211_multiband-3.jpg
+INFO:werkzeug: * Running on http://127.0.0.1:8050/ (Press CTRL+C to quit)
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 14:59:56] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 14:59:56] "GET /_favicon.ico?v=1.12.0 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 14:59:56] "GET /_dash-layout HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 14:59:56] "GET /_dash-dependencies HTTP/1.1" 200 -
+INFO:root:24-05-2021-14-59-57
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 14:59:57] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 14:59:57] "GET /assets/chunk11_m_3507664_se_18_060_20181013_20190211_multiband-3.jpg HTTP/1.1" 200 -
+INFO:root:24-05-2021-14-59-57
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 14:59:57] "[35m[1mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:root:24-05-2021-15-00-31
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 15:00:31] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-15-00-34
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 15:00:34] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-15-00-36
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 15:00:36] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-15-00-37
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 15:00:37] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-15-00-38
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 15:00:38] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-15-00-40
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 15:00:40] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-15-00-44
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 15:00:44] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-15-00-45
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 15:00:45] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-15-00-46
+INFO:root:File list written to files_done.txt
+INFO:root:24-05-2021-15-00-46
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-15-00-46
+INFO:root:Saving data features to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-15-00-47
+INFO:root:Image standardized
+INFO:root:24-05-2021-15-00-47
+INFO:root:examples provided of 0
+INFO:root:examples provided of 1
+INFO:root:examples provided of 2
+INFO:root:24-05-2021-15-00-47
+INFO:root:Extracting features from channel 0
+INFO:root:24-05-2021-15-00-48
+INFO:root:Extracting features from channel 1
+INFO:root:24-05-2021-15-00-50
+INFO:root:Extracting features from channel 2
+INFO:root:24-05-2021-15-00-50
+INFO:root:Feature extraction complete
+INFO:root:24-05-2021-15-00-50
+INFO:root:Using 3 decision trees per image
+INFO:root:24-05-2021-15-00-50
+INFO:root:Updating existing RF classifier
+INFO:root:24-05-2021-15-00-50
+INFO:root:Initializing RF model
+INFO:root:24-05-2021-15-00-50
+INFO:root:RF model fit to data
+INFO:root:24-05-2021-15-00-50
+INFO:root:Model saved to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-15-00-50
+INFO:root:Data saved to data_water_land.pkl.z
+INFO:root:24-05-2021-15-00-50
+INFO:root:Model used on data to estimate labels
+INFO:root:24-05-2021-15-00-50
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:24-05-2021-15-00-50
+INFO:root:One-hot labels filtered
+INFO:root:24-05-2021-15-00-50
+INFO:root:One-hot labels spatially filtered
+INFO:root:24-05-2021-15-00-51
+INFO:root:Spatially filtered values inpainted
+INFO:root:24-05-2021-15-00-51
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+ERROR:doodler_server:Exception on /_dash-update-component [POST]
+Traceback (most recent call last):
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/dash/dash.py", line 1032, in dispatch
+    response.set_data(func(*args, outputs_list=outputs_list))
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/dash/dash.py", line 967, in add_context
+    output_value = func(*args, **kwargs)  # %% callback invoked %%
+  File "doodler_server.py", line 894, in update_output
+    multichannel, intensity, edges, texture,n_estimators, # sigma_range_slider_value[0], sigma_range_slider_value[1],
+  File "doodler_server.py", line 673, in show_segmentation
+    label_to_colors_args=label_to_colors_args,
+  File "src/annotations_to_segmentations.py", line 258, in compute_segmentations
+    sigma_min, sigma_max, n_estimators)
+  File "src/image_segmentation.py", line 557, in segmentation
+    w = Parallel(n_jobs=-2, verbose=0)(delayed(tta_crf_int)(img, result, k) for k in np.linspace(0,int(img.shape[0])/5,num_tta))
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/joblib/parallel.py", line 1061, in __call__
+    self.retrieve()
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/joblib/parallel.py", line 940, in retrieve
+    self._output.extend(job.get(timeout=self.timeout))
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/joblib/_parallel_backends.py", line 542, in wrap_future_result
+    return future.result(timeout=timeout)
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/concurrent/futures/_base.py", line 432, in result
+    return self.__get_result()
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/concurrent/futures/_base.py", line 384, in __get_result
+    raise self._exception
+ValueError: attempt to get argmax of an empty sequence
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 15:00:51] "[35m[1mPOST /_dash-update-component HTTP/1.1[0m" 500 -
+INFO:root:24-05-2021-15-00-53
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 15:00:53] "POST /_dash-update-component HTTP/1.1" 200 -

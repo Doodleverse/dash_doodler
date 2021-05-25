@@ -45,6 +45,7 @@ Allow some ports and other tings on the firewall, ufw
 
 ```
 sudo ufw allow 8050
+sudo ufw allow 80
 sudo ufw allow ssh
 sudo ufw allow http
 sudo ufw allow https
@@ -60,11 +61,56 @@ conda activate dashdoodler
 conda install gunicorn
 ```
 
-### Test locally
+### Add user authentication, and test locally
+
+Install `dash-auth` to handle user authentication
+
+```
+pip install dash-auth
+```
+
+Deactivate the environment, we no longer need it active
 
 ```
 conda deactivate
 ```
+
+Type `nano doodler.py` and add
+
+```
+import dash_auth
+
+```
+
+in the imports section at the top, then replace
+
+```
+app = dash.Dash(__name__)
+```
+
+with
+
+```
+server = Flask(__name__)
+app = dash.Dash(server=server)
+```
+
+This will tell gunicorn what object to serve (`server`) and makes use of Flask instead of Dash.
+
+Add users and password combos just below like this
+
+```
+VALID_USERNAME_PASSWORD_PAIRS = {
+    'user': 'password'
+}
+
+auth = dash_auth.BasicAuth(
+    app,
+    VALID_USERNAME_PASSWORD_PAIRS
+)
+
+```
+
 
 Run this:
 
@@ -78,7 +124,7 @@ And open a web browser and go here:
 http://$IP:8050
 ```
 
-You should see the Doodler app
+You should see the Doodler app, and you can log in using the credentials you set above
 
 
 ### Setting up your web server, SSL and custom URL redirects
@@ -156,7 +202,7 @@ sudo systemctl status doodler
 
 ### Setting $URL redirect
 
-However, I couldn't get doodler to appear at my `$URL` unless I also edited this file:
+Edit this file:
 
 ```
 sudo nano /etc/nginx/sites-available/default
@@ -175,7 +221,7 @@ Like this (replacing `$URL` with whatever it is):
                 # as directory, then fall back to displaying a 404.
                 #try_files $uri $uri/ =404;
     location / {
-        proxy_pass http://0.0.0.0:8050; #whatever port your app runs on
+        proxy_pass http://0.0.0.0:8050;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -185,68 +231,17 @@ Like this (replacing `$URL` with whatever it is):
         }
 ```
 
-```
-sudo nano /etc/nginx/sites-available/doodler
-```
-
-Should look like this (replacing `$URL` with whatever it is):
-
-```
-server {
-    server_name  $URL www. $URL;
-
-    location / {
-        include proxy_params;
-        proxy_pass http://unix:/home/newuser/doodler/doodler.sock;
-    }
-
-    listen 443 ssl; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/ $URL/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/ $URL/privkey.pem; # managed by Certbot
-    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-
-
-}
-
-server {
-    if ($host =  $URL) {
-        return 301 https://$host$request_uri;
-    } # managed by Certbot
-
-
-    if ($host =  $URL) {
-        return 301 https://$host$request_uri;
-    } # managed by Certbot
-
-
-    listen 80;
-    server_name $URL www.$URL;
-    return 404; # managed by Certbot
-
-
-}
-
-```
-
-Then symlink
-
-```
-sudo ln -s /etc/nginx/sites-available/doodler /etc/nginx/sites-enabled
-```
 
 Test the config files
 ```
 sudo nginx -t
 ```
 
-I got "nginx: [warn] conflicting server name" warnings because of the two nginx enabled sites pointing to the same place
-
 Restart nginx and update the firewall
 
 ```
 sudo systemctl restart nginx
-sudo ufw allow 'Nginx Full'
+sudo ufw allow 'Nginx Full' #allows 80 and 443
 ```
 
 ow your doodler service will be running the app at
@@ -261,15 +256,11 @@ which redirects to
 http://$URL
 ```
 
-But, despite the SSL cert from certbot, for some unknown reason it does not appear at
+and finally to
 
 ```
 https://$URL
 ```
 
-as expected
 
-any thoughts? Get in touch!
-
-
-I carried out this process and have a site hosted [here](http://doodler.xyz/)
+I carried out this process and have a site hosted [here](https://doodler.xyz/)

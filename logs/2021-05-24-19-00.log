@@ -1,0 +1,92 @@
+INFO:botocore.credentials:Found credentials in shared credentials file: ~/.aws/credentials
+INFO:root:24-05-2021-19-00-57
+INFO:root:loaded class labels:
+INFO:root:water
+INFO:root:land
+INFO:root:24-05-2021-19-00-57
+INFO:root:Folder created: results/results2021-05-24-19-00
+INFO:root:24-05-2021-19-00-57
+INFO:root:Results will be written to results/results2021-05-24-19-00
+INFO:root:24-05-2021-19-00-57
+INFO:root:loaded files:
+INFO:root:assets/chunk10_m_3407613_se_18_1_20160911_multiband-2.jpg
+INFO:root:assets/chunk11_m_3507664_se_18_060_20181013_20190211_multiband-3.jpg
+INFO:root:assets/chunk12_m_3507664_ne_18_1_20160917_multiband-0.jpg
+INFO:root:assets/chunk19_m_3507664_sw_18_060_20181013_20190211_multiband-1.jpg
+INFO:root:assets/chunk29_m_3407607_ne_18_1_20141017_multiband-0.jpg
+INFO:root:assets/chunk45_m_3507664_sw_18_1_20160911_multiband-0.jpg
+INFO:root:assets/chunk63_m_3507664_sw_18_1_20141017_multiband-0.jpg
+INFO:werkzeug: * Running on http://127.0.0.1:8050/ (Press CTRL+C to quit)
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:00] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:00] "GET /_dash-layout HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:00] "GET /_favicon.ico?v=1.12.0 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:00] "GET /_dash-dependencies HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-00
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:01] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-01
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:01] "[35m[1mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:root:24-05-2021-19-01-07
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:07] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-09
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:09] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-11
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:11] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-12
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:12] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-15
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:15] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-17
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:17] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-18
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:18] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-20
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:20] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-23
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:23] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-24
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:24] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-25
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:25] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-26
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:26] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-27
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:27] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-31
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:31] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-33
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:33] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-35
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:35] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-37
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:37] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-39
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:39] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-41
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:41] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-42
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:42] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-01-43
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:01:43] "POST /_dash-update-component HTTP/1.1" 200 -

@@ -1,0 +1,355 @@
+INFO:botocore.credentials:Found credentials in shared credentials file: ~/.aws/credentials
+INFO:root:24-05-2021-19-09-08
+INFO:root:loaded class labels:
+INFO:root:water
+INFO:root:land
+INFO:root:24-05-2021-19-09-08
+INFO:root:Folder created: results/results2021-05-24-19-09
+INFO:root:24-05-2021-19-09-08
+INFO:root:Results will be written to results/results2021-05-24-19-09
+INFO:root:24-05-2021-19-09-08
+INFO:root:loaded files:
+INFO:root:assets/chunk55_m_3507664_sw_18_1_20100612_multiband-1.jpg
+INFO:werkzeug: * Running on http://127.0.0.1:8050/ (Press CTRL+C to quit)
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:10] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:10] "GET /_dash-layout HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:10] "GET /_favicon.ico?v=1.12.0 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:10] "GET /_dash-dependencies HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-11
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:11] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:11] "GET /assets/chunk55_m_3507664_sw_18_1_20100612_multiband-1.jpg HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-11
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:11] "[35m[1mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:root:24-05-2021-19-09-17
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:17] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-18
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:18] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-19
+INFO:root:File list written to files_done.txt
+INFO:root:24-05-2021-19-09-19
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-19-09-19
+INFO:root:Saving data features to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-19-09-19
+INFO:root:Image standardized
+INFO:root:24-05-2021-19-09-19
+INFO:root:examples provided of 0
+INFO:root:examples provided of 2
+INFO:root:24-05-2021-19-09-19
+INFO:root:Only one class annotation provided, skipping RF and CRF and coding all pixels 2
+INFO:root:24-05-2021-19-09-19
+INFO:root:RGB label image saved to results/results2021-05-24-19-09/chunk55_m_3507664_sw_18_1_20100612_multiband-1_label2021-05-24-19-09_Enter-user-ID.png
+INFO:root:24-05-2021-19-09-19
+INFO:root:Numpy arrays saved to results/results2021-05-24-19-09/chunk55_m_3507664_sw_18_1_20100612_multiband-1_Enter-user-ID.npz
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:20] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-21
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:21] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:21] "GET /assets/chunk63_m_3507664_sw_18_1_20120603_multiband-0.jpg HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-26
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:26] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-29
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:29] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-30
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:30] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-31
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:31] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-32
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:32] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-32
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:32] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-33
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:33] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-33
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:33] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-34
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:34] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-35
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:35] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-37
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:37] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-38
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:38] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-43
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:43] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-44
+INFO:root:File list written to files_done.txt
+INFO:root:24-05-2021-19-09-44
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-19-09-44
+INFO:root:Saving data features to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-19-09-44
+INFO:root:Image standardized
+INFO:root:24-05-2021-19-09-44
+INFO:root:examples provided of 0
+INFO:root:examples provided of 1
+INFO:root:examples provided of 2
+INFO:root:24-05-2021-19-09-44
+INFO:root:Extracting features from channel 0
+INFO:root:24-05-2021-19-09-45
+INFO:root:Extracting features from channel 1
+INFO:root:24-05-2021-19-09-46
+INFO:root:Extracting features from channel 2
+INFO:root:24-05-2021-19-09-46
+INFO:root:Feature extraction complete
+INFO:root:24-05-2021-19-09-46
+INFO:root:Using 3 decision trees per image
+INFO:root:24-05-2021-19-09-46
+INFO:root:Updating existing RF classifier
+INFO:root:24-05-2021-19-09-46
+INFO:root:Initializing RF model
+INFO:root:24-05-2021-19-09-47
+INFO:root:RF model fit to data
+INFO:root:24-05-2021-19-09-47
+INFO:root:Model saved to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-19-09-47
+INFO:root:Data saved to data_water_land.pkl.z
+INFO:root:24-05-2021-19-09-47
+INFO:root:Model used on data to estimate labels
+INFO:root:24-05-2021-19-09-47
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:24-05-2021-19-09-47
+INFO:root:One-hot labels filtered
+INFO:root:24-05-2021-19-09-47
+INFO:root:One-hot labels spatially filtered
+INFO:root:24-05-2021-19-09-47
+INFO:root:Spatially filtered values inpainted
+INFO:root:24-05-2021-19-09-47
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:24-05-2021-19-09-47
+INFO:root:CRF model applied with 10 test-time augmentations
+INFO:root:24-05-2021-19-09-47
+INFO:root:Weighted average applied to test-time augmented outputs
+INFO:root:24-05-2021-19-09-47
+INFO:root:CRF model applied with theta=1.000000 and mu=1.000000
+INFO:root:24-05-2021-19-09-47
+INFO:root:Spatially filtered values inpainted
+INFO:root:24-05-2021-19-09-47
+INFO:root:RGB label image saved to results/results2021-05-24-19-09/chunk63_m_3507664_sw_18_1_20120603_multiband-0_label2021-05-24-19-09_Enter-user-ID.png
+INFO:root:24-05-2021-19-09-47
+INFO:root:Numpy arrays saved to results/results2021-05-24-19-09/chunk63_m_3507664_sw_18_1_20120603_multiband-0_Enter-user-ID.npz
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:48] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-09-50
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:50] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:09:50] "GET /assets/chunk27_m_3507663_se_18_1_20120603_multiband-2.jpg HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-10-51
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:10:51] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-10-52
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:10:52] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-10-54
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:10:54] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-10-56
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:10:56] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-10-57
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:10:57] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-10-57
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:10:57] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-10-58
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:10:58] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-00
+INFO:root:File list written to files_done.txt
+INFO:root:24-05-2021-19-11-00
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-19-11-00
+INFO:root:Saving data features to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-19-11-00
+INFO:root:Image standardized
+INFO:root:24-05-2021-19-11-00
+INFO:root:examples provided of 0
+INFO:root:examples provided of 1
+INFO:root:examples provided of 2
+INFO:root:24-05-2021-19-11-00
+INFO:root:Extracting features from channel 0
+INFO:root:24-05-2021-19-11-00
+INFO:root:Extracting features from channel 1
+INFO:root:24-05-2021-19-11-00
+INFO:root:Extracting features from channel 2
+INFO:root:24-05-2021-19-11-00
+INFO:root:Feature extraction complete
+INFO:root:24-05-2021-19-11-00
+INFO:root:Using 3 decision trees per image
+INFO:root:24-05-2021-19-11-00
+INFO:root:Updating existing RF classifier
+INFO:root:Samples concatenated with those from file
+INFO:root:Number of samples in training data: 1643
+INFO:root:24-05-2021-19-11-00
+INFO:root:Loading model from RandomForestClassifier_water_land.pkl.z
+INFO:root:Number of trees: 6
+INFO:root:24-05-2021-19-11-00
+INFO:root:RF model fit to data
+INFO:root:24-05-2021-19-11-00
+INFO:root:Model saved to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-19-11-00
+INFO:root:Data saved to data_water_land.pkl.z
+INFO:root:24-05-2021-19-11-00
+INFO:root:Model used on data to estimate labels
+INFO:root:24-05-2021-19-11-00
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:24-05-2021-19-11-00
+INFO:root:One-hot labels filtered
+INFO:root:24-05-2021-19-11-00
+INFO:root:One-hot labels spatially filtered
+INFO:root:24-05-2021-19-11-00
+INFO:root:Spatially filtered values inpainted
+INFO:root:24-05-2021-19-11-00
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:24-05-2021-19-11-01
+INFO:root:CRF model applied with 10 test-time augmentations
+INFO:root:24-05-2021-19-11-01
+INFO:root:Weighted average applied to test-time augmented outputs
+INFO:root:24-05-2021-19-11-01
+INFO:root:CRF model applied with theta=1.000000 and mu=1.000000
+INFO:root:24-05-2021-19-11-01
+INFO:root:Spatially filtered values inpainted
+INFO:root:24-05-2021-19-11-01
+INFO:root:RGB label image saved to results/results2021-05-24-19-09/chunk27_m_3507663_se_18_1_20120603_multiband-2_label2021-05-24-19-11_Enter-user-ID.png
+INFO:root:24-05-2021-19-11-01
+INFO:root:Numpy arrays saved to results/results2021-05-24-19-09/chunk27_m_3507663_se_18_1_20120603_multiband-2_Enter-user-ID.npz
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:01] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-03
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:03] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:03] "GET /assets/chunk15_m_3407621_nw_18_1_20160911_multiband-2.jpg HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-05
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:05] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-07
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:07] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-08
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:08] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-09
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:09] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-11
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:11] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-12
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:12] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-14
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:14] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-15
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:15] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-17
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:17] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-18
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:18] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-20
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:20] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-22
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:22] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-24
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:24] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-25
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:25] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-26
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:26] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-28
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:28] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-29
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:29] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-30
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:30] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-32
+INFO:root:File list written to files_done.txt
+INFO:root:24-05-2021-19-11-32
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-19-11-32
+INFO:root:Saving data features to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-19-11-33
+INFO:root:Image standardized
+INFO:root:24-05-2021-19-11-33
+INFO:root:examples provided of 0
+INFO:root:examples provided of 1
+INFO:root:examples provided of 2
+INFO:root:24-05-2021-19-11-33
+INFO:root:Extracting features from channel 0
+INFO:root:24-05-2021-19-11-33
+INFO:root:Extracting features from channel 1
+INFO:root:24-05-2021-19-11-34
+INFO:root:Extracting features from channel 2
+INFO:root:24-05-2021-19-11-34
+INFO:root:Feature extraction complete
+INFO:root:24-05-2021-19-11-34
+INFO:root:Using 3 decision trees per image
+INFO:root:24-05-2021-19-11-34
+INFO:root:Updating existing RF classifier
+INFO:root:Samples concatenated with those from file
+INFO:root:Number of samples in training data: 4059
+INFO:root:24-05-2021-19-11-34
+INFO:root:Loading model from RandomForestClassifier_water_land.pkl.z
+INFO:root:Number of trees: 9
+INFO:root:24-05-2021-19-11-34
+INFO:root:RF model fit to data
+INFO:root:24-05-2021-19-11-34
+INFO:root:Model saved to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-19-11-34
+INFO:root:Data saved to data_water_land.pkl.z
+INFO:root:24-05-2021-19-11-34
+INFO:root:Model used on data to estimate labels
+INFO:root:24-05-2021-19-11-34
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:24-05-2021-19-11-35
+INFO:root:One-hot labels filtered
+INFO:root:24-05-2021-19-11-35
+INFO:root:One-hot labels spatially filtered
+INFO:root:24-05-2021-19-11-35
+INFO:root:Spatially filtered values inpainted
+INFO:root:24-05-2021-19-11-35
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:24-05-2021-19-11-36
+INFO:root:CRF model applied with 10 test-time augmentations
+INFO:root:24-05-2021-19-11-36
+INFO:root:Weighted average applied to test-time augmented outputs
+INFO:root:24-05-2021-19-11-36
+INFO:root:CRF model applied with theta=1.000000 and mu=1.000000
+INFO:root:24-05-2021-19-11-36
+INFO:root:Spatially filtered values inpainted
+INFO:root:24-05-2021-19-11-36
+INFO:root:RGB label image saved to results/results2021-05-24-19-09/chunk15_m_3407621_nw_18_1_20160911_multiband-2_label2021-05-24-19-11_Enter-user-ID.png
+INFO:root:24-05-2021-19-11-36
+INFO:root:Numpy arrays saved to results/results2021-05-24-19-09/chunk15_m_3407621_nw_18_1_20160911_multiband-2_Enter-user-ID.npz
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:36] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-19-11-39
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:39] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 19:11:39] "GET /assets/chunk10_m_3507664_nw_18_060_20181013_20190211_multiband-0.jpg HTTP/1.1" 200 -

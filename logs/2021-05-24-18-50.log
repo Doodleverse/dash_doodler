@@ -1,0 +1,65 @@
+INFO:botocore.credentials:Found credentials in shared credentials file: ~/.aws/credentials
+INFO:root:24-05-2021-18-50-15
+INFO:root:loaded class labels:
+INFO:root:water
+INFO:root:land
+INFO:root:24-05-2021-18-50-15
+INFO:root:Folder created: results/results2021-05-24-18-50
+INFO:root:24-05-2021-18-50-15
+INFO:root:Results will be written to results/results2021-05-24-18-50
+INFO:root:24-05-2021-18-50-15
+INFO:root:loaded files:
+INFO:root:assets/chunk11_m_3507664_se_18_060_20181013_20190211_multiband-3.jpg
+INFO:root:assets/chunk29_m_3407607_ne_18_1_20141017_multiband-0.jpg
+INFO:root:assets/chunk63_m_3507664_sw_18_1_20141017_multiband-0.jpg
+INFO:werkzeug: * Running on http://127.0.0.1:8050/ (Press CTRL+C to quit)
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 18:50:18] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 18:50:18] "GET /_dash-layout HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 18:50:18] "GET /_dash-dependencies HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 18:50:18] "GET /_favicon.ico?v=1.12.0 HTTP/1.1" 200 -
+INFO:root:24-05-2021-18-50-18
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 18:50:18] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-18-50-19
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 18:50:19] "[35m[1mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:root:24-05-2021-18-50-21
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 18:50:21] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:24-05-2021-18-50-22
+INFO:root:File list written to files_done.txt
+INFO:root:24-05-2021-18-50-22
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-18-50-22
+INFO:root:Saving data features to RandomForestClassifier_water_land.pkl.z
+INFO:root:24-05-2021-18-50-22
+INFO:root:Image standardized
+INFO:root:24-05-2021-18-50-22
+INFO:root:examples provided of 0
+INFO:root:examples provided of 1
+INFO:root:24-05-2021-18-50-22
+INFO:root:Only one class annotation provided, skipping RF and CRF and coding all pixels 1
+INFO:root:24-05-2021-18-50-22
+INFO:root:RGB label image saved to results/results2021-05-24-18-50/chunk11_m_3507664_se_18_060_20181013_20190211_multiband-3_label2021-05-24-18-50_Enter-user-ID.png
+ERROR:doodler_server:Exception on /_dash-update-component [POST]
+Traceback (most recent call last):
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/dash/dash.py", line 1032, in dispatch
+    response.set_data(func(*args, outputs_list=outputs_list))
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/dash/dash.py", line 967, in add_context
+    output_value = func(*args, **kwargs)  # %% callback invoked %%
+  File "doodler_server.py", line 941, in update_output
+    settings_dict = np.array([pen_width, crf_downsample_value, rf_downsample_value, crf_theta_slider_value, crf_mu_slider_value,  n_estimators, gt_prob])#median_filter_value,sigma_range_slider_value[0], sigma_range_slider_value[1]
+NameError: name 'n_estimators' is not defined
+INFO:werkzeug:127.0.0.1 - - [24/May/2021 18:50:22] "[35m[1mPOST /_dash-update-component HTTP/1.1[0m" 500 -

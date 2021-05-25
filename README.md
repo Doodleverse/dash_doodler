@@ -297,6 +297,13 @@ https://dbuscombe-usgs.github.io/dash_doodler/
 
 <!-- * Maybe a button to reset the coefficients to the defaults? [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2) -->
 
+* User authentication using O-Auth e.g. https://pypi.org/project/dash-google-oauth/
+
+* S3 integration. Remove filelist
+  * remove all code to do with timing and file lookup in assets and labeled
+  * fsspec read file
+  * fsspec write results
+
 * Delay running the model until all of the coefficients are adjusted...right now it jumps right into the calcs as soon a slider is moved, but maybe you want to adjust two sliders first. Maybe change the compute segmentation to a button that changes color if the model is out of date wrt to the current settings. [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 
 * pymongo (mongoDB) database backend - thanks Evan and Shah @UNCG-DAISY! See [here](https://api.mongodb.com/python/current/tools.html), [here](https://strapi.io/pricing)

@@ -553,9 +553,19 @@ def segmentation(
 
             return result2, w,n
 
-        num_tta = 10
-        w = Parallel(n_jobs=-2, verbose=0)(delayed(tta_crf_int)(img, result, k) for k in np.linspace(0,int(img.shape[0])/5,num_tta))
-        R,W,n = zip(*w)
+        try:
+            num_tta = 10
+            w = Parallel(n_jobs=-2, verbose=0)(delayed(tta_crf_int)(img, result, k) for k in np.linspace(0,int(img.shape[0])/5,num_tta))
+            R,W,n = zip(*w)
+        except:
+            logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+            logging.info('CRF parallel test-time augmentation failed... reverting to serial')
+            R = []; W = []; n = []
+            for k in np.linspace(0,int(img.shape[0])/5,num_tta):
+                r,w,nn = tta_crf_int(img, result, k)
+                R.append(r); W.append(w); n.append(nn)
+
+
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('CRF model applied with %i test-time augmentations' % ( num_tta))
 

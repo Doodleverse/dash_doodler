@@ -1,0 +1,204 @@
+INFO:botocore.credentials:Found credentials in shared credentials file: ~/.aws/credentials
+INFO:root:25-05-2021-11-34-08
+INFO:root:loaded class labels:
+INFO:root:water
+INFO:root:land
+INFO:root:25-05-2021-11-34-08
+INFO:root:Folder created: results/results2021-05-25-11-34
+INFO:root:25-05-2021-11-34-08
+INFO:root:Results will be written to results/results2021-05-25-11-34
+INFO:root:25-05-2021-11-34-08
+INFO:root:loaded files:
+INFO:root:assets/CAM001_20180910140059_75-0-0.jpg
+INFO:root:assets/CAM001_20180910140101_75-2-0.jpg
+INFO:root:assets/CAM001_20180910140101_75-2-1.jpg
+INFO:root:assets/CAM001_20180910140111_75-2-0.jpg
+INFO:root:assets/CAM001_20180910140114_75-0-1.jpg
+INFO:root:assets/CAM001_20180910140141_75-2-3.jpg
+INFO:root:assets/CAM001_20180910140156_75-2-1.jpg
+INFO:root:assets/CAM001_20180910140214_75-0-0.jpg
+INFO:root:assets/CAM001_20180910140538_75-2-3.jpg
+INFO:root:assets/CAM001_20200120133854_35lr-0-3.jpg
+INFO:werkzeug: * Running on http://127.0.0.1:8050/ (Press CTRL+C to quit)
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:34:22] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:34:22] "[36mGET /assets/ml-image-segmentation-style.css?m=1603062280.640924 HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:34:22] "[36mGET /assets/style.css?m=1620319430.2412193 HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:34:23] "GET /_dash-layout HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:34:23] "GET /_dash-dependencies HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:34:23] "[36mGET /assets/logos/dash-logo-new.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:34:23] "[36mGET /assets/logos/dash-default.jpg HTTP/1.1[0m" 304 -
+INFO:root:25-05-2021-11-34-23
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:34:23] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:34:23] "[36mGET /assets/CAM001_20180910140114_75-0-1.jpg HTTP/1.1[0m" 304 -
+INFO:root:25-05-2021-11-34-24
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:34:24] "[35m[1mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+INFO:root:25-05-2021-11-35-57
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:35:57] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-36-02
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:36:02] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-36-05
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:36:05] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-36-07
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:36:07] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-36-09
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:36:09] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-36-10
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:36:10] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-36-11
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:36:11] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-36-12
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:36:12] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-36-12
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:36:12] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-36-14
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:36:14] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-36-15
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:36:15] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-36-16
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:36:16] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-36-17
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:36:17] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-37-20
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:37:20] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-37-25
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:37:25] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-37-27
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:37:27] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-37-30
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:37:30] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-37-33
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:37:33] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-37-35
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:37:35] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-37-39
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:37:39] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-39-28
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:39:28] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-39-30
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:39:30] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-39-32
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:39:32] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-39-36
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:39:36] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-39-37
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:39:37] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-39-41
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:39:41] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-39-42
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:39:42] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-39-44
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:39:44] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-39-45
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:39:45] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-39-45
+INFO:root:File list written to files_done.txt
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:39:45] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:root:25-05-2021-11-39-48
+INFO:root:File list written to files_done.txt
+INFO:root:25-05-2021-11-39-48
+INFO:root:Saving RF model to RandomForestClassifier_water_land.pkl.z
+INFO:root:25-05-2021-11-39-48
+INFO:root:Saving data features to RandomForestClassifier_water_land.pkl.z
+INFO:root:25-05-2021-11-39-52
+INFO:root:Image standardized
+INFO:root:25-05-2021-11-39-52
+INFO:root:examples provided of 0
+INFO:root:examples provided of 1
+INFO:root:examples provided of 2
+INFO:root:25-05-2021-11-39-52
+INFO:root:Extracting features from channel 0
+INFO:root:25-05-2021-11-39-54
+INFO:root:Extracting features from channel 1
+INFO:root:25-05-2021-11-39-56
+INFO:root:Extracting features from channel 2
+INFO:root:25-05-2021-11-39-56
+INFO:root:Feature extraction complete
+INFO:root:25-05-2021-11-39-57
+INFO:root:Using 3 decision trees per image
+INFO:root:25-05-2021-11-39-58
+INFO:root:Updating existing RF classifier
+INFO:root:25-05-2021-11-39-58
+INFO:root:Initializing RF model
+INFO:root:25-05-2021-11-39-59
+INFO:root:RF model fit to data
+INFO:root:25-05-2021-11-39-59
+INFO:root:Model saved to RandomForestClassifier_water_land.pkl.z
+INFO:root:25-05-2021-11-39-59
+INFO:root:Data saved to data_water_land.pkl.z
+INFO:root:25-05-2021-11-40-00
+INFO:root:Model used on data to estimate labels
+INFO:root:25-05-2021-11-40-00
+INFO:root:RF feature extraction and model fitting complete
+INFO:root:25-05-2021-11-40-00
+INFO:root:One-hot labels filtered
+INFO:root:25-05-2021-11-40-00
+INFO:root:One-hot labels spatially filtered
+INFO:root:25-05-2021-11-40-01
+INFO:root:Spatially filtered values inpainted
+INFO:root:25-05-2021-11-40-01
+INFO:root:RF model applied with sigma range 1.000000 : 16.000000
+INFO:root:25-05-2021-11-40-04
+INFO:root:CRF model applied with 10 test-time augmentations
+INFO:root:25-05-2021-11-40-05
+INFO:root:Weighted average applied to test-time augmented outputs
+INFO:root:25-05-2021-11-40-05
+INFO:root:CRF model applied with theta=1.000000 and mu=1.000000
+INFO:root:25-05-2021-11-40-05
+INFO:root:Spatially filtered values inpainted
+INFO:root:25-05-2021-11-40-05
+INFO:root:RGB label image saved to results/results2021-05-25-11-34/CAM001_20180910140114_75-0-1_label2021-05-25-11-40_Enter-user-ID.png
+INFO:root:25-05-2021-11-40-05
+INFO:root:Numpy arrays saved to results/results2021-05-25-11-34/CAM001_20180910140114_75-0-1_Enter-user-ID.npz
+ERROR:minimal_doodler_server:Exception on /_dash-update-component [POST]
+Traceback (most recent call last):
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/dash/dash.py", line 1032, in dispatch
+    response.set_data(func(*args, outputs_list=outputs_list))
+  File "/home/marda/anaconda3/envs/dashdoodler/lib/python3.6/site-packages/dash/dash.py", line 967, in add_context
+    output_value = func(*args, **kwargs)  # %% callback invoked %%
+  File "minimal_doodler_server.py", line 893, in update_output
+    subprocess.Popen(["aws","s3","cp", numpyfile, results_s3bucket+'/'+to_write])
+NameError: name 'subprocess' is not defined
+INFO:werkzeug:127.0.0.1 - - [25/May/2021 11:40:06] "[35m[1mPOST /_dash-update-component HTTP/1.1[0m" 500 -
