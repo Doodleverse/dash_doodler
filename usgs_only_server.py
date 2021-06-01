@@ -41,7 +41,7 @@ import dash_html_components as html
 import dash_core_components as dcc
 
 # pip install dash-auth
-# import dash_auth
+import dash_auth
 
 from annotations_to_segmentations import *
 from plot_utils import *
@@ -62,19 +62,21 @@ logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S
 ############ SETTINGS / FILES ############################################
 ########################################################
 
+
+S3_DATABUCKET = 's3://cmgp-upload-download-bucket/watermasker1/'
+S3_RESULTSBUCKET = 's3://cmgp-upload-download-bucket/watermasker1/results'
+
 #========================================================
 fs = fsspec.filesystem('s3', profile='default')
 # replace bucketname with cmd input
-s3files = fs.ls('s3://cmgp-upload-download-bucket/watermasker1/')
+s3files = fs.ls(S3_DATABUCKET)
 s3files = [f for f in s3files if 'jpg' in f]
 Ns3files = len(s3files)
 print("%i files in s3 bucket" % (Ns3files))
 
-results_s3bucket = 's3://cmgp-upload-download-bucket/watermasker1/results'
-
 fs_res = fsspec.filesystem('s3', profile='default')
 # replace bucketname with cmd input
-resfiles = fs_res.ls(results_s3bucket)
+resfiles = fs_res.ls(S3_RESULTSBUCKET)
 Nresfiles = len(resfiles)
 print("%i results files in s3 bucket" % (Nresfiles))
 
@@ -366,6 +368,8 @@ def listToString(s):
 
 ##===============================================================
 
+## remove
+
 UPLOAD_DIRECTORY = os.getcwd()+os.sep+"assets"
 
 if not os.path.exists(UPLOAD_DIRECTORY):
@@ -378,17 +382,17 @@ if not os.path.exists(UPLOAD_DIRECTORY):
 server = Flask(__name__)
 app = dash.Dash(server=server)
 
+try:
+    with open('users/users.json') as f:
+        VALID_USERNAME_PASSWORD_PAIRS = json.load(f)
 
-# # Keep this out of source code repository - save in a file or a database
-# VALID_USERNAME_PASSWORD_PAIRS = {
-#     'doodler': 'doodler'
-# }
-#
-# #!pip install dash-auth
-# auth = dash_auth.BasicAuth(
-#     app,
-#     VALID_USERNAME_PASSWORD_PAIRS
-# )
+    #!pip install dash-auth
+    auth = dash_auth.BasicAuth(
+        app,
+        VALID_USERNAME_PASSWORD_PAIRS
+    )
+except:
+    print("Credentials not found or badly formatted..does users/users.json exist? Is there a trailing comma?")
 
 ##========================================================
 
@@ -653,7 +657,7 @@ def update_output(
 
     options = [{'label': image, 'value': image } for image in files]
 
-    print(files)
+    # print(files)
 
     if len(files)>0:
         select_image_value = files[0]
@@ -735,7 +739,7 @@ def update_output(
                elapsed = (time.time() - start)/60
             else: # windows
                elapsed = (time.clock() - start)/60
-            print("Processing took "+ str(elapsed) + " minutes")
+            #print("Processing took "+ str(elapsed) + " minutes")
 
             lstack = (np.arange(seg.max()) == seg[...,None]-1).astype(int) #one-hot encode
 
@@ -887,10 +891,11 @@ def update_output(
             imsave('assets/'+file.split(os.sep)[-1], img)
 
         to_write = numpyfile.split(results_folder)[-1].split(os.sep)[-1]
-        print(to_write)
-        #subprocess.run(["aws","s3","cp", numpyfile, results_s3bucket])
-        #os.system("aws s3 cp "+numpyfile+" "+results_s3bucket)
-        subprocess.Popen(["aws","s3","cp", numpyfile, results_s3bucket+'/'+to_write])
+        # print(to_write)
+        #subprocess.run(["aws","s3","cp", numpyfile, S3_RESULTSBUCKET])
+        #os.system("aws s3 cp "+numpyfile+" "+S3_RESULTSBUCKET)
+        # subprocess.Popen(["/usr/bin/aws","s3","cp", numpyfile, S3_RESULTSBUCKET+'/'+to_write])
+        subprocess.Popen(["aws","s3","cp", numpyfile, S3_RESULTSBUCKET+'/'+to_write])
 
 
     if len(files) == 0:
@@ -926,7 +931,6 @@ def update_output(
 ########################################################
 
 if __name__ == "__main__":
-    print('Go to http://127.0.0.1:8050/ in your web browser to use Doodler')
+    print('This is for certain USGS personnel only, and will not work for you unless you have specific AWS keys')
+    # print('Go to http://127.0.0.1:8050/ in your web browser to use Doodler')
     app.run_server()
-    #app.run(host='0.0.0.0', port=8050) #()
-    #debug=True) #debug=True, port=8888)

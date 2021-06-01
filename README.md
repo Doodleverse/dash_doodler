@@ -293,16 +293,24 @@ Other:
 Website:
 https://dbuscombe-usgs.github.io/dash_doodler/
 
+
+06/01/21. version 1.2.2
+* versions with S3 integration: `usgs_only_server.py` and `doodler_server.py`, in which:
+  * remove all code to do with timing and file lookup in assets and labeled
+  * fsspec read file
+  * fsspec write results
+  * 'one chance" doodling. Next image retrieved automatically from s3 when 'segment image' unchecked
+* the minimal version has one chance doodling, no controls except pen width. Next image retrieved automatically from s3 when 'segment image' unchecked
+* worked out more details for serving using gunicorn/nginx/systemctl services
+
+
 ## <a name="roadmap"></a>Roadmap
 
 <!-- * Maybe a button to reset the coefficients to the defaults? [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2) -->
 
-* User authentication using O-Auth e.g. https://pypi.org/project/dash-google-oauth/
+* Docker deployment--HELP!!
 
-* S3 integration. Remove filelist
-  * remove all code to do with timing and file lookup in assets and labeled
-  * fsspec read file
-  * fsspec write results
+* User authentication using O-Auth e.g. https://pypi.org/project/dash-google-oauth/ or Auth0 --HELP!!
 
 * Delay running the model until all of the coefficients are adjusted...right now it jumps right into the calcs as soon a slider is moved, but maybe you want to adjust two sliders first. Maybe change the compute segmentation to a button that changes color if the model is out of date wrt to the current settings. [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 

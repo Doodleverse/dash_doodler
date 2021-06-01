@@ -553,8 +553,8 @@ def segmentation(
 
             return result2, w,n
 
+        num_tta = 10
         try:
-            num_tta = 10
             w = Parallel(n_jobs=-2, verbose=0)(delayed(tta_crf_int)(img, result, k) for k in np.linspace(0,int(img.shape[0])/5,num_tta))
             R,W,n = zip(*w)
         except:
