@@ -67,6 +67,10 @@ S3_DATABUCKET = 's3://cmgp-sfm-public-read-bucket/coast_train/west/monterey/'
 fs = fsspec.filesystem('s3', profile='default')
 s3files = fs.ls(S3_DATABUCKET)
 s3files = [f for f in s3files if 'jpg' in f]
+
+s3files = [f.split(S3_DATABUCKET.split('s3://')[-1])[-1] for f in s3files ]
+
+
 Ns3files = len(s3files)
 print("%i files in s3 bucket" % (Ns3files))
 
@@ -157,7 +161,8 @@ logging.info("Results will be written to %s" % (results_folder))
 usefile = np.random.randint(Ns3files)
 file = s3files[usefile]
 # print(file.split(os.sep)[-1])
-fp = 's3://'+file
+#fp = 's3://'+file
+fp = S3_DATABUCKET+file
 with fs.open(fp, 'rb') as f:
     img = np.array(PIL.Image.open(f))[:,:,:3]
     f.close()
@@ -719,31 +724,6 @@ def update_output(
     if 'assets' not in select_image_value:
         select_image_value = 'assets'+os.sep+select_image_value
 
-    # image_list_data = []
-    # all_image_value = ''
-    # files = ''
-    # options = []
-    #
-    # # if callback_context=='interval-component.n_intervals':
-    # files, labeled_files = uploaded_files()
-    #
-    # files = [f.split('assets/')[-1] for f in files]
-    # labeled_files = [f.split('labeled/')[-1] for f in labeled_files]
-    #
-    # files = list(set(files) - set(labeled_files))
-    # files = sorted(files)
-    #
-    # options = [{'label': image, 'value': image } for image in files]
-    #
-    # #print(files)
-    #
-    # if len(files)>0:
-    #     select_image_value = files[0]
-    # else:
-    #     print("No more files")
-    #
-    # if 'assets' not in select_image_value:
-    #     select_image_value = 'assets'+os.sep+select_image_value
 
     if callback_context == "graph.relayoutData":
         try:
@@ -882,6 +862,7 @@ def update_output(
                     savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                     savez_dict['doodles'] = doodles.astype(np.uint8)
                     savez_dict['settings'] = settings_dict
+                    savez_dict['classes'] = class_label_names
                     np.savez(numpyfile, **savez_dict )
 
                 else:
@@ -891,7 +872,7 @@ def update_output(
                     savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                     savez_dict['doodles'] = doodles.astype(np.uint8)
                     savez_dict['settings'] = settings_dict
-
+                    savez_dict['classes'] = class_label_names
                     np.savez(numpyfile, **savez_dict ) #save settings too
 
             else:
@@ -916,7 +897,7 @@ def update_output(
                     savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                     savez_dict['doodles'] = doodles.astype(np.uint8)
                     savez_dict['settings'] = settings_dict
-
+                    savez_dict['classes'] = class_label_names
                     np.savez(numpyfile, **savez_dict )#save settings too
 
                 else:
@@ -926,7 +907,7 @@ def update_output(
                     savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                     savez_dict['doodles'] = doodles.astype(np.uint8)
                     savez_dict['settings'] = settings_dict
-
+                    savez_dict['classes'] = class_label_names
                     np.savez(numpyfile, **savez_dict )#save settings too
 
             del img, seg, lstack, doodles, color_doodles

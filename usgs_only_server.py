@@ -64,19 +64,25 @@ logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S
 
 
 S3_DATABUCKET = 's3://cmgp-upload-download-bucket/watermasker1/'
-S3_RESULTSBUCKET = 's3://cmgp-upload-download-bucket/watermasker1/results'
+S3_RESULTSBUCKET = 's3://cmgp-upload-download-bucket/watermasker1/results/'
 
 #========================================================
 fs = fsspec.filesystem('s3', profile='default')
 # replace bucketname with cmd input
 s3files = fs.ls(S3_DATABUCKET)
 s3files = [f for f in s3files if 'jpg' in f]
+
+s3files = [f.split(S3_DATABUCKET.split('s3://')[-1])[-1] for f in s3files ]
+
 Ns3files = len(s3files)
 print("%i files in s3 bucket" % (Ns3files))
 
 fs_res = fsspec.filesystem('s3', profile='default')
 # replace bucketname with cmd input
 resfiles = fs_res.ls(S3_RESULTSBUCKET)
+
+resfiles = [f.split(S3_RESULTSBUCKET.split('s3://')[-1])[-1] for f in resfiles ]
+
 Nresfiles = len(resfiles)
 print("%i results files in s3 bucket" % (Nresfiles))
 
@@ -161,12 +167,14 @@ logging.info("Results will be written to %s" % (results_folder))
 ## while file not in assets/ ...
 usefile = np.random.randint(Ns3files)
 file = s3files[usefile]
+
 # print(file.split(os.sep)[-1])
-fp = 's3://'+file
+##fp = 's3://'+file
+fp = S3_DATABUCKET+file
 with fs.open(fp, 'rb') as f:
     img = np.array(PIL.Image.open(f))[:,:,:3]
     f.close()
-    imsave('assets/'+file.split(os.sep)[-1], img)
+    imsave('assets'+os.sep+file.split(os.sep)[-1], img)
 
 # downloads 1 image
 
@@ -800,6 +808,7 @@ def update_output(
                     savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                     savez_dict['doodles'] = doodles.astype(np.uint8)
                     savez_dict['settings'] = settings_dict
+                    savez_dict['classes'] = class_label_names
                     np.savez(numpyfile, **savez_dict )
 
                 else:
@@ -809,6 +818,7 @@ def update_output(
                     savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                     savez_dict['doodles'] = doodles.astype(np.uint8)
                     savez_dict['settings'] = settings_dict
+                    savez_dict['classes'] = class_label_names
 
                     np.savez(numpyfile, **savez_dict ) #save settings too
 
@@ -834,6 +844,7 @@ def update_output(
                     savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                     savez_dict['doodles'] = doodles.astype(np.uint8)
                     savez_dict['settings'] = settings_dict
+                    savez_dict['classes'] = class_label_names
 
                     np.savez(numpyfile, **savez_dict )#save settings too
 
@@ -844,6 +855,7 @@ def update_output(
                     savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                     savez_dict['doodles'] = doodles.astype(np.uint8)
                     savez_dict['settings'] = settings_dict
+                    savez_dict['classes'] = class_label_names
 
                     np.savez(numpyfile, **savez_dict )#save settings too
 
@@ -884,7 +896,9 @@ def update_output(
         ## while file not in assets/ ...
         usefile = np.random.randint(Ns3files)
         file = s3files[usefile]
-        fp = 's3://'+file
+        #fp = 's3://'+file
+        fp = S3_DATABUCKET+file
+        
         with fs.open(fp, 'rb') as f:
             img = np.array(PIL.Image.open(f))[:,:,:3]
             f.close()

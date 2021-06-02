@@ -36,9 +36,6 @@ from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import dash_core_components as dcc
 
-# pip install dash-auth
-# import dash_auth
-
 from annotations_to_segmentations import *
 from plot_utils import *
 
@@ -234,17 +231,6 @@ if not os.path.exists(UPLOAD_DIRECTORY):
 # app = dash.Dash(server=server)
 
 app = dash.Dash(__name__)
-
-# # Keep this out of source code repository - save in a file or a database
-# VALID_USERNAME_PASSWORD_PAIRS = {
-#     'doodler': 'doodler'
-# }
-#
-# #!pip install dash-auth
-# auth = dash_auth.BasicAuth(
-#     app,
-#     VALID_USERNAME_PASSWORD_PAIRS
-# )
 
 ##========================================================
 
@@ -705,7 +691,6 @@ def listToString(s):
     Output("mu-display", "children"),
     Output("crf-downsample-display", "children"),
     Output("crf-gtprob-display", "children"),
-    # Output("sigma-display", "children"),
     Output("rf-downsample-display", "children"),
     Output("rf-nestimators-display", "children"),
     Output("classified-image-store", "data"),
@@ -724,7 +709,6 @@ def listToString(s):
     Input("crf-show-segmentation", "value"),
     Input("crf-downsample-slider", "value"),
     Input("crf-gtprob-slider", "value"),
-    # Input("rf-sigma-range-slider", "value"),
     Input("rf-downsample-slider", "value"),
     Input("rf-nestimators-slider", "value"),
     Input("select-image", "value"),
@@ -935,6 +919,8 @@ def update_output(
                     savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                     savez_dict['doodles'] = doodles.astype(np.uint8)
                     savez_dict['settings'] = settings_dict
+                    savez_dict['classes'] = class_label_names
+
                     np.savez(numpyfile, **savez_dict )
 
                     #np.savez(numpyfile, img.astype(np.uint8), lstack.astype(np.uint8), color_doodles.astype(np.uint8), doodles.astype(np.uint8), saved_img, saved_label, )
@@ -945,6 +931,7 @@ def update_output(
                     savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                     savez_dict['doodles'] = doodles.astype(np.uint8)
                     savez_dict['settings'] = settings_dict
+                    savez_dict['classes'] = class_label_names
 
                     np.savez(numpyfile, **savez_dict ) #save settings too
 
@@ -970,6 +957,7 @@ def update_output(
                     savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                     savez_dict['doodles'] = doodles.astype(np.uint8)
                     savez_dict['settings'] = settings_dict
+                    savez_dict['classes'] = class_label_names
 
                     np.savez(numpyfile, **savez_dict )#save settings too
 
@@ -981,6 +969,7 @@ def update_output(
                     savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                     savez_dict['doodles'] = doodles.astype(np.uint8)
                     savez_dict['settings'] = settings_dict
+                    savez_dict['classes'] = class_label_names
 
                     np.savez(numpyfile, **savez_dict )#save settings too
 
@@ -1097,73 +1086,3 @@ if __name__ == "__main__":
     app.run_server()
     #app.run(host='0.0.0.0', port=8050) #()
     #debug=True) #debug=True, port=8888)
-
-
-            # settings_dict = dict()
-            # settings_dict['pen_width'] = pen_width
-            # settings_dict['crf_downsample_value'] = crf_downsample_value
-            # settings_dict['rf_downsample_value'] = rf_downsample_value
-            # settings_dict['crf_theta_slider_value'] = crf_theta_slider_value
-            # settings_dict['crf_mu_slider_value'] = crf_mu_slider_value
-            # settings_dict['median_filter_value'] = median_filter_value
-            # settings_dict['n_estimators'] = n_estimators
-            # settings_dict['gt_prob'] = gt_prob
-            # settings_dict['sigma_range_slider_value'] = sigma_range_slider_value
-
-            # if type(select_image_value) is list:
-            #     if 'jpg' in select_image_value[0]:
-            #         grayfile = select_image_value[0].replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-            #     if 'JPG' in select_image_value[0]:
-            #         grayfile = select_image_value[0].replace('assets',results_folder).replace('.JPG','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-            #     if 'jpeg' in select_image_value[0]:
-            #         grayfile = select_image_value[0].replace('assets',results_folder).replace('.jpeg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-            #
-            #     #grayfile = select_image_value[0].replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-            #     imsave(grayfile, seg)
-            # else:
-            #     if 'jpg' in select_image_value:
-            #         grayfile = select_image_value.replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-            #     if 'JPG' in select_image_value:
-            #         grayfile = select_image_value.replace('assets',results_folder).replace('.JPG','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-            #     if 'jpeg' in select_image_value:
-            #         grayfile = select_image_value.replace('assets',results_folder).replace('.jpeg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-            #
-            #     #grayfile = select_image_value.replace('assets',results_folder).replace('.jpg','_label_greyscale'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-            #     imsave(grayfile, seg)
-            # del img, seg
-            # logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-            # logging.info('Greyscale label image saved to %s' % (grayfile))
-
-                # savez_dict = dict()
-                # savez_dict['image'] = img.astype(np.uint8)
-                # savez_dict['label'] = lstack.astype(np.uint8)
-                # savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
-                # savez_dict['doodles'] = doodles.astype(np.uint8)
-                # np.savez(numpyfile, savez_dict )
-
-        # segmentation_features_value=[
-        #     {"label": l.capitalize(), "value": l}
-        #     for l in SEG_FEATURE_TYPES
-        # ]
-        # logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-        # for l in SEG_FEATURE_TYPES:
-        #     logging.info('Using %s for RF feature extraction' % (l))
-
-            # dict_feature_opts = {
-            #     key: (key in segmentation_features_value)
-            #     for key in SEG_FEATURE_TYPES
-            # }
-
-            # dict_feature_opts["sigma_min"] = sigma_range_slider_value[0]
-            # dict_feature_opts["sigma_max"] = sigma_range_slider_value[1]
-            # dict_feature_opts["n_estimators"] = n_estimators
-                        # html.H6("Image Feature Extraction:"),
-                        # dcc.Checklist(
-                        #     id="rf-segmentation-features",
-                        #     options=[
-                        #         {"label": l.capitalize(), "value": l}
-                        #         for l in SEG_FEATURE_TYPES
-                        #     ],
-                        #     value=["intensity", "edges", "texture"],
-                        #     labelStyle={'display': 'inline-block'}
-                        # ),
