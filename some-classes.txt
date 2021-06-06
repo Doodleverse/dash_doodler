@@ -1,6 +1,0 @@
-water
-surf
-bare_ground
-vegetated_ground
-development
-nodata
