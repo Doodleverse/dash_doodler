@@ -227,10 +227,10 @@ if not os.path.exists(UPLOAD_DIRECTORY):
 #     """Serve a file from the upload directory."""
 #     return send_from_directory(UPLOAD_DIRECTORY, path, as_attachment=True)
 
-# server = Flask(__name__)
-# app = dash.Dash(server=server)
+server = Flask(__name__)
+app = dash.Dash(server=server)
 
-app = dash.Dash(__name__)
+# app = dash.Dash(__name__)
 
 ##========================================================
 
@@ -1083,6 +1083,6 @@ function(the_image_store_data) {
 
 if __name__ == "__main__":
     print('Go to http://127.0.0.1:8050/ in your web browser to use Doodler')
-    app.run_server()
-    #app.run(host='0.0.0.0', port=8050) #()
+    #app.run_server()
+    app.run_server(host='0.0.0.0', port=8050) #()
     #debug=True) #debug=True, port=8888)

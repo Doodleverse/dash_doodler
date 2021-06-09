@@ -21,3 +21,6 @@ dependencies:
  - pydensecrf
  - cairo
  - tqdm
+ - fsspec
+ - s3fs
+ - gunicorn

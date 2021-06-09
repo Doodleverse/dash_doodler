@@ -303,6 +303,10 @@ https://dbuscombe-usgs.github.io/dash_doodler/
 * the minimal version has one chance doodling, no controls except pen width. Next image retrieved automatically from s3 when 'segment image' unchecked
 * worked out more details for serving using gunicorn/nginx/systemctl services
 
+06/06/21. `docker-dev` branch
+* make better requirements.txt using `pipreqs` (https://pypi.org/project/pipreqs/)
+* Dockerfile
+
 
 ## <a name="roadmap"></a>Roadmap
 
