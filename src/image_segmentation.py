@@ -225,7 +225,7 @@ def crf_refine(label,
 
     result = resize(result, (Horig, Worig), order=0, anti_aliasing=False) #True)
 
-    result = rescale(result, 1, orig_mx).astype(np.uint8)
+    result = rescale(result, orig_mn, orig_mx).astype(np.uint8)
 
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('label resized and rescaled ... CRF post-processing complete')

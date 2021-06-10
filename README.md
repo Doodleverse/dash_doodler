@@ -307,6 +307,9 @@ https://dbuscombe-usgs.github.io/dash_doodler/
 * make better requirements.txt using `pipreqs` (https://pypi.org/project/pipreqs/)
 * Dockerfile
 
+06/09/21. v 1.2.3
+* fixed bug in CRF making all labels a minimum of 1
+
 
 ## <a name="roadmap"></a>Roadmap
 
