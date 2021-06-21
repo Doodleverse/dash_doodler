@@ -18,8 +18,8 @@ Extracted features
 Doodles
 ![](/img/casestudy2/ex1/doodles.png)
 
-Feature importances
-![](/img/casestudy2/ex1/feat_imps.png)
+<!-- Feature importances
+![](/img/casestudy2/ex1/feat_imps.png) -->
 
 CRF TTA
 ![](/img/casestudy2/ex1/tta.png)
@@ -49,9 +49,9 @@ Extracted features
 
 Doodles
 ![](/img/casestudy2/ex2/doodles.png)
-
+<!--
 Feature importances
-![](/img/casestudy2/ex2/feat_imps.png)
+![](/img/casestudy2/ex2/feat_imps.png) -->
 
 CRF TTA
 ![](/img/casestudy2/ex2/tta.png)

@@ -46,7 +46,6 @@ try:
 except:
     from defaults import *
 
-
 ###===========================================================
 def make_npz():
 
@@ -57,12 +56,6 @@ def make_npz():
     files = [f for f in files if 'labelgen' not in f]
     files = [f for f in files if '4zoo' not in f]
 
-    Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-    classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
-
-    with open(classfile) as f:
-        classes = f.readlines()
-    class_string = '_'.join([c.strip() for c in classes])
 
     #### loop through each file
     for anno_file in tqdm(files):
@@ -74,6 +67,9 @@ def make_npz():
         for k in dat.keys():
             data[k] = dat[k]
         del dat
+
+        classes = data['classes']
+        class_string = '_'.join([c.strip() for c in classes])
 
         savez_dict = dict()
         savez_dict['arr_1'] = data['label']
@@ -103,3 +99,11 @@ if __name__ == '__main__':
             sys.exit()
     #ok, dooo it
     make_npz()
+
+
+
+    # Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+    # classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
+    #
+    # with open(classfile) as f:
+    #     classes = f.readlines()

@@ -24,9 +24,9 @@ Doodles:
 
 ![](/img/casestudy3/ex1/doodles.png)
 
-Feature importances:
+<!-- Feature importances:
 
-![](/img/casestudy3/ex1/feat_imps.png)
+![](/img/casestudy3/ex1/feat_imps.png) -->
 
 RF spatial filter:
 
@@ -60,9 +60,9 @@ Doodles:
 
 ![](/img/casestudy3/ex2/doodles.png)
 
-Feature importances:
+<!-- Feature importances:
 
-![](/img/casestudy3/ex2/feat_imps.png)
+![](/img/casestudy3/ex2/feat_imps.png) -->
 
 RF spatial filter:
 

@@ -28,7 +28,11 @@ import itertools
 import numpy as np
 
 from skimage import filters, feature, img_as_float32
-from sklearn.ensemble import RandomForestClassifier
+# from sklearn.ensemble import RandomForestClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+
 import plotly.express as px
 from skimage.io import imsave
 from datetime import datetime
@@ -41,7 +45,6 @@ import io, os, logging
 from skimage.morphology import remove_small_holes, remove_small_objects
 from scipy import ndimage
 from scipy.signal import convolve2d
-# from sklearn.preprocessing import StandardScaler
 
 np.seterr(divide='ignore', invalid='ignore')
 
@@ -173,6 +176,9 @@ def crf_refine(label,
     # do the same for the label image
     label = label[::crf_downsample_factor,::crf_downsample_factor]
 
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('Images downsampled by a factor os %f' % (crf_downsample_factor))
+
     Hnew = label.shape[0]
     Wnew = label.shape[1]
 
@@ -246,19 +252,29 @@ def features_sigma(img,
     gx,gy = np.meshgrid(np.arange(img.shape[1]), np.arange(img.shape[0]))
     # print(gx.shape)
     #features.append(gx)
+    gx = filters.gaussian(gx, sigma)
+    gy = filters.gaussian(gy, sigma)
+
     features.append(np.sqrt(gx**2 + gy**2)) #gy) #use polar radius of pixel locations as cartesian coordinates
+
     del gx, gy
 
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-    logging.info('Location features extracted')
+    logging.info('Location features extracted using sigma= %f' % (sigma))
 
     img_blur = filters.gaussian(img, sigma)
 
     if intensity:
         features.append(img_blur)
 
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('Intensity features extracted using sigma= %f' % (sigma))
+
     if edges:
         features.append(filters.sobel(img_blur))
+
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('Edge features extracted using sigma= %f' % (sigma))
 
     if texture:
         H_elems = [
@@ -272,6 +288,9 @@ def features_sigma(img,
         for eigval_mat in eigvals:
             features.append(eigval_mat)
         del eigval_mat
+
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('Texture features extracted using sigma= %f' % (sigma))
 
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('Image features extracted using sigma= %f' % (sigma))
@@ -312,6 +331,9 @@ def extract_features_2d(
     # ]
 
     all_results = Parallel(n_jobs=-2, verbose=0)(delayed(features_sigma)(img, sigma, intensity=intensity, edges=edges, texture=texture) for sigma in sigmas)
+
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('Features from channel %i in parallel for all scales' % (dim))
 
     return list(itertools.chain.from_iterable(all_results))
 
@@ -357,7 +379,7 @@ def extract_features(
 
 
 ##========================================================
-def do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture,sigma_min,sigma_max, downsample_value, n_estimators):
+def do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture,sigma_min,sigma_max, downsample_value, SAVE_RF): #n_estimators,
 
     if np.ndim(img)==3:
         features = extract_features(
@@ -380,8 +402,7 @@ def do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture,sigma_
             sigma_max=sigma_max,
         )
 
-    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-    logging.info('Using %i decision trees per image' % (n_estimators))
+    n_estimators=3
 
     if mask is None:
         raise ValueError("If no classifier clf is passed, you must specify a mask.")
@@ -389,13 +410,14 @@ def do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture,sigma_
     training_labels = mask[mask > 0].ravel()
     data = features[:, mask == 0].T
     # try:
-    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-    logging.info('Updating existing RF classifier')
+    # logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    # logging.info('Updating existing RF classifier')
 
     training_data = training_data[::downsample_value]
     training_labels = training_labels[::downsample_value]
 
-    try:
+    if SAVE_RF:
+        print('loading model')
         file_training_data, file_training_labels = load(data_file)
 
         training_data = np.concatenate((file_training_data, training_data))
@@ -403,47 +425,61 @@ def do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture,sigma_
         logging.info('Samples concatenated with those from file')
         logging.info('Number of samples in training data: %i' % (training_data.shape[0]))
 
-    except:
-        pass
+    lim_samples = 100000 #200000
 
-    # scaler = StandardScaler()
-    # training_data = scaler.fit_transform(training_data)
-
-    #print(training_data.shape)
-    #print(training_labels.shape)
-
-    if training_data.shape[0]>200000:
-        logging.info('Number of samples exceeds 200000')
-        ind = np.round(np.linspace(0,training_data.shape[0]-1,500000)).astype('int')
+    if training_data.shape[0]>lim_samples:
+        logging.info('Number of samples exceeds %i'% lim_samples)
+        ind = np.round(np.linspace(0,training_data.shape[0]-1,lim_samples)).astype('int')
         training_data = training_data[ind,:]
         training_labels = training_labels[ind]
         logging.info('Samples have been subsampled')
         logging.info('Number of samples in training data: %i' % (training_data.shape[0]))
         print(training_data.shape)
 
-    try:
+    if SAVE_RF:
         clf = load(rf_file) #load last model from file
         # path = clf.cost_complexity_pruning_path(training_data, training_labels)
 
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('Loading model from %s' % (rf_file))
         logging.info('Number of trees: %i' % (clf.n_estimators))
-    except:
-        clf = RandomForestClassifier(n_estimators=n_estimators, n_jobs=-1,class_weight="balanced_subsample", min_samples_split=5)#, ccp_alpha=0.02)
-        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-        logging.info('Initializing RF model')
-    clf.n_estimators += n_estimators #add more trees for the new data
-    #print(clf.n_estimators)
-    clf.fit(training_data, training_labels) # fit with with new data
-    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-    logging.info('RF model fit to data')
 
-    dump(clf, rf_file, compress=True) #save new file
-    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-    logging.info('Model saved to %s'% rf_file)
-    dump((training_data, training_labels), data_file, compress=True) #save new file
-    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-    logging.info('Data saved to %s'% data_file)
+    else:
+
+        # clf = make_pipeline(
+        #         StandardScaler(),
+        #         RandomForestClassifier(
+        #             n_estimators=n_estimators, n_jobs=-1,class_weight="balanced_subsample", min_samples_split=5
+        #         ))
+        # clf = RandomForestClassifier(n_estimators=n_estimators, n_jobs=-1,class_weight="balanced_subsample", min_samples_split=5)#, ccp_alpha=0.02)
+        # logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        # logging.info('Initializing RF model')
+        #
+        # clf.n_estimators += n_estimators #add more trees for the new data
+        # clf.fit(training_data, training_labels) # fit with with new data
+        # logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        # logging.info('RF model fit to data')
+
+        clf = make_pipeline(
+                StandardScaler(),
+                MLPClassifier(
+                    solver='adam', alpha=1, random_state=1, max_iter=2000,
+                    early_stopping=True, hidden_layer_sizes=[100, 100],
+                ))
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('Initializing MLP model')
+
+        clf.fit(training_data, training_labels)
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('MLP model fit to data')
+
+    if SAVE_RF:
+        dump(clf, rf_file, compress=True) #save new file
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('Model saved to %s'% rf_file)
+        dump((training_data, training_labels), data_file, compress=True) #save new file
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('Data saved to %s'% data_file)
 
     result = np.copy(mask)#+1
 
@@ -484,18 +520,10 @@ def segmentation(
     texture,#=True,
     sigma_min,#=0.5,
     sigma_max,#=16,
-    n_estimators,#=5
+    SAVE_RF,#False
 ):
 
     # #standardization using adjusted standard deviation
-    # N = np.shape(img)[0] * np.shape(img)[1]
-    # s = np.maximum(np.std(img), 1.0/np.sqrt(N))
-    # m = np.mean(img)
-    # img = (img - m) / s
-    # img = rescale(img, 0, 1)
-    # if np.ndim(img)!=3:
-    #     img = np.dstack((img,img,img))
-
     img = standardize(img)
 
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
@@ -514,7 +542,7 @@ def segmentation(
 
     else:
 
-        result = do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture, sigma_min,sigma_max, rf_downsample_value, n_estimators) #
+        result = do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture, sigma_min,sigma_max, rf_downsample_value,SAVE_RF) # n_estimators,
 
         Worig = img.shape[0]
         result = filter_one_hot(result, 2*Worig)
@@ -524,7 +552,6 @@ def segmentation(
 
         if Worig>512:
             result = filter_one_hot_spatial(result, 2)
-
 
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('One-hot labels spatially filtered')
@@ -547,9 +574,6 @@ def segmentation(
                 w=.1
             else:
                 w = 1/np.sqrt(k)
-
-            Worig = result2.shape[0]
-            result2 = filter_one_hot(result2, 2*Worig)
 
             return result2, w,n
 
@@ -576,8 +600,6 @@ def segmentation(
 
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('CRF model applied with theta=%f and mu=%f' % ( crf_theta_slider_value, crf_mu_slider_value))
-        #
-        # result2, n = crf_refine(result, img, crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #CRF refine
 
         if ((n==1)):
             result2[result>0] = np.unique(result)
@@ -589,134 +611,3 @@ def segmentation(
         logging.info('Spatially filtered values inpainted')
 
     return result2
-
-
-
-# from skimage.filters.rank import median
-# from skimage.morphology import disk
-# from scipy import interpolate
-# from functools import partial
-#
-# # save np.load
-# np_load_old = partial(np.load)
-#
-# # modify the default parameters of np.load
-# np.load = lambda *a,**k: np_load_old(*a, allow_pickle=True, **k)
-
-
-
-    # #zero out random patches
-    # rng = np.random.default_rng(12345)
-    # ind = rng.integers(low=0, high=Hnew, size= int(10*(Hnew/100)) )  #random 10% of rows
-    # #ind = np.random.choice(np.arange(Hnew), , replace=False)
-    # label[ind,:] = 0
-    # ind = rng.integers(low=0, high=Wnew, size= int(10*(Wnew/100)) )  #random 10% of cols
-    # #ind = np.random.choice(np.arange(Hnew), , replace=False)
-    # label[:,ind] = 0
-    # result[result<orig_mn] = orig_mn
-    # result[result>orig_mx] = orig_mx
-    # uniq2 = np.unique(result.flatten())
-    #
-    # for k in np.setdiff1d(uniq,uniq2): #for all values in resized not in original
-    #     #print('%i is different' % (k))
-    #     result[result==k] = uniq[np.argmin(k-uniq)] #replace with closest value in orig
-
-    # #filter the one-hot encoded  binary masks
-    # lstack = (np.arange(result.max()) == result[...,None]-1).astype(int) #one-hot encode
-    # for kk in range(lstack.shape[-1]):
-    #     l = remove_small_objects(lstack[:,:,kk].astype('uint8')>0, 2*Worig)
-    #     l = remove_small_holes(lstack[:,:,kk].astype('uint8')>0, 2*Worig)
-    #     lstack[:,:,kk] = np.round(l).astype(np.uint8)
-    #     del l
-    # result = np.argmax(lstack, -1)+1 #reconstruct
-    # del lstack
-
-
-        #inpaint
-        # valid_mask = crf_result_filt>0
-        # coords = np.array(np.nonzero(valid_mask)).T
-        # values = crf_result_filt[valid_mask]
-        #
-        # it = interpolate.LinearNDInterpolator(coords, values, fill_value=0)
-        #
-        # crf_result_filt_inp = it(list(np.ndindex(crf_result_filt.shape))).reshape(crf_result_filt.shape)
-
-        # if median_filter_value>1: #"Apply Median Filter" in median_filter_value:
-        #     result2 = median(result2, disk(median_filter_value)).astype(np.uint8)
-        #
-        #     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-        #     logging.info('Median filter of radius %i applied' % (median_filter_value))
-
-        # result2 = result.copy()
-
-        # R = []; W = []
-        # counter = 0
-        # for k in np.linspace(0,int(img.shape[0]/5),5):
-        #     k = int(k)
-        #     result2, _ = crf_refine(np.roll(result,k), np.roll(img,k), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #CRF refine
-        #     result2 = np.roll(result2, -k)
-        #     R.append(result2)
-        #     logging.info('CRF model applied with roll of %i' % (k))
-        #     counter +=1
-        #     if k==0:
-        #         W.append(.1) #np.nan)
-        #     else:
-        #         W.append(1/np.sqrt(k))
-
-        # for k in np.linspace(0,int(img.shape[0]/5),5):
-        #     k = int(k)
-        #     result2, n = crf_refine(np.roll(result,-k), np.roll(img,-k), crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob) #CRF refine
-        #     result2 = np.roll(result2, k)
-        #     R.append(result2)
-        #     logging.info('CRF model applied with roll of -%i' % (k))
-        #     counter +=1
-        #     if k==0:
-        #         W.append(.1) #np.nan)
-        #     else:
-        #         W.append(1/np.sqrt(k))
-
-# ##========================================================
-# def expand_img(img):
-#     '''
-#     expands a 3-band image into a 6-band image stack,
-#     with the last three bands being derived from the first 3
-#     specifically; 1) VARI = (G-R)/(G+R-B); 2) NEXG = (2*G - R - B) / (G+R+B); 3) NGRDI = (G-R)/(G+R)
-#     '''
-#     R = img[:,:,0]
-#     G = img[:,:,1]
-#     B = img[:,:,2]
-#
-#     VARI = 1+(G-R)/1+(G+R-B)
-#     NEXG = 1+(2*G - R - B) / 1+(G+R+B)
-#     NGRDI = 1+(G-R)/1+(G+R)
-#     VARI[np.isinf(VARI)] = 1e-2
-#     NEXG[np.isinf(NEXG)] = 1e-2
-#     NGRDI[np.isinf(NGRDI)] = 1e-2
-#     VARI[np.isnan(VARI)] = 1e-2
-#     NEXG[np.isnan(NEXG)] = 1e-2
-#     NGRDI[np.isnan(NGRDI)] = 1e-2
-#     VARI[VARI==0] = 1e-2
-#     NEXG[NEXG==0] = 1e-2
-#     NGRDI[NGRDI==0] = 1e-2
-#
-#     VARI = rescale(np.log(VARI),0,255)
-#     NEXG = rescale(np.log(NEXG),0,255)
-#     NGRDI = rescale(np.log(NGRDI),0,255)
-#
-#     STACK = np.dstack((R,G,B,VARI,NEXG,NGRDI)).astype(np.int)
-#     del R, G, B, VARI, NEXG, NGRDI
-#     return STACK
-
-    # except:
-    #     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-    #     logging.info('Initialize RF classifier with %i estimators' % (n_estimators))
-    #     ##warm_start: When set to True, reuse the solution of the previous call to fit and add more estimators to the ensemble, otherwise, just fit a whole new forest.
-    #     clf = RandomForestClassifier(n_estimators=n_estimators, n_jobs=-1) #, warm_start=True)
-    #     clf.fit(training_data[::downsample_value], training_labels[::downsample_value])
-    #     dump(clf, rf_file, compress=True)
-    # if 'result2' not in locals(): #''crf' in callback_context:
-    #     # if crf_theta_slider_value is None:
-    #     result2 = result.copy()
-    # else:
-
-    #result = do_rf(img,rf_file,mask,True,True,False,False,sigma_min,sigma_max, rf_downsample_value, n_estimators) #multichannel,intensity,edges,texture,

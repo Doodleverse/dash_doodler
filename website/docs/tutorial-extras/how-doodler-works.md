@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # [ADVANCED] How Doodler works
 
-(Please note that this material will be included in a forthcoming journal manuscript that describes Doodler and its uses. That manuscript is currently in preparation and will repurpose many of the figures presented on this page)
+(Please note that this material will be included in a forthcoming journal manuscript that describes Doodler and its uses. That manuscript is currently in preparation)
 
 Images are labeled in sessions. During a session, a Machine Learning model is built progressively using provided labels from each image. Below, we illustrate each of the various processing steps in turn, using a single example of a 2-class labeling exercise. The two classes are 'land' (red) and 'water' (blue).
 
@@ -52,37 +52,25 @@ In the figure below, only the 5 feature maps extracted at the smallest and large
 ![](/img/tutorial/D800_20160308_222129lr03-3_db_image_feats_labelgen.png)
 
 
-### Random Forest Modeling
-As stated above, Doodler extracts features from imagery, and pairs those extracted features with their class distinctions provided by you in the form of 'doodles'. How that pairing occurs is achieved using Machine Learning, or 'ML' for short. Doodler uses two particular types of ML. The first is called a 'Random Forest', or RF for short. The seond ML model we use is called a "CRF' and we'll talk about that later.
+### Initial Pixel Classifier
+As stated above, Doodler extracts features from imagery, and pairs those extracted features with their class distinctions provided by you in the form of 'doodles'. How that pairing occurs is achieved using Machine Learning, or 'ML' for short. Doodler uses two particular types of ML. The first is called a 'Multilayer Perceptron', or MLP for short. The seond ML model we use is called a "CRF' and we'll talk about that later.
 
-The first image is "doodled", and the program creates a [Random Forest](../tutorial-basics/glossary#random-forest) that predicts the class of each pixel according to the distribution of features extracted from the vicinity of that pixel.
+The first image is "doodled", and the program creates a MLP model that predicts the class of each pixel according to the distribution of features extracted from the vicinity of that pixel.
 
-Those 2D features are then flattened to a 1D array of length M, and stack them N deep, where N is the number of individual 2D feature maps, such that the resulting feature stack is size MxN. Provided label annotations are provided at a subset, i, of the M locations, M_i, so the training data is the subset {MxN}_i. That training data is further subsampled by a user-defined factor, then used to train a RF classifier.
+Those 2D features are then flattened to a 1D array of length M, and stack them N deep, where N is the number of individual 2D feature maps, such that the resulting feature stack is size MxN. Provided label annotations are provided at a subset, i, of the M locations, M_i, so the training data is the subset {MxN}_i. That training data is further subsampled by a user-defined factor, then used to train a MLP classifier.
 
-Below is a graphic showing, for this particular sample image we are using in this example, how the trained RF model is making decisions based on pairs of input features. Each of the 9 subplots shown depict a 'decision surface' for the two classes (water in blue and land in red) based on a pair of features. The colored markers show actual feature values extracted from image-feature-class pairings. As you can see, the RF model can extrapolate a decision surface beyond the extents of the data, which is useful in situations when data is encountered with relatively unusual feature values.
+Below is a graphic showing, for this particular sample image we are using in this example, how the trained MLP model is making decisions based on pairs of input features. Each of the 9 subplots shown depict a 'decision surface' for the two classes (water in blue and land in red) based on a pair of features. The colored markers show actual feature values extracted from image-feature-class pairings. As you can see, the MLP model can extrapolate a decision surface beyond the extents of the data, which is useful in situations when data is encountered with relatively unusual feature values.
 
 ![](/img/tutorial/D800_20160308_222129lr03-3_db_RFdecsurf_labelgen_ann.png)
 
-In reality, the RF model does this on all 75 features and their respective combinations (2775 unique pairs of 75 features) simultaneously. It combines this information to predict a unique class (encoded as an integer value) for each pixel. The computations happen in 1D, i.e. on arrays of length MxN, which are then reshaped. Therefore the only spatial information used in prediction is that of the relative location feature maps.
-
-Some constraints are placed on the RF model in order to reduce the effects of overfitting the model to the data:
-
-1. The use of an ensemble model like as RF means that we rely on aggregating the results of an ensemble of simpler estimators (i.e. decision trees). An average of the outputs of an ensemble of parallel estimators, results in less overfitting.
-2. The features are downsampled by some user-defined factor. This also considerably speeds up processing.
-3. A cap is placed on the number of new trees used for each new image. That cap is user-defined and defaults to 3. See [this](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) for more details.
-4. A minimum number of samples per decision tree split are used. That cap is currently set to 5. See [this](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) for more details.
-5. A balanced subsample is used that is weighted inversely proportional to class frequencies in the input data. The weights are computed based on the bootstrap sample for every tree grown. See [this](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) for more details.
-6. A cap is placed on the number of features used by the model. That cap is currently set to 200,000
-
-The use of multiple overfitting estimators can be combined to reduce the effect of this overfitting — this is what underlies an ensemble method called bagging.
-Bagging makes use of an ensemble of parallel estimators, each of which over-fits the data, and averages the results to find a better classification.
+In reality, the MLP model does this on all 75 features and their respective combinations (2775 unique pairs of 75 features) simultaneously. It combines this information to predict a unique class (encoded as an integer value) for each pixel. The computations happen in 1D, i.e. on arrays of length MxN, which are then reshaped. Therefore the only spatial information used in prediction is that of the relative location feature maps.
 
 :::tip Tip
 
-The program adopts a strategy similar to that described by [Buscombe and Ritchie (2018)](https://www.mdpi.com/2076-3263/8/7/244), in that a 'global' model trained on many samples is used to provide an initial segmentation on each sample image, then that initial segmentation is refined by a CRF, which operates on a task specific level. In [Buscombe and Ritchie (2018)](references), the model was a deep neural network trained in advance on large numbers of samples and labels. Here, the model is built as we go, building progressively from user inputs. Doodler uses a Random Forest as the baseline global model, and the CRF implementation is the same as that desribed by Buscombe and Ritchie (2018)
+The program adopts a strategy similar to that described by [Buscombe and Ritchie (2018)](https://www.mdpi.com/2076-3263/8/7/244), in that a 'global' model trained on many samples is used to provide an initial segmentation on each sample image, then that initial segmentation is refined by a CRF, which operates on a task specific level. In [Buscombe and Ritchie (2018)](references), the model was a deep neural network trained in advance on large numbers of samples and labels. Here, the model is built as we go, building progressively from user inputs. Doodler uses a MLP as the baseline global model, and the CRF implementation is the same as that desribed by Buscombe and Ritchie (2018)
 :::
 
-### Feature importances
+<!-- ### Feature importances
 
 The relative importance of each feature for prediction is computed as the mean of accumulation of the impurity decrease within each tree. This is known as the "Gini importance" score (see [here](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) for more details on the implementation).
 
@@ -90,7 +78,7 @@ Below is a graph showing the feature importance scores for each of the 75 featur
 
 ![](/img/tutorial/D800_20160308_222129lr03-3_db_RF_featimps_labelgen.png)
 
-It is instructive to view these plots for each image prediction, in order to get a better sense of which features are considered more important. From 3 further examples shown below, it is apparent (at least in these data) that location, intensity, edges and texture are all considered important for RF model prediction, at a range of scales
+It is instructive to view these plots for each image prediction, in order to get a better sense of which features are considered more important. From 3 further examples shown below, it is apparent (at least in these data) that location, intensity, edges and texture are all considered important for MLP model prediction, at a range of scales
 
 #### Example 2
 In this example, location and intensity were most important, at 2 particular scales
@@ -104,10 +92,10 @@ In this example, the features deemed most important were related to edges and te
 In this example, location and intensity were again deemed most important, again at 2 particular scales
 ![](/img/tutorial/featimps3.png)
 
+ -->
 
-
-### Spatial filtering of Random Forest predictions
-Each RF prediction (a label matrix of integer values, each integer corresponding to a unique class). That corresponds to the left image in the figure below. You can see there is a lot of noise in the prediction; for example, and most notably, there are several small 'islands' of land in the water that are model errors. Therefore each label image is filtered using two complementary procedures that operate in the spatial domain.
+### Spatial filtering of MLP predictions
+Each MLP prediction (a label matrix of integer values, each integer corresponding to a unique class). That corresponds to the left image in the figure below. You can see there is a lot of noise in the prediction; for example, and most notably, there are several small 'islands' of land in the water that are model errors. Therefore each label image is filtered using two complementary procedures that operate in the spatial domain.
 
 ![](/img/tutorial/D800_20160308_222129lr03-3_db_rf_label_filtered_labelgen.png)
 
@@ -126,28 +114,27 @@ The intuition for 'zeroing' these pixels is to allow a further model, described 
 Already you can see how we are building a lot of robustness to natural variability:
 
 1. images are standardized
-2. RF models use balanced subsamples weighted by class frequency
-3. Other measures are made to prevent model overfitting, such as downsampling
-4. Different types of image and location features are used and extracted at a variety of scales
-5. RF outputs are filtered using relative spatial information
+2. Other measures are made to prevent model overfitting, such as downsampling
+3. Different types of image and location features are used and extracted at a variety of scales
+4. MLP outputs are filtered using relative spatial information
 
 Next we'll go even further by making use of both global and local predictions.
 
-The global predictions are provided by the RF model. They are called 'global' because the model is built from all doodled images in a sequence.
+The global predictions are provided by the MLP model. They are called 'global' because the model is built from all doodled images in a sequence.
 
 The local predictions are provided by a different type of ML model, called a CRF, which is explained below.
 :::
 
-That initial RF provides an initial estimate of the entire label estimate, which is fed (with the original image) to a secondary post-processing model based on a fully connected Conditional Random Field model, or CRF for short. The CRF model refines the label image, using the RF model output as priors that are refined to posteriors given the specific image. As such, the RF model is treated as a global model that receives training input from the user over multiple images, and the CRF model is for 'local' (i.e. image-specific) refinement.
+That initial MLP provides an initial estimate of the entire label estimate, which is fed (with the original image) to a secondary post-processing model based on a fully connected Conditional Random Field model, or CRF for short. The CRF model refines the label image, using the MLP model output as priors that are refined to posteriors given the specific image. As such, the MLP model is treated as a initial model and the CRF model is for 'local' (i.e. image-specific) refinement.
 
-The CRF builds a model for the likelihood of the RF-predicted labels based on the distributions of features it extracts from the imagery, and can reclassify pixels (it is intended to do so). Its feature extraction and decision making behavior is complex and governed by parameters. That prediction then is further refined by applying the model to numerous transformed versions of the image, making predictions, untransforming, and then averaging the stack of resulting predictions. This concept is called [test-time-augmentation](../tutorial-basics/glossary#test-time-augmentation) and is illustrated in the figure below as outputs from using 10 'test-time augmented' inputs:
+The CRF builds a model for the likelihood of the MLP-predicted labels based on the distributions of features it extracts from the imagery, and can reclassify pixels (it is intended to do so). Its feature extraction and decision making behavior is complex and governed by parameters. That prediction then is further refined by applying the model to numerous transformed versions of the image, making predictions, untransforming, and then averaging the stack of resulting predictions. This concept is called [test-time-augmentation](../tutorial-basics/glossary#test-time-augmentation) and is illustrated in the figure below as outputs from using 10 'test-time augmented' inputs:
 
 ![](/img/tutorial/D800_20160308_222129lr03-3_db_crf_tta_labelgen.png)
 
 
 ### Spatial filtering of CRF prediction
 
-The label image that is the result of the above process is yet further filtered using the same two-part spatial procedure described above for the RF model outputs. Usually, these procedures revert fewer pixel class values than the equivalent prior process on the RF model outputs. The outputs are shown in 'b) and c)' in the figure below. A final additional step not used on RF model outputs is to 'inpaint' the pixels in identified transition areas using nearest neighbor interpolation ('d)' in the figure below)
+The label image that is the result of the above process is yet further filtered using the same two-part spatial procedure described above for the MLP model outputs. Usually, these procedures revert fewer pixel class values than the equivalent prior process on the MLP model outputs. The outputs are shown in 'b) and c)' in the figure below. A final additional step not used on MLP model outputs is to 'inpaint' the pixels in identified transition areas using nearest neighbor interpolation ('d)' in the figure below)
 
 ![](/img/tutorial/D800_20160308_222129lr03-3_db_crf_label_filtered_labelgen.png)
 

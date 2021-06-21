@@ -35,7 +35,7 @@ There are many great tools for exhaustive (i.e. whole image) image labeling for 
 
 What is generally required in the above case is a semi-supervised tool for efficient image labeling, based on sparse examples provided by a human annotator. Those sparse annotations are used by a secondary automated process to estimate the class of every pixel in the image. The number of pixels annotated by the human annotator is typically a small fraction of the total pixels in the image.  
 
-`Doodler` is a tool for sparse, not exhaustive, labeling. The approach taken here is to freehand label only some of the scene, then use a model to complete the scene. Sparse annotations are provided to a Conditional Random Field (CRF) model, that develops a scene-specific model for each class and creates a dense (i.e. per pixel) label image based on the information you provide it. This approach can reduce the time required for detailed labeling of large and complex scenes by an order of magnitude or more. Your annotations are first used to train and apply a random forest on the entire image, then a CRF is used to refine labels further based on the underlying image.
+`Doodler` is a tool for sparse, not exhaustive, labeling. The approach taken here is to freehand label only some of the scene, then use a model to complete the scene. Sparse annotations are provided to a Multilayer Perceptron model for initial predictions, refined by a Conditional Random Field (CRF) model, that develops a scene-specific model for each class and creates a dense (i.e. per pixel) label image based on the information you provide it. This approach can reduce the time required for detailed labeling of large and complex scenes by an order of magnitude or more. Your annotations are first used to train and apply a random forest on the entire image, then a CRF is used to refine labels further based on the underlying image.
 
 This is python software that is designed to be used from within a `conda` environment. After setting up that environment, create a `classes.txt` file that tells the program what classes will be labeled (and what buttons to create). The minimum number of classes is 2. The maximum number of classes allowed is 24. The images that you upload will go into the `assets/` folder. The labels images you create are written to the `results` folder.
 
@@ -87,7 +87,7 @@ Open a browser and go to 127.0.0.1:8050. You may have to hit the refresh button.
 ![Example 6](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py5.png)
 
 ### Videos
-More demonstration videos:
+More demonstration videos (older version of the program):
 
 ![Doodler example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/quick-saturban-x2c.gif)
 
@@ -310,6 +310,14 @@ https://dbuscombe-usgs.github.io/dash_doodler/
 06/09/21. v 1.2.3
 * fixed bug in CRF making all labels a minimum of 1
 
+06/21/21. v 1.2.4
+* Doodler no longer learns as it goes by default. Large trials suggested that strategy was inferior to an extremely task-specific approach.
+* Doodler now uses a MLP classifier using features - applies gaussian blur to image and x,y location for feat extraction as inputs to MLP with 2 hidden layers each with 100 neurons, relu activation, alpha=2 regularization
+* applies standard scaler as pre-filter
+* no predict in folder script
+* partially fixed bug with file select (interval just 200 milliseconds)
+* cleaned up and further tested all utils scripts
+
 
 ## <a name="roadmap"></a>Roadmap
 
@@ -324,8 +332,6 @@ https://dbuscombe-usgs.github.io/dash_doodler/
 * pymongo (mongoDB) database backend - thanks Evan and Shah @UNCG-DAISY! See [here](https://api.mongodb.com/python/current/tools.html), [here](https://strapi.io/pricing)
 
 * on Ctrl+C, clear 'labeled' folder, etc
-
-* 'autocomplete' if only one class left in scene - randomly assign all unassigned pixels with the remaining label
 
 * 'label here' feature based on analysis of doodles in real time -- how?
 

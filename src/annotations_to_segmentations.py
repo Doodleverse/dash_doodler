@@ -27,13 +27,6 @@
 ##========================================================
 import PIL.Image
 import numpy as np
-# from functools import partial
-#
-# # save np.load
-# np_load_old = partial(np.load)
-#
-# # modify the default parameters of np.load
-# np.load = lambda *a,**k: np_load_old(*a, allow_pickle=True, **k)
 
 import skimage.util
 import skimage.io
@@ -217,10 +210,10 @@ def compute_segmentations(
     texture,
     sigma_min,
     sigma_max,
-    n_estimators,
     img_path="assets/logos/dash-default.jpg",
     shape_layers=None,
-    label_to_colors_args={}):
+    label_to_colors_args={},
+    SAVE_RF=False):
     """ segments the image based on the user annotations"""
 
     # load original image
@@ -240,22 +233,11 @@ def compute_segmentations(
     else:
         color_annos = label_to_colors(mask, img==0, alpha=128, do_alpha=True, **label_to_colors_args)
 
-    # if 'jpg' in img_path[0]:
-    #     annofile = img_path[0].replace('assets',results_folder).replace('.jpg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-    # if 'JPG' in img_path[0]:
-    #     annofile = img_path[0].replace('assets',results_folder).replace('.JPG','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-    # if 'jpeg' in img_path[0]:
-    #     annofile = img_path[0].replace('assets',results_folder).replace('.jpeg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-    #
-    # #annofile = img_path[0].replace('assets',results_folder).replace('.jpg','_annotations'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
-    # imsave(annofile, color_annos[:,:,:3]) #'_'+my_id_value+
-    # logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-    # logging.info('Saved annotations to '+annofile)
 
     seg = segmentation(img, img_path, results_folder, rf_file, data_file, callback_context,
                        crf_theta_slider_value, crf_mu_slider_value,  rf_downsample_value, #median_filter_value,
                        crf_downsample_factor, gt_prob, mask, multichannel, intensity, edges, texture,
-                       sigma_min, sigma_max, n_estimators)
+                       sigma_min, sigma_max, SAVE_RF) #n_estimators,
 
     #print(np.unique(seg))
     if np.ndim(img)==3:

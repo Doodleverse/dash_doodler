@@ -71,33 +71,13 @@ def do_viz_npz(npz_type):
         print('No files - check npz code. Exiting')
         sys.exit(2)
 
-    Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-    classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
+    # Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+    # classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
+    #
+    # with open(classfile) as f:
+    #     classes = f.readlines()
+    # class_string = '_'.join([c.strip() for c in classes])
 
-    with open(classfile) as f:
-        classes = f.readlines()
-    class_string = '_'.join([c.strip() for c in classes])
-
-
-    class_label_names = [c.strip() for c in classes]
-
-    NUM_LABEL_CLASSES = len(class_label_names)
-
-    if NUM_LABEL_CLASSES<=10:
-        class_label_colormap = px.colors.qualitative.G10
-    else:
-        class_label_colormap = px.colors.qualitative.Light24
-
-    # we can't have fewer colors than classes
-    assert NUM_LABEL_CLASSES <= len(class_label_colormap)
-
-    colormap = [
-        tuple([fromhex(h[s : s + 2]) for s in range(0, len(h), 2)])
-        for h in [c.replace("#", "") for c in class_label_colormap]
-    ]
-
-    cmap = matplotlib.colors.ListedColormap(class_label_colormap[:NUM_LABEL_CLASSES+1])
-    cmap2 = matplotlib.colors.ListedColormap(['#000000']+class_label_colormap[:NUM_LABEL_CLASSES])
 
     #### loop through each file
     for anno_file in tqdm(files):
@@ -112,6 +92,28 @@ def do_viz_npz(npz_type):
             except:
                 pass
         del dat
+
+        classes = data['classes']
+
+        class_label_names = [c.strip() for c in classes]
+
+        NUM_LABEL_CLASSES = len(class_label_names)
+
+        if NUM_LABEL_CLASSES<=10:
+            class_label_colormap = px.colors.qualitative.G10
+        else:
+            class_label_colormap = px.colors.qualitative.Light24
+
+        # we can't have fewer colors than classes
+        assert NUM_LABEL_CLASSES <= len(class_label_colormap)
+
+        colormap = [
+            tuple([fromhex(h[s : s + 2]) for s in range(0, len(h), 2)])
+            for h in [c.replace("#", "") for c in class_label_colormap]
+        ]
+
+        cmap = matplotlib.colors.ListedColormap(class_label_colormap[:NUM_LABEL_CLASSES+1])
+        cmap2 = matplotlib.colors.ListedColormap(['#000000']+class_label_colormap[:NUM_LABEL_CLASSES])
 
         if npz_type==0:
         #if 'image' in data.keys():
@@ -180,6 +182,7 @@ if __name__ == '__main__':
     except getopt.GetoptError:
         print('======================================')
         print('python viz_npz.py [-t npz type {0}/1/2/3 ]') #
+        print('npz_type codes. 0 (default) = normal, 1=labelgen, 2=npz_zoo, 3=pred')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':

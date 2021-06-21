@@ -61,21 +61,11 @@ try:
 except:
     from defaults import *
     print('Default hyperparameters imported from src/my_defaults.py')
-# finally:
-#     DEFAULT_PEN_WIDTH = 2
-#     DEFAULT_CRF_DOWNSAMPLE = 4
-#     DEFAULT_RF_DOWNSAMPLE = 10
-#     DEFAULT_CRF_THETA = 10
-#     DEFAULT_CRF_MU = 10
-#     DEFAULT_MEDIAN_KERNEL = 3
-#     DEFAULT_RF_NESTIMATORS = 3
-#     DEFAULT_CRF_GTPROB = 0.9
-#     SIGMA_MIN = 1
-#     SIGMA_MAX = 16
-#     print('Default hyperparameters imported set')
 
 # the number of different classes for labels
 DEFAULT_LABEL_CLASS = 0
+
+SAVE_RF = False # use True for mode 2 (learn as you go)
 
 UPLOAD_DIRECTORY = os.getcwd()+os.sep+"assets"
 LABELED_DIRECTORY = os.getcwd()+os.sep+"labeled"
@@ -109,19 +99,19 @@ logging.info('loaded class labels:')
 for f in class_label_names:
     logging.info(f)
 
-rf_file = 'RandomForestClassifier_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
-data_file = 'data_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
-
-try:
-    shutil.move(rf_file, rf_file.replace('.pkl.z','_'+datetime.now().strftime("%d-%m-%Y-%H-%M-%S")+'.pkl.z'))
-except:
-    pass
-
-
-try:
-    shutil.move(data_file, data_file.replace('.pkl.z','_'+datetime.now().strftime("%d-%m-%Y-%H-%M-%S")+'.pkl.z'))
-except:
-    pass
+# rf_file = 'RandomForestClassifier_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
+# data_file = 'data_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
+#
+# try:
+#     shutil.move(rf_file, rf_file.replace('.pkl.z','_'+datetime.now().strftime("%d-%m-%Y-%H-%M-%S")+'.pkl.z'))
+# except:
+#     pass
+#
+#
+# try:
+#     shutil.move(data_file, data_file.replace('.pkl.z','_'+datetime.now().strftime("%d-%m-%Y-%H-%M-%S")+'.pkl.z'))
+# except:
+#     pass
 
 ##========================================================
 def convert_integer_class_to_color(n):
@@ -240,8 +230,8 @@ app.layout = html.Div(
         html.Div(
             id="banner",
             children=[
-                html.H2(
-            "Doodler: Fast Interactive Segmentation of Imagery",
+                html.H1(
+            "Doodler: Interactive Image Segmentation",
             id="title",
             className="seven columns",
         ),
@@ -252,15 +242,15 @@ app.layout = html.Div(
         dcc.Upload(
             id="upload-data",
             children=html.Div(
-                ["                                 Label all classes that are present, in all regions of the image those classes occur."]
+                ["(Label all classes that are present, in all regions of the image those classes occur)"]
             ),
             style={
                 "width": "100%",
-                "height": "60px",
-                "lineHeight": "60px",
+                "height": "30px",
+                "lineHeight": "70px",
                 "borderWidth": "1px",
-                "borderStyle": "dashed",
-                "borderRadius": "5px",
+                "borderStyle": "none",
+                "borderRadius": "1px",
                 "textAlign": "center",
                 "margin": "10px",
             },
@@ -354,7 +344,7 @@ app.layout = html.Div(
                         # html.Br(),
                         # html.P(['------------------------']),
                         dcc.Markdown(
-                            ">CRF settings"
+                            ">Post-processing settings"
                         ),
 
                         html.H6(id="theta-display"),
@@ -377,16 +367,6 @@ app.layout = html.Div(
                             value=DEFAULT_CRF_MU,
                         ),
 
-                        # html.H6(id="median-filter-display"),
-                        # # Slider for specifying pen width
-                        # dcc.Slider(
-                        #     id="median-filter",
-                        #     min=0.1,
-                        #     max=100,
-                        #     step=0.1,
-                        #     value=DEFAULT_MEDIAN_KERNEL,
-                        # ),
-
                         html.H6(id="crf-downsample-display"),
                         # Slider for specifying pen width
                         dcc.Slider(
@@ -408,7 +388,7 @@ app.layout = html.Div(
                         ),
 
                         dcc.Markdown(
-                            ">Random Forest settings"
+                            ">Classifier settings"
                         ),
 
                         # html.H6(id="sigma-display"),
@@ -430,15 +410,15 @@ app.layout = html.Div(
                             value=DEFAULT_RF_DOWNSAMPLE,
                         ),
 
-                        html.H6(id="rf-nestimators-display"),
-                        # Slider for specifying pen width
-                        dcc.Slider(
-                            id="rf-nestimators-slider",
-                            min=1,
-                            max=5,
-                            step=1,
-                            value=DEFAULT_RF_NESTIMATORS,
-                        ),
+                        # html.H6(id="rf-nestimators-display"),
+                        # # Slider for specifying pen width
+                        # dcc.Slider(
+                        #     id="rf-nestimators-slider",
+                        #     min=1,
+                        #     max=5,
+                        #     step=1,
+                        #     value=DEFAULT_RF_NESTIMATORS,
+                        # ),
 
                         dcc.Markdown(
                             ">Note that all segmentations are saved automatically. This download button is for quick checks only e.g. when dense annotations obscure the segmentation view"
@@ -467,9 +447,8 @@ app.layout = html.Div(
 
         html.H4(children="Doodler"),
         dcc.Markdown(
-            "> A user-interactive tool for fast segmentation of imagery (designed for natural environments), using a combined Random Forest (RF) - Conditional Random Field (CRF) method. \
-            Doodles are used to make a RF model, which maps image features to classes to create an initial image segmentation. The segmentation is then refined using a CRF model. \
-            The RF model is updated each time a new image is doodled in a session, building a more generic model cumulatively for a collection of similar images/classes. CRF post-processing is image-specific"
+            "> A user-interactive tool for fast segmentation of imagery (designed for natural environments), using a Multilayer Perceptron classifier and Conditional Random Field (CRF) refinement. \
+            Doodles are used to make a classifier model, which maps image features to unary potentials to create an initial image segmentation. The segmentation is then refined using a CRF model."
         ),
 
             dcc.Input(id='my-id', value='Enter-user-ID', type="text"),
@@ -490,7 +469,7 @@ app.layout = html.Div(
                 multi=False,
             ),
             html.Div([html.Div(id='live-update-text'),
-                      dcc.Interval(id='interval-component', interval=2000, n_intervals=0)]),
+                      dcc.Interval(id='interval-component', interval=200, n_intervals=0)]),
 
 
         html.P(children="This image/Copy"),
@@ -613,9 +592,8 @@ def show_segmentation(image_path,
     intensity,
     edges,
     texture,
-    # sigma_min,
-    # sigma_max,
-    n_estimators,
+    # n_estimators,
+    SAVE_RF,
     ):
 
     """ adds an image showing segmentations to a figure's layout """
@@ -634,10 +612,11 @@ def show_segmentation(image_path,
         mask_shapes, crf_theta_slider_value,crf_mu_slider_value,
         results_folder, rf_downsample_value, # median_filter_value,
         crf_downsample_factor, gt_prob, my_id_value, callback_context, rf_file, data_file,
-        multichannel, intensity, edges, texture, 1, 16, n_estimators,
+        multichannel, intensity, edges, texture, 1, 16, #n_estimators,
         img_path=image_path,
         shape_layers=shape_layers,
         label_to_colors_args=label_to_colors_args,
+        SAVE_RF=SAVE_RF,
     )
 
     # get the classifier that we can later store in the Store
@@ -692,7 +671,7 @@ def listToString(s):
     Output("crf-downsample-display", "children"),
     Output("crf-gtprob-display", "children"),
     Output("rf-downsample-display", "children"),
-    Output("rf-nestimators-display", "children"),
+    # Output("rf-nestimators-display", "children"),
     Output("classified-image-store", "data"),
     ],
     [
@@ -710,7 +689,7 @@ def listToString(s):
     Input("crf-downsample-slider", "value"),
     Input("crf-gtprob-slider", "value"),
     Input("rf-downsample-slider", "value"),
-    Input("rf-nestimators-slider", "value"),
+    # Input("rf-nestimators-slider", "value"),
     Input("select-image", "value"),
     Input('interval-component', 'n_intervals'),
     ],
@@ -738,7 +717,7 @@ def update_output(
     gt_prob,
     # sigma_range_slider_value,
     rf_downsample_value,
-    n_estimators,
+    # n_estimators,
     select_image_value,
     n_intervals,
     image_list_data,
@@ -781,6 +760,8 @@ def update_output(
 
         options = [{'label': image, 'value': image } for image in files]
 
+        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        logging.info('Checked assets and labeled lists and revised list of images yet to label')
 
     if 'assets' not in select_image_value:
         select_image_value = 'assets'+os.sep+select_image_value
@@ -797,6 +778,9 @@ def update_output(
     elif callback_context == "select-image.value":
        masks_data={"shapes": []}
        segmentation_data={}
+
+       logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+       logging.info('New image selected')
 
     pen_width = pen_width_value #int(round(2 ** (pen_width_value)))
 
@@ -816,6 +800,9 @@ def update_output(
         shapes=masks_data["shapes"],
     )
 
+    logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    logging.info('Main figure window updated with new image')
+
     if ("Show segmentation" in show_segmentation_value) and (
         len(masks_data["shapes"]) > 0):
         # to store segmentation data in the store, we need to base64 encode the
@@ -833,11 +820,11 @@ def update_output(
         rf_file = 'RandomForestClassifier_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
         data_file = 'data_'+'_'.join(class_label_names)+'.pkl.z'    #class_label_names
 
-        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-        logging.info('Saving RF model to %s' % (rf_file))
-
-        logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-        logging.info('Saving data features to %s' % (rf_file))
+        # logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        # logging.info('Saving RF model to %s' % (rf_file))
+        #
+        # logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+        # logging.info('Saving data features to %s' % (rf_file))
 
         segimgpng = None
         if 'median' not  in callback_context:
@@ -851,16 +838,22 @@ def update_output(
             segimgpng, seg, img, color_doodles, doodles  = show_segmentation(
                 [select_image_value], masks_data["shapes"], callback_context,#median_filter_value,
                  crf_theta_slider_value, crf_mu_slider_value, results_folder, rf_downsample_value, crf_downsample_value, gt_prob, my_id_value, rf_file, data_file,
-                 multichannel, intensity, edges, texture,n_estimators, # sigma_range_slider_value[0], sigma_range_slider_value[1],
+                 multichannel, intensity, edges, texture,SAVE_RF, # n_estimators, sigma_range_slider_value[0], sigma_range_slider_value[1],
             )
 
             if os.name=='posix': # true if linux/mac
-               elapsed = (time.time() - start)/60
+               elapsed = (time.time() - start)#/60
             else: # windows
-               elapsed = (time.clock() - start)/60
-            print("Processing took "+ str(elapsed) + " minutes")
+               elapsed = (time.clock() - start)#/60
+            #print("Processing took "+ str(elapsed) + " minutes")
+
+            logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+            logging.info('Processing took %s seconds' % (str(elapsed)))
 
             lstack = (np.arange(seg.max()) == seg[...,None]-1).astype(int) #one-hot encode
+
+            logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+            logging.info('One-hot encoded label stack created')
 
             #np.savez('test', img.astype(np.uint8), lstack.astype(np.uint8), color_doodles.astype(np.uint8), doodles.astype(np.uint8) )
 
@@ -894,7 +887,8 @@ def update_output(
             logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
             logging.info('RGB label image saved to %s' % (colfile))
 
-            settings_dict = np.array([pen_width, crf_downsample_value, rf_downsample_value, crf_theta_slider_value, crf_mu_slider_value,  n_estimators, gt_prob])#median_filter_value,sigma_range_slider_value[0], sigma_range_slider_value[1]
+            settings_dict = np.array([pen_width, crf_downsample_value, rf_downsample_value, crf_theta_slider_value, crf_mu_slider_value, gt_prob])
+            #median_filter_value,sigma_range_slider_value[0], sigma_range_slider_value[1], n_estimators
 
             if type(select_image_value) is list:
                 if 'jpg' in select_image_value[0]:
@@ -995,6 +989,10 @@ def update_output(
                 )
                 shutil.copyfile(select_image_value, select_image_value.replace('assets', 'labeled')) #move
 
+            logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+            logging.info('%s moved to labeled folder' % (select_image_value.replace('assets', 'labeled')))
+
+
         images_to_draw = []
         if segimgpng is not None:
             images_to_draw = [segimgpng]
@@ -1016,10 +1014,7 @@ def update_output(
             the_file.write('DEFAULT_RF_DOWNSAMPLE = {}\n'.format(rf_downsample_value))
             the_file.write('DEFAULT_CRF_THETA = {}\n'.format(crf_theta_slider_value))
             the_file.write('DEFAULT_CRF_MU = {}\n'.format(crf_mu_slider_value))
-            the_file.write('DEFAULT_RF_NESTIMATORS = {}\n'.format(n_estimators))
             the_file.write('DEFAULT_CRF_GTPROB = {}\n'.format(gt_prob))
-            # the_file.write('SIGMA_MIN = {}\n'.format(sigma_range_slider_value[0]))
-            # the_file.write('SIGMA_MAX = {}\n'.format(sigma_range_slider_value[1]))
         print('my_defaults.py overwritten with parameter settings')
 
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
@@ -1038,11 +1033,11 @@ def update_output(
         "Pen width (default: %d): %d" % (DEFAULT_PEN_WIDTH,pen_width),
         "Blur factor (default: %d): %d" % (DEFAULT_CRF_THETA, crf_theta_slider_value), #"Blurring parameter for CRF image feature extraction (default: %d): %d"
         "Model independence factor (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value), #CRF color class difference tolerance parameter (default: %d)
-        "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
+        "Downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
         "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
         # "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
         "RF downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
-        "RF estimators per image (default: %d): %d" % (DEFAULT_RF_NESTIMATORS,n_estimators),
+        # "RF estimators per image (default: %d): %d" % (DEFAULT_RF_NESTIMATORS,n_estimators),
         segmentation_store_data,
         ]
     else:
@@ -1057,11 +1052,11 @@ def update_output(
         "Pen width (default: %d): %d" % (DEFAULT_PEN_WIDTH,pen_width),
         "Blur factor (default: %d): %d" % (DEFAULT_CRF_THETA, crf_theta_slider_value),
         "Model independence factor  (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value),
-        "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
+        "Downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
         "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
         # "Blurring parameter for RF feature extraction: %d, %d" % (sigma_range_slider_value[0], sigma_range_slider_value[1]),
-        "RF downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
-        "RF estimators per image (default: %d): %d" % (DEFAULT_RF_NESTIMATORS,n_estimators),
+        "Downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
+        # "Estimators per image (default: %d): %d" % (DEFAULT_RF_NESTIMATORS,n_estimators),
         segmentation_store_data,
         ]
 
@@ -1069,20 +1064,22 @@ def update_output(
 ##========================================================
 # set the download url to the contents of the classified-image-store (so they can be
 # downloaded from the browser's memory)
-app.clientside_callback(
-    """
-function(the_image_store_data) {
-    return the_image_store_data;
-}
-""",
-    Output("download-image", "href"),
-    [Input("classified-image-store", "data")],
-)
+# app.clientside_callback(
+#     """
+# function(the_image_store_data) {
+#     return the_image_store_data;
+# }
+# """,
+#     Output("download-image", "href"),
+#     [Input("classified-image-store", "data")],
+# )
 
 ##========================================================
 
 if __name__ == "__main__":
     print('Go to http://127.0.0.1:8050/ in your web browser to use Doodler')
     #app.run_server()
-    app.run_server(host='0.0.0.0', port=8050) #()
-    #debug=True) #debug=True, port=8888)
+    app.run_server(host='0.0.0.0', port=8050, threaded=True)
+
+
+#===
