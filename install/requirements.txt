@@ -14,6 +14,3 @@ pandas
 scikit-image
 dash
 cairosvg
-fsspec
-s3fs
-gunicorn

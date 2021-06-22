@@ -469,7 +469,7 @@ app.layout = html.Div(
                 multi=False,
             ),
             html.Div([html.Div(id='live-update-text'),
-                      dcc.Interval(id='interval-component', interval=200, n_intervals=0)]),
+                      dcc.Interval(id='interval-component', interval=500, n_intervals=0)]),
 
 
         html.P(children="This image/Copy"),
