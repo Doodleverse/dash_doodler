@@ -32,6 +32,7 @@ from skimage import filters, feature, img_as_float32
 from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from tempfile import TemporaryFile
 
 import plotly.express as px
 from skimage.io import imsave
@@ -324,7 +325,7 @@ def extract_features_2d(
         endpoint=True,
     )
 
-    # #n_sigmas = len(sigmas)
+    #n_sigmas = len(sigmas)
     # all_results = [
     #     features_sigma(img, sigma, intensity=intensity, edges=edges, texture=texture)
     #     for sigma in sigmas
@@ -375,7 +376,21 @@ def extract_features(
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('Feature extraction complete')
 
-    return np.array(features)
+    features = np.array(features)
+    dtype = features.dtype
+    feats_shape = features.shape
+
+    outfile = TemporaryFile()
+    fp = np.memmap(outfile, dtype=dtype, mode='w+', shape=feats_shape)
+    fp[:] = features[:]
+    fp.flush()
+    del features
+    del fp
+
+    #read back in again without using any memory
+    features = np.memmap(outfile, dtype=dtype, mode='r', shape=feats_shape)
+
+    return features #np.array(features)
 
 
 ##========================================================
@@ -408,7 +423,6 @@ def do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture,sigma_
         raise ValueError("If no classifier clf is passed, you must specify a mask.")
     training_data = features[:, mask > 0].T
     training_labels = mask[mask > 0].ravel()
-    data = features[:, mask == 0].T
     # try:
     # logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     # logging.info('Updating existing RF classifier')
@@ -464,10 +478,11 @@ def do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture,sigma_
                 StandardScaler(),
                 MLPClassifier(
                     solver='adam', alpha=1, random_state=1, max_iter=2000,
-                    early_stopping=True, hidden_layer_sizes=[100, 100],
+                    early_stopping=True, hidden_layer_sizes=[100, 60],
                 ))
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('Initializing MLP model')
+        #print(clf.summary())
 
         clf.fit(training_data, training_labels)
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
@@ -481,8 +496,9 @@ def do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture,sigma_
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('Data saved to %s'% data_file)
 
-    result = np.copy(mask)#+1
+    del training_data, training_labels
 
+    data = features[:, mask == 0].T
     labels = clf.predict(data)
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('Model used on data to estimate labels')
@@ -491,8 +507,11 @@ def do_rf(img,rf_file,data_file,mask,multichannel,intensity,edges,texture,sigma_
         result = labels.reshape(img.shape[:2])
         result2 = result.copy()
     else:
+        result = np.copy(mask)#+1
         result[mask == 0] = labels
+        del labels, mask
         result2 = result.copy()
+        del result
 
     logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
     logging.info('RF feature extraction and model fitting complete')
@@ -594,7 +613,7 @@ def segmentation(
         logging.info('CRF model applied with %i test-time augmentations' % ( num_tta))
 
         result2 = np.round(np.average(np.dstack(R), axis=-1, weights = W)).astype('uint8')
-        del R
+        del R,W
         logging.info(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
         logging.info('Weighted average applied to test-time augmented outputs')
 

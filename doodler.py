@@ -235,15 +235,21 @@ app.layout = html.Div(
             id="title",
             className="seven columns",
         ),
+        #         html.H2(
+        #     "Label all classes that are present, in all regions of the image those classes occur",
+        #     id="subtitle",
+        #     className="seven columns",
+        # ),
+
         html.Img(id="logo", src=app.get_asset_url("logos/dash-logo-new.png")),
         # html.Div(html.Img(src=app.get_asset_url('logos/dash-logo-new.png'), style={'height':'10%', 'width':'10%'})), #id="logo",
 
         html.H2(""),
         dcc.Upload(
             id="upload-data",
-            children=html.Div(
-                ["(Label all classes that are present, in all regions of the image those classes occur)"]
-            ),
+            # children=html.Div(
+            #     ["(Label all classes that are present, in all regions of the image those classes occur)"]
+            # ),
             style={
                 "width": "100%",
                 "height": "30px",
@@ -285,7 +291,7 @@ app.layout = html.Div(
                                         "displaylogo": False,
                                         # 'modeBarOrientation': 'h',
                                         "modeBarButtonsToAdd": [
-                                            "drawrect",
+                                            # "drawrect",
                                             "drawopenpath",
                                             "eraseshape",
                                         ]
@@ -420,20 +426,20 @@ app.layout = html.Div(
                         #     value=DEFAULT_RF_NESTIMATORS,
                         # ),
 
-                        dcc.Markdown(
-                            ">Note that all segmentations are saved automatically. This download button is for quick checks only e.g. when dense annotations obscure the segmentation view"
-                        ),
-
-                        html.A(
-                            id="download-image",
-                            download="classified-image-"+datetime.now().strftime("%d-%m-%Y-%H-%M")+".png",
-                            children=[
-                                html.Button(
-                                    "Download Label Image (optional)",
-                                    id="download-image-button",
-                                )
-                            ],
-                        ),
+                        # dcc.Markdown(
+                        #     ">Note that all segmentations are saved automatically. This download button is for quick checks only e.g. when dense annotations obscure the segmentation view"
+                        # ),
+                        #
+                        # html.A(
+                        #     id="download-image",
+                        #     download="classified-image-"+datetime.now().strftime("%d-%m-%Y-%H-%M")+".png",
+                        #     children=[
+                        #         html.Button(
+                        #             "Download Label Image (optional)",
+                        #             id="download-image-button",
+                        #         )
+                        #     ],
+                        # ),
 
                     ],
                     className="three columns app-background",
@@ -736,18 +742,18 @@ def update_output(
     edges = True
     texture = True
 
-    if uploaded_filenames is not None and uploaded_file_contents is not None:
-        for name, data in zip(uploaded_filenames, uploaded_file_contents):
-            save_file(name, data)
-        image_list_data = []
-        all_image_value = ''
-        files = ''
-        options = []
-    else:
-        image_list_data = []
-        all_image_value = ''
-        files = ''
-        options = []
+    # if uploaded_filenames is not None and uploaded_file_contents is not None:
+    #     for name, data in zip(uploaded_filenames, uploaded_file_contents):
+    #         save_file(name, data)
+    #     image_list_data = []
+    #     all_image_value = ''
+    #     files = ''
+    #     options = []
+    # else:
+    image_list_data = []
+    all_image_value = ''
+    files = ''
+    options = []
 
     if callback_context=='interval-component.n_intervals':
         files, labeled_files = uploaded_files()
