@@ -377,7 +377,7 @@ app.layout = html.Div(
                         # Slider for specifying pen width
                         dcc.Slider(
                             id="crf-downsample-slider",
-                            min=2,
+                            min=1,
                             max=6,
                             step=1,
                             value=DEFAULT_CRF_DOWNSAMPLE,
@@ -410,7 +410,7 @@ app.layout = html.Div(
                         # Slider for specifying pen width
                         dcc.Slider(
                             id="rf-downsample-slider",
-                            min=2,
+                            min=1,
                             max=20,
                             step=1,
                             value=DEFAULT_RF_DOWNSAMPLE,

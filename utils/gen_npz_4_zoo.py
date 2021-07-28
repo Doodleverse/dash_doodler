@@ -68,7 +68,11 @@ def make_npz():
             data[k] = dat[k]
         del dat
 
-        classes = data['classes']
+        try:
+            classes = data['classes']
+        except:
+            classes = ['water', 'land']
+
         class_string = '_'.join([c.strip() for c in classes])
 
         savez_dict = dict()

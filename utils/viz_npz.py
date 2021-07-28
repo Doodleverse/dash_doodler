@@ -92,8 +92,18 @@ def do_viz_npz(npz_type):
             except:
                 pass
         del dat
+        print(data['image'].shape)
 
-        classes = data['classes']
+        if 'classes' not in locals():
+
+            try:
+                classes = data['classes']
+            except:
+                Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+                classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
+
+                with open(classfile) as f:
+                    classes = f.readlines()
 
         class_label_names = [c.strip() for c in classes]
 

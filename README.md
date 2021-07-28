@@ -99,6 +99,64 @@ More demonstration videos (older version of the program):
 
 ![Coast Train example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short-coast2.gif)
 
+<!--
+## Docker workflows
+
+```
+sudo docker pull mardascience/dash_doodler:d1
+```
+
+```
+sudo docker volume create doodler_data
+sudo docker run -p 8050:8050 mardascience/dash_doodler:d1
+sudo docker volume inspect doodler_data
+
+sudo docker volume create --driver local -o o=bind -o type=none -o device="/home/marda/test" doodler_data
+
+sudo docker run -d -p 8050:8050 --name doodler_container --mount source=doodler_data,target=/app  mardascience/dash_doodler:d1
+sudo docker inspect doodler_container
+```
+
+To build your own docker based on miniconda `continuumio/miniconda3`
+
+
+```
+cp install/Dockerfile.miniconda ./Dockerfile
+sudo docker build -t doodler_docker_image .
+```
+
+then when it has finished building, check its size
+
+```
+sudo docker image ls doodler_docker_image
+```
+
+It is large - 4.8 GB. Run it:
+
+```
+sudo docker run -p 8050:8050 -d -it --name www doodler_docker_image
+```
+
+Build with pip instead:
+
+```
+cp install/Dockerfile.pip ./Dockerfile
+sudo docker build -t doodler_docker_image_pip .
+```
+
+How large is that?
+
+```
+sudo docker image ls doodler_docker_image_pip
+```
+
+To stop and remove:
+
+```
+sudo docker stop www
+sudo docker rm www
+``` -->
+
 
 ## <a name="ack"></a>Acknowledgements
 
