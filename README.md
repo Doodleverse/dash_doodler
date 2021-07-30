@@ -1,20 +1,67 @@
+<!-- # Written by Dr Daniel Buscombe, Marda Science LLC
+# for the USGS Coastal Change Hazards Program
+#
+# MIT License
+#
+# Copyright (c) 2020-2021, Marda Science LLC
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE. -->
+
 ![](doodler-logo.png)
 
 Check out the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/)
 
-> Daniel Buscombe, Marda Science
+
+## Changes in 07/30/21. v 1.2.5
+
+This is a major update and may require a new clone.
+
+Changes include:
+* revised file structure, to be modular/easier to read and parse
+  * new directory `app_files` contains `cache-directory`, `logs`, and `src`
+  * `logs` contains program logs - now reports RAM usage throughout program for troubleshooting. Requires new dependency `psutil`
+  * `src` contains the main program code, including all of the segmentation codes (in `image_segmentation.py` and `annotations_to_segmentations.py`) and most of the app codes (`app_funcs.py` and `plot_utils.py`)
+  *  `cache-directory` - clear cache for the program independently of the browser by deleting files here. Requires new dependency `flask-caching`
+  * `assets` comes with no imagery, but sample imagery is, by default, downloaded automatically into that folder. You can disable the automatic downloading of the imagery by editing `environment/settings.py` where indicated
+  * `install` folder is now called `environment`
+  * removed the large gifs from the `assets/logos` folder (they now render in html from a github release)
+  * you still run `doodler.py`, but most of the app is now in `app.py`, and a lot more of the functions are in the `app_files/src/` functions. This allows for better readability and modularity, therefore portability into other frameworks, and more effective troubleshooting
+* example results files are now downloadable [here](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/example-results/results2021-06-21-11-05.zip) rather than shipped by default with the program. Run `python download_sample_results.py` from the `results` folder
+* overall the download is much, much smaller, and will break less with `git pull` because the `.gitignore` contains the common gotchas
+* removed superfluous buttons in the modebar
+* code commented better and better docstrings and README details
+* added example Dockerfile
+* ports, IPS and other deployment variables can be changed or added to `environment\settings.py` that gets imported at startup
+* added [Developer's Notes](#developers) to this README, with more details about program setup and function
+
+## Overview
+> Daniel Buscombe, Marda Science / USGS Pacific Coastal and Marine Science Center
 
 > Developed for the USGS Coastal Marine Geology program, as part of the Florence Supplemental project
 
-> This is a "Human-In-The-Loop" machine learning tool for partially supervised image segmentation and is based on code previously contained in the "doodle_labeller" [repository](https://github.com/dbuscombe-usgs/doodle_labeller) which implemenets a similar algorithm in OpenCV
+This is a "Human-In-The-Loop" machine learning tool for partially supervised image segmentation and is based on code previously contained in the "doodle_labeller" [repository](https://github.com/dbuscombe-usgs/doodle_labeller) which implements a similar algorithm in OpenCV. The Conditional Random Field (CRF) model used by this tool is described by [Buscombe and Ritchie (2018)](https://www.mdpi.com/2076-3263/8/7/244)
 
-> The Conditional Random Field (CRF) model used by this tool is described by [Buscombe and Ritchie (2018)](https://www.mdpi.com/2076-3263/8/7/244)
+The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder
 
-The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder, and you can also download a version of it from your browser for quick viewing
+![Doodler](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/quick-satshoreline-x2c.gif)
 
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/quick-satshoreline-x2c.gif)
-
-![Doodler](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/quick-satshore2-x2c.gif)
+![Doodler](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/quick-satshore2-x2c.gif)
 
 
 ## Contents
@@ -25,6 +72,7 @@ The video shows a basic usage of doodler. 1) Annotate the scene with a few examp
 * [Outputs](#outputs)
 * [Acknowledgments](#ack)
 * [Contribute](#contribute)
+* [Developer's Notes](#developers)
 * [Progress](#progress)
 * [Roadmap](#roadmap)
 
@@ -41,6 +89,8 @@ This is python software that is designed to be used from within a `conda` enviro
 
 ## <a name="install"></a>Installation
 
+Open a terminal
+
 Clone/download this repository
 
 ```
@@ -50,19 +100,26 @@ git clone --depth 1 https://github.com/dbuscombe-usgs/dash_doodler.git
 Install the requirements
 
 ```bash
-conda env create --file install/dashdoodler.yml
+conda env create --file environment/dashdoodler-clean.yml
+conda activate dashdoodler
+```
+*If* the above doesn't work, try this:
+
+```bash
+conda env create --file environment/dashdoodler.yml
 conda activate dashdoodler
 ```
 
-
-*If* the above doesn't work, try this:
+*If neither of the above* work, try this:
 
 ```bash
 conda create --name dashdoodler python=3.6
 conda activate dashdoodler
 conda install -c conda-forge pydensecrf cairo
-pip install -r install/requirements.txt
+pip install -r environment/requirements.txt
 ```
+
+and good luck to you!
 
 ## <a name="use"></a>Use
 Move your images into the `assets` folder. For the moment, they must be jpegs with the `.jpg` (or `JPG` or `jpeg`) extension. Support for other image types forthcoming ...
@@ -77,6 +134,8 @@ Open a browser and go to 127.0.0.1:8050. You may have to hit the refresh button.
 
 ### Example screenshots of use with example dataset
 
+(note: these are screengrabs of an older version of the program, so the buttons and their names are now slightly different)
+
 #### `doodler.py`
 
 ![Example 1](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py.png)
@@ -89,23 +148,18 @@ Open a browser and go to 127.0.0.1:8050. You may have to hit the refresh button.
 ### Videos
 More demonstration videos (older version of the program):
 
-![Doodler example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/quick-saturban-x2c.gif)
+![Doodler example 2](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/quick-saturban-x2c.gif)
 
-![Doodler example 3](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short.gif)
+![Doodler example 3](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short.gif)
 
-![Elwha example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short-elwha.gif)
+![Elwha example](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short-elwha.gif)
 
-![Coast Train example](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short-coast.gif)
+![Coast Train example](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short-coast.gif)
 
-![Coast Train example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler-demo-2-9-21-short-coast2.gif)
+![Coast Train example 2](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short-coast2.gif)
+
 
 <!--
-## Docker workflows
-
-```
-sudo docker pull mardascience/dash_doodler:d1
-```
-
 ```
 sudo docker volume create doodler_data
 sudo docker run -p 8050:8050 mardascience/dash_doodler:d1
@@ -115,52 +169,56 @@ sudo docker volume create --driver local -o o=bind -o type=none -o device="/home
 
 sudo docker run -d -p 8050:8050 --name doodler_container --mount source=doodler_data,target=/app  mardascience/dash_doodler:d1
 sudo docker inspect doodler_container
+```-->
+
+## Docker workflows
+
+To build your own docker image based on miniconda `continuumio/miniconda3`, called `doodler_docker_image`:
+
+
+```
+docker build -t doodler_docker_image .
 ```
 
-To build your own docker based on miniconda `continuumio/miniconda3`
-
-
-```
-cp install/Dockerfile.miniconda ./Dockerfile
-sudo docker build -t doodler_docker_image .
-```
-
-then when it has finished building, check its size
+then when it has finished building (it takes a while), check its size
 
 ```
 sudo docker image ls doodler_docker_image
 ```
 
-It is large - 4.8 GB. Run it:
+It is large - 4.8 GB. Run it in a container called `www`:
 
 ```
 sudo docker run -p 8050:8050 -d -it --name www doodler_docker_image
 ```
 
-Build with pip instead:
+The terminal will show no output, but you can see the process running a few different ways
+
+Lists running containers:
 
 ```
-cp install/Dockerfile.pip ./Dockerfile
-sudo docker build -t doodler_docker_image_pip .
+docker ps
 ```
 
-How large is that?
+the container name will be at the end of the line of output of docker ps (images don't have logs; they're like classes)
+```
+docker logs [container_name] -
+```
 
-```
-sudo docker image ls doodler_docker_image_pip
-```
 
 To stop and remove:
 
 ```
 sudo docker stop www
 sudo docker rm www
-``` -->
+```
+
+Don't ask me about Docker. That's all I know. Please contribute Docker workflows and suggestions!
 
 
 ## <a name="ack"></a>Acknowledgements
 
-Based on [this plotly example](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) and the previous openCV based implementation [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller)
+Based on [this plotly example](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) and the previous openCV based implementation [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller), that actually has origins in a USGS CDI-sponsored class I taught in summer of 2018, called [dl-tools](https://github.com/dbuscombe-usgs/dl_tools). So, it's been a 3+ year effort!
 
 ## <a name="contribute"></a>Contributing
 Contributions are welcome, and they are greatly appreciated! Credit will always be given.
@@ -174,6 +232,7 @@ Please include:
     * Your operating system name and version.
     * Any details about your local setup that might be helpful in troubleshooting.
     * Detailed steps to reproduce the bug.
+    * the log file made by the program during the session, found in
 
 #### Fix Bugs
 
@@ -218,6 +277,10 @@ Commit your changes and push your branch to GitHub:
 `$ git push origin name-of-your-bugfix-or-feature`
 
 Submit a pull request through the GitHub website.
+
+
+## <a name="developers"></a>Developers notes
+
 
 
 ## <a name="progress"></a>Progress report
@@ -376,6 +439,19 @@ https://dbuscombe-usgs.github.io/dash_doodler/
 * partially fixed bug with file select (interval just 200 milliseconds)
 * cleaned up and further tested all utils scripts
 
+07/30/21. v 1.2.5
+* code tidied up and commented, added docstrings
+* removed last traces of RF code implementation
+* added logging details, including RAM utilization throughout
+* CRF and feature extraction only happen in parallel now when RAM < 10GB and usage is <50%, i.e. there is 5GB of available RAM for parallel processing
+* %d-%m-%Y-%H-%M-%S changed to sortable %Y-%m-%d-%H-%M-%S format in log file
+* reorganized code into modular components
+* moved assets to downloadable zipped file than downloads and unpacks automatically
+* removed samples
+* moved gifs to a release, so could be linked in this README (used a lot of space, large download)
+* two new dependencies, Flasking-Cahing, and psutil
+* flask-caching is for caching - clear cache for the program independently of the browser by deleting files in the app_files/cache_directory
+* now has a `.gitignore` file to ignore cached files
 
 ## <a name="roadmap"></a>Roadmap
 
@@ -387,7 +463,7 @@ https://dbuscombe-usgs.github.io/dash_doodler/
 
 * Delay running the model until all of the coefficients are adjusted...right now it jumps right into the calcs as soon a slider is moved, but maybe you want to adjust two sliders first. Maybe change the compute segmentation to a button that changes color if the model is out of date wrt to the current settings. [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
 
-* pymongo (mongoDB) database backend - thanks Evan and Shah @UNCG-DAISY! See [here](https://api.mongodb.com/python/current/tools.html), [here](https://strapi.io/pricing)
+<!-- * pymongo (mongoDB) database backend - thanks Evan and Shah @UNCG-DAISY! See [here](https://api.mongodb.com/python/current/tools.html), [here](https://strapi.io/pricing) -->
 
 * on Ctrl+C, clear 'labeled' folder, etc
 

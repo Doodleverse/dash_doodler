@@ -1,0 +1,14 @@
+__pycache__
+__pycache__/*
+
+files_done.txt
+
+app_files/src/__pycache__
+app_files/src/__pycache__/*
+
+app_files/logs/*.log
+
+labeled/*.zip
+assets/*.jpg
+assets/*.jpeg
+assets/*.JPG
