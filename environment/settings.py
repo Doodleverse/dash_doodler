@@ -1,4 +1,4 @@
-HOST="0.0.0.0"
+HOST="127.0.0.1" #"0.0.0.0"  #for deployment
 PORT="8050"
 DEBUG=False
 DEV_TOOLS_PROPS_CHECK=False
