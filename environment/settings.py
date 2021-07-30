@@ -2,7 +2,7 @@ HOST="0.0.0.0"
 PORT="8050"
 DEBUG=False
 DEV_TOOLS_PROPS_CHECK=False
-DOWNLOAD_SAMPLE=True
+DOWNLOAD_SAMPLE=False #True
 
 ## uncomment line below to prevent the program from downloading the sample imagery into the assets folder
 #DOWNLOAD_SAMPLE=False
