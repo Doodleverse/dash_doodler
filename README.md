@@ -25,6 +25,7 @@
 
 ![](doodler-logo.png)
 
+## Website
 Check out the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/)
 
 
@@ -89,6 +90,8 @@ This is python software that is designed to be used from within a `conda` enviro
 
 ## <a name="install"></a>Installation
 
+> Check out the installation guide on the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/docs/tutorial-basics/deploy-local)
+
 Open a terminal
 
 Clone/download this repository
@@ -122,6 +125,8 @@ pip install -r environment/requirements.txt
 and good luck to you!
 
 ## <a name="use"></a>Use
+> Check out the user guide on the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/docs/tutorial-basics/what-to-do)
+
 Move your images into the `assets` folder. For the moment, they must be jpegs with the `.jpg` (or `JPG` or `jpeg`) extension. Support for other image types forthcoming ...
 
 Run the app. An IP address where you can view the app in your browser will be displayed in the terminal. Some browsers will launch automatically, while others you may have to manually type (or copy/paste) the IP address into a browser. Tested so far with Chrome, Firefox, and Edge.
@@ -213,12 +218,12 @@ sudo docker stop www
 sudo docker rm www
 ```
 
-Don't ask me about Docker. That's all I know. Please contribute Docker workflows and suggestions!
+Please don't ask me about Docker - that's all I know. Please contribute Docker workflows and suggestions!
 
 
 ## <a name="ack"></a>Acknowledgements
 
-Based on [this plotly example](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) and the previous openCV based implementation [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller), that actually has origins in a USGS CDI-sponsored class I taught in summer of 2018, called [dl-tools](https://github.com/dbuscombe-usgs/dl_tools). So, it's been a 3+ year effort!
+Inspired by [this plotly example](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) and the previous openCV based implementation [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller), that actually has origins in a USGS CDI-sponsored class I taught in summer of 2018, called [dl-tools](https://github.com/dbuscombe-usgs/dl_tools). So, it's been a 3+ year effort!
 
 ## <a name="contribute"></a>Contributing
 Contributions are welcome, and they are greatly appreciated! Credit will always be given.
@@ -247,6 +252,8 @@ Look through the GitHub issues for features. Anything tagged with "enhancement" 
 We could always use more documentation, whether as part of the docs, in docstrings, or using this software in blog posts, articles, etc.
 
 #### Get Started!
+
+> See the [how to contribute](https://dbuscombe-usgs.github.io/dash_doodler/docs/tutorial-extras/how-to-contribute) section of the Doodler website
 
 Ready to contribute? Here's how to set up for local development.
 
@@ -281,7 +288,29 @@ Submit a pull request through the GitHub website.
 
 ## <a name="developers"></a>Developers notes
 
+### Entrypoint
+* The entrypoint is `doodler.py`, which will first download sample imagery if `DOWNLOAD_SAMPLE=True` in `environment\settings.py`.
 
+* By default, `DOWNLOAD_SAMPLE=False` so imagery is not downloaded.
+
+* The other variables in `environment\settings.py` are found in Dash's `app.run_server()` documentation.
+  * `HOST="127.0.0.1"`` (should be `#"0.0.0.0"` for web deployment)
+  * `PORT="8050"`
+  * `DEBUG=False`
+  * `DEV_TOOLS_PROPS_CHECK=False`
+
+* `doodler.py` basically just calls and serves `app`, from `app.py`
+
+## Application
+
+* Loads classes and files and creates results folders and log file
+* Creates the application layout and links all buttons to callback functions
+
+## Callbacks
+* utility functions are in `app_files\src\app_funcs.py`
+* functions for drawing the imagery on the screen and making label overlays are in `app_files\src\plot_utils.py`
+* functions for converting SVG annotations to raster label annotations and segmentations are in `app_files\src\annotations_to_segmentations.py`
+* image segmentation/ML functions are in `app_files\src\image_segmentation.py`
 
 ## <a name="progress"></a>Progress report
 
@@ -291,7 +320,7 @@ Submit a pull request through the GitHub website.
 
 10/22/20
 * modified layout so image window is larger, and button bank is narrower. Hopefully easier to label, less zooming, etc. see https://github.com/dbuscombe-usgs/dash_doodler/issues/4. Thanks Dan Nowacki
-* added yml installation file, modified requirements.txt to remove gunicorn dependency. see https://github.com/dbuscombe-usgs/dash_doodler/issues/1. Thanks Dan Nowacki, Chris Sherwood, Rich Signell
+* added yml installation file, modified requirements.txt to remove gunicorn dependency. see https://github.com/dbuscombe-usgs/dash_doodler/issues/1.
 * updates to docs, README, videos
 
 10/29/20

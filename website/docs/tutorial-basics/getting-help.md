@@ -8,7 +8,7 @@ First, read the [terms and conditions](../intro#the-terms-and-conditions) of usi
 
 The software is optimized for specific types of imagery, but is highly configurable to specific purposes, and is therefore made publicly under an MIT license in the spirit of open source, open access, scientific rigor and transparency.
 
-We encourage you to submit issues and new feature requests, and, if you find it useful and have made improvements, to contribute to its development through a pull request on https://github.com/dbuscombe-usgs/doodle_labeller.
+We encourage you to submit issues and new feature requests, and, if you find it useful and have made improvements, to contribute to its development through a pull request on the [github repo](https://github.com/dbuscombe-usgs/dash_doodler).
 
 
 

@@ -90,7 +90,7 @@ It's important you know what the various files do. It's also important to stress
 ![](/img/install/install4.PNG)
 
 #### Assets folder
-This is the `assets` folder where you should put the images you want to label. The program comes with a set of default files that look like this:
+This is the `assets` folder where you should put the images you want to label. The program comes with a set of default files that can optionally download by running the `download_data.py` script that look like this:
 
 ![](/img/install/install5.PNG)
 
@@ -106,10 +106,6 @@ This is the 'labeled' folder, where the program copies the images you have label
 
 ![](/img/install/install9.PNG)
 
-#### Sample folder
-The program also comes with a `sample` directory to test the default classifier (water/land). However, your sample images don't need to be located here; they can be anywhere you have read and write access to on your computer
-
-![](/img/install/install7.PNG)
 
 #### Utils folder
 Finally, these python scripts are run from the command line, and are a handy collection of things once you have some data, so we'll talk about them later

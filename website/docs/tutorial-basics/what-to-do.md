@@ -96,7 +96,8 @@ And you should see something like this:
 
 Excellent, in no time you'll be doodling like this:
 
-![](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/quick-satshore2-x2c.gif)
+<!-- ![](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/quick-satshore2-x2c.gif) -->
+![](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short-coast.gif)
 
 ### Identify yourself and select a file
 
