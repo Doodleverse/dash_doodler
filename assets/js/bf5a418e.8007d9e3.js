@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[37],{108:function(o){o.exports=JSON.parse('{"permalink":"/dash_doodler/blog","page":1,"postsPerPage":10,"totalPages":2,"totalCount":11,"previousPage":null,"nextPage":"/dash_doodler/blog/page/2","blogDescription":"Blog","blogTitle":"Blog"}')}}]);
