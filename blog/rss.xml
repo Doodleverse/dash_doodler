@@ -4,9 +4,16 @@
         <title>Doodler Blog</title>
         <link>https://dbuscombe-usgs.github.io/blog</link>
         <description>Doodler Blog</description>
-        <lastBuildDate>Sun, 16 May 2021 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 28 Aug 2021 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Changes in v 1.2.6]]></title>
+            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/08/28/blog-post</link>
+            <guid>Changes in v 1.2.6</guid>
+            <pubDate>Sat, 28 Aug 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Just a quick note about changes in 08/28/21. v 1.2.6]]></description>
+        </item>
         <item>
             <title><![CDATA[What's new in version 1.2.1? (May 10, 2021)]]></title>
             <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/05/16/blog-post</link>
