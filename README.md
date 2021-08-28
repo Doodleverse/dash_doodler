@@ -29,27 +29,14 @@
 Check out the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/)
 
 
-## Changes in 07/30/21. v 1.2.5
+## Changes in 08/28/21. v 1.2.6
+* npz files now use compression
+* doodler by default now uses threading (disable by editing the environment/settings.py and setting THREADING to False)
+* new variable 'orig_image' written to npz, as well as 'image'. they are identical except for occasions where converting imagery to floats creates a 4th band, to accommodate a nodata band in the input. so 'orig image ' and 'image' would have different uses for segmentation and are therefore both preserved. orig_image is now the one written to npz files for zoo
+* new function  `gen_images_and_labels_4_zoo.py`, which creates greyscale jpegs and 3-band color images (orig images) and writes them to the results folder
+* updated the other utility functions to accommodate the new variable `orig_images`, which now takes priority over the variable `images`
+* website and README updated
 
-This is a major update and may require a new clone.
-
-Changes include:
-* revised file structure, to be modular/easier to read and parse
-  * new directory `app_files` contains `cache-directory`, `logs`, and `src`
-  * `logs` contains program logs - now reports RAM usage throughout program for troubleshooting. Requires new dependency `psutil`
-  * `src` contains the main program code, including all of the segmentation codes (in `image_segmentation.py` and `annotations_to_segmentations.py`) and most of the app codes (`app_funcs.py` and `plot_utils.py`)
-  *  `cache-directory` - clear cache for the program independently of the browser by deleting files here. Requires new dependency `flask-caching`
-  * `assets` comes with no imagery, but sample imagery is, by default, downloaded automatically into that folder. You can disable the automatic downloading of the imagery by editing `environment/settings.py` where indicated
-  * `install` folder is now called `environment`
-  * removed the large gifs from the `assets/logos` folder (they now render in html from a github release)
-  * you still run `doodler.py`, but most of the app is now in `app.py`, and a lot more of the functions are in the `app_files/src/` functions. This allows for better readability and modularity, therefore portability into other frameworks, and more effective troubleshooting
-* example results files are now downloadable [here](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/example-results/results2021-06-21-11-05.zip) rather than shipped by default with the program. Run `python download_sample_results.py` from the `results` folder
-* overall the download is much, much smaller, and will break less with `git pull` because the `.gitignore` contains the common gotchas
-* removed superfluous buttons in the modebar
-* code commented better and better docstrings and README details
-* added example Dockerfile
-* ports, IPS and other deployment variables can be changed or added to `environment\settings.py` that gets imported at startup
-* added [Developer's Notes](#developers) to this README, with more details about program setup and function
 
 ## Overview
 > Daniel Buscombe, Marda Science / USGS Pacific Coastal and Marine Science Center
@@ -71,6 +58,7 @@ The video shows a basic usage of doodler. 1) Annotate the scene with a few examp
 * [Installation](#install)
 * [Use](#use)
 * [Outputs](#outputs)
+* [Utilities](#utilities)
 * [Acknowledgments](#ack)
 * [Contribute](#contribute)
 * [Developer's Notes](#developers)
@@ -220,6 +208,21 @@ sudo docker rm www
 
 Please don't ask me about Docker - that's all I know. Please contribute Docker workflows and suggestions!
 
+
+## <a name="utilities"></a>Utility scripts
+
+Doodler is compatible with my other segmentation program, [Zoo](https://github.com/dbuscombe-usgs/segmentation_zoo) in a couple of different ways:
+
+1. You could run the function `gen_npz_4_zoo.py` to create npz files that contain only image and label pairs. This is the same output as you would get from running the Zoo program `make_datasets.py'.
+2. You could alternatively run the function `gen_images_and_labels_4_zoo.py` that would generate jpeg greyscale image files and image jpegs for use with the Zoo program `make_datasets.py'.
+
+The first scenario might be most common because it requires one less step, however the second scenario might be useful for using the labels with another software package, or for further post-processing of the labels
+
+There are two additional scripts in the `utils` folder:
+
+1. `viz_npz.py` creates transparent overlay plots of images and labels, and has three modes with the following syntax `viz_npz.py [-t npz type {0}/1/2]` where optional `-t` controls what type of npz file: native from doodler (option 0, default), a `labelgen` file from `plot_label_generation.py`, a npz file used as input for Zoo
+
+2. `plot_label_generation.py` that generates a detailed sequence of plots for every input npz file from doodler, including plots of the doodles themselves, overlays, and internal model outputs.
 
 ## <a name="ack"></a>Acknowledgements
 
@@ -481,6 +484,26 @@ https://dbuscombe-usgs.github.io/dash_doodler/
 * two new dependencies, Flasking-Cahing, and psutil
 * flask-caching is for caching - clear cache for the program independently of the browser by deleting files in the app_files/cache_directory
 * now has a `.gitignore` file to ignore cached files
+
+This is a major update and may require a new clone.
+
+Changes include:
+* revised file structure, to be modular/easier to read and parse
+  * new directory `app_files` contains `cache-directory`, `logs`, and `src`
+  * `logs` contains program logs - now reports RAM usage throughout program for troubleshooting. Requires new dependency `psutil`
+  * `src` contains the main program code, including all of the segmentation codes (in `image_segmentation.py` and `annotations_to_segmentations.py`) and most of the app codes (`app_funcs.py` and `plot_utils.py`)
+  *  `cache-directory` - clear cache for the program independently of the browser by deleting files here. Requires new dependency `flask-caching`
+  * `assets` comes with no imagery, but sample imagery is, by default, downloaded automatically into that folder. You can disable the automatic downloading of the imagery by editing `environment/settings.py` where indicated
+  * `install` folder is now called `environment`
+  * removed the large gifs from the `assets/logos` folder (they now render in html from a github release)
+  * you still run `doodler.py`, but most of the app is now in `app.py`, and a lot more of the functions are in the `app_files/src/` functions. This allows for better readability and modularity, therefore portability into other frameworks, and more effective troubleshooting
+* example results files are now downloadable [here](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/example-results/results2021-06-21-11-05.zip) rather than shipped by default with the program. Run `python download_sample_results.py` from the `results` folder
+* overall the download is much, much smaller, and will break less with `git pull` because the `.gitignore` contains the common gotchas
+* removed superfluous buttons in the modebar
+* code commented better and better docstrings and README details
+* added example Dockerfile
+* ports, IPS and other deployment variables can be changed or added to `environment\settings.py` that gets imported at startup
+* added [Developer's Notes](#developers) to this README, with more details about program setup and function
 
 ## <a name="roadmap"></a>Roadmap
 

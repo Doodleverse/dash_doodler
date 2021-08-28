@@ -92,7 +92,12 @@ def do_viz_npz(npz_type):
             except:
                 pass
         del dat
-        print(data['image'].shape)
+        #print(data['image'].shape)
+
+        if 'orig_image' in data.keys():
+            im = np.squeeze(data['orig_image'].astype('uint8'))[:,:,:3]
+        else:
+            im = np.squeeze(data['image'].astype('uint8'))[:,:,:3]
 
         if 'classes' not in locals():
 
@@ -129,14 +134,14 @@ def do_viz_npz(npz_type):
         #if 'image' in data.keys():
 
             plt.subplot(121)
-            plt.imshow(data['image']); plt.axis('off')
+            plt.imshow(im); plt.axis('off') #data['image']);
             doodles = data['doodles'].astype('float')
             doodles[doodles==0] = np.nan
             plt.imshow(data['doodles'], alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2) #'inferno')
             plt.axis('off')
 
             plt.subplot(122)
-            plt.imshow(data['image']); plt.axis('off')
+            plt.imshow(im); plt.axis('off') #data['image']);
             plt.imshow(np.argmax(data['label'],-1)+1, alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2) #'inferno')
             plt.axis('off')
             plt.savefig(anno_file.replace('.npz','_disp.png'), dpi=200, bbox_inches='tight')
@@ -146,7 +151,7 @@ def do_viz_npz(npz_type):
         if npz_type==1: ##labelgen
 
             plt.subplot(131)
-            plt.imshow(data['image']); plt.axis('off')
+            plt.imshow(im); plt.axis('off') #data['image']);
             doodles = data['doodles'].astype('float')
             doodles[doodles==0] = np.nan
             plt.imshow(data['doodles'], alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2) #'inferno')
@@ -154,14 +159,14 @@ def do_viz_npz(npz_type):
 
             try:
                 plt.subplot(132)
-                plt.imshow(data['image']); plt.axis('off')
+                plt.imshow(im); plt.axis('off') #data['image']);
                 plt.imshow(data['rf_result_filt_inp'], alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2) #'inferno')
                 plt.axis('off'); plt.title('RF label', fontsize=7)
             except:
                 pass
 
             plt.subplot(133)
-            plt.imshow(data['image']); plt.axis('off')
+            plt.imshow(im); plt.axis('off') #data['image']);
             label=np.argmax(data['final_label'],-1)+1
             if len(np.unique(label))==1:
                 plt.imshow(label, alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')

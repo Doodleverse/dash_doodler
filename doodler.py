@@ -28,7 +28,7 @@
 ##========================================================
 from app import app, server
 
-from environment.settings import APP_HOST, APP_PORT, APP_DEBUG, DEV_TOOLS_PROPS_CHECK, APP_DOWNLOAD_SAMPLE
+from environment.settings import APP_HOST, APP_PORT, APP_DEBUG, DEV_TOOLS_PROPS_CHECK, APP_DOWNLOAD_SAMPLE, APP_THREADED
 import os, zipfile, requests
 from datetime import datetime
 from glob import glob
@@ -70,5 +70,6 @@ if __name__ == "__main__":
         host=APP_HOST,
         port=APP_PORT,
         debug=APP_DEBUG,
-        dev_tools_props_check=DEV_TOOLS_PROPS_CHECK
+        dev_tools_props_check=DEV_TOOLS_PROPS_CHECK,
+        threaded=APP_THREADED
     )

@@ -665,6 +665,10 @@ def update_output(
             else:
                 imsave(colfile,label_to_colors(seg-1, img==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
 
+            orig_image = imread(select_image_value[0])
+            if np.ndim(orig_image)>3:
+               orig_image = orig_image[:,:,:3]
+
         else:
             if 'jpg' in select_image_value:
                 colfile = select_image_value.replace('assets',results_folder).replace('.jpg','_label'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'_'+my_id_value+'.png')
@@ -677,6 +681,10 @@ def update_output(
                 imsave(colfile,label_to_colors(seg-1, img[:,:,0]==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
             else:
                 imsave(colfile,label_to_colors(seg-1, img==0, alpha=128, colormap=class_label_colormap, color_class_offset=0, do_alpha=False))
+
+            orig_image = imread(select_image_value)
+            if np.ndim(orig_image)>3:
+               orig_image = orig_image[:,:,:3]
 
         logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('RGB label image saved to %s' % (colfile))
@@ -701,22 +709,24 @@ def update_output(
                     del tmp
 
                 savez_dict['image'] = img.astype(np.uint8)
+                savez_dict['orig_image'] = orig_image.astype(np.uint8)
                 savez_dict['label'] = lstack.astype(np.uint8)
                 savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                 savez_dict['doodles'] = doodles.astype(np.uint8)
                 savez_dict['settings'] = settings_dict
                 savez_dict['classes'] = class_label_names
-                np.savez(numpyfile, **savez_dict )
+                np.savez_compressed(numpyfile, **savez_dict )
 
             else:
                 savez_dict = dict()
                 savez_dict['image'] = img.astype(np.uint8)
+                savez_dict['orig_image'] = orig_image.astype(np.uint8)
                 savez_dict['label'] = lstack.astype(np.uint8)
                 savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                 savez_dict['doodles'] = doodles.astype(np.uint8)
                 savez_dict['settings'] = settings_dict
                 savez_dict['classes'] = class_label_names
-                np.savez(numpyfile, **savez_dict ) #save settings too
+                np.savez_compressed(numpyfile, **savez_dict ) #save settings too
 
         else:
             if 'jpg' in select_image_value:
@@ -736,22 +746,24 @@ def update_output(
                     del tmp
 
                 savez_dict['image'] = img.astype(np.uint8)
+                savez_dict['orig_image'] = orig_image.astype(np.uint8)
                 savez_dict['label'] = lstack.astype(np.uint8)
                 savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                 savez_dict['doodles'] = doodles.astype(np.uint8)
                 savez_dict['settings'] = settings_dict
                 savez_dict['classes'] = class_label_names
-                np.savez(numpyfile, **savez_dict )#save settings too
+                np.savez_compressed(numpyfile, **savez_dict )#save settings too
 
             else:
                 savez_dict = dict()
                 savez_dict['image'] = img.astype(np.uint8)
+                savez_dict['orig_image'] = orig_image.astype(np.uint8)
                 savez_dict['label'] = lstack.astype(np.uint8)
                 savez_dict['color_doodles'] = color_doodles.astype(np.uint8)
                 savez_dict['doodles'] = doodles.astype(np.uint8)
                 savez_dict['settings'] = settings_dict
                 savez_dict['classes'] = class_label_names
-                np.savez(numpyfile, **savez_dict )#save settings too
+                np.savez_compressed(numpyfile, **savez_dict )#save settings too
 
         logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('percent RAM usage: %f' % (psutil.virtual_memory()[2]))

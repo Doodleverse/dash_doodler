@@ -137,8 +137,13 @@ def gen_plot_seq(orig_distance, save_mode):
             ## if more than one label ...
             if len(np.unique(data['doodles']))>2:
 
-                img = data['image']
-                del data['image']
+                # img = data['image']
+                # del data['image']
+
+                if 'orig_image' in data.keys():
+                    im = np.squeeze(data['orig_image'].astype('uint8'))[:,:,:3]
+                else:
+                    im = np.squeeze(data['image'].astype('uint8'))[:,:,:3]
 
                 #================================
                 ##fig1 - img versus standardized image
@@ -529,6 +534,12 @@ def gen_plot_seq(orig_distance, save_mode):
 
             ### if only one label
             else:
+
+                if 'orig_image' in data.keys():
+                    im = np.squeeze(data['orig_image'].astype('uint8'))[:,:,:3]
+                else:
+                    im = np.squeeze(data['image'].astype('uint8'))[:,:,:3]
+
                 if save_mode:
                     savez_dict['color_doodles'] = data['color_doodles'].astype('uint8')
                     savez_dict['doodles'] = data['doodles'].astype('uint8')
@@ -547,7 +558,7 @@ def gen_plot_seq(orig_distance, save_mode):
                     savez_dict['crf_result'] =None
                     savez_dict['rf_result_spatfilt'] = None
                     savez_dict['crf_result_filt'] = None
-                    savez_dict['image'] = data['image'].astype('uint8')
+                    savez_dict['image'] = im #data['image'].astype('uint8')
                 del data
 
             np.savez(anno_file.replace('.npz','_labelgen.npz'), **savez_dict )

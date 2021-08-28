@@ -37,7 +37,6 @@ import plotly.express as px
 from skimage.io import imsave, imread
 from cairosvg import svg2png
 from datetime import datetime
-
 from app_funcs import *
 from plot_utils import *
 
@@ -90,7 +89,7 @@ def show_segmentation(image_path,
     # get the classifier that we can later store in the Store
     segimgpng = img_array_2_pil(segimg) #plot_utils.
 
-    return (segimgpng, seg, img, color_doodles, doodles )
+    return (segimgpng, seg, np.squeeze(img), color_doodles, doodles )
 
 ##========================================================
 def img_array_2_pil(ia):
@@ -236,9 +235,18 @@ def img_to_ubyte_array(img):
     for img will also work.
     """
     try:
-       ret = skimage.util.img_as_ubyte(np.array(PIL.Image.open(img)))
+       img = np.array(PIL.Image.open(img))
+       if np.ndim(img)>3:
+           img = img[:,:,:3]
+       ret = skimage.util.img_as_ubyte(img)
     except:
-       ret = skimage.util.img_as_ubyte(np.array(PIL.Image.open(img[0])))
+       img = np.array(PIL.Image.open(img[0]))
+       if np.ndim(img)>3:
+           img = img[:,:,:3]
+       ret = skimage.util.img_as_ubyte(img)
+
+    if np.ndim(ret)>3:
+        ret = ret[:,:,:3]
 
     return ret
 

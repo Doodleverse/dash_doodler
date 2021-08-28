@@ -3,7 +3,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020, Marda Science LLC
+# Copyright (c) 2020-2021, Marda Science LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,12 +27,12 @@
 
 # allows loading of functions from the src directory
 import sys, os, getopt
-sys.path.insert(1, '../src')
+sys.path.insert(1, '../app_files/src')
 # from annotations_to_segmentations import *
 from image_segmentation import *
 
 from glob import glob
-import skimage.util
+import skimage.io as io
 from tqdm import tqdm
 
 from tkinter import Tk
@@ -47,7 +47,7 @@ except:
     from defaults import *
 
 ###===========================================================
-def make_npz():
+def make_jpegs():
 
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     direc = askdirectory(title='Select directory of results (annotations)', initialdir=os.getcwd()+os.sep+'results')
@@ -58,7 +58,7 @@ def make_npz():
 
 
     #### loop through each file
-    for anno_file in tqdm(files):
+    for counter, anno_file in tqdm(enumerate(files)):
 
         # print("Working on %s" % (file))
         print("Working on %s" % (anno_file))
@@ -80,13 +80,13 @@ def make_npz():
         else:
             im = np.squeeze(data['image'].astype('uint8'))[:,:,:3]
 
-        savez_dict = dict()
-        savez_dict['arr_1'] = data['label']
-        savez_dict['arr_0'] = im #data['image']
-        del data
+        io.imsave(anno_file.replace('.npz','.jpg'),
+                  im, quality=100, chroma_subsampling=False)
 
-        np.savez(anno_file.replace('.npz',class_string+'_4zoo.npz'), **savez_dict )
-        del savez_dict
+        io.imsave(anno_file.replace('.npz','_label.jpg'),
+                  np.argmax(data['label'],-1).astype('uint8'), quality=100, chroma_subsampling=False)
+
+        del im
 
 
 ###==================================================================
@@ -98,13 +98,13 @@ if __name__ == '__main__':
         opts, args = getopt.getopt(argv,"h:") #m:p:l:")
     except getopt.GetoptError:
         print('======================================')
-        print('python gen_npz_4_zoo.py') #
+        print('python gen_images_and_labels_4_zoo.py') #
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
             print('======================================')
-            print('Example usage: python gen_npz_4_zoo.py') #, save mode mode 1 (default, minimal), make plots 0 (no), print labels 0 (no)
+            print('Example usage: python gen_images_and_labels_4_zoo.py') #, save mode mode 1 (default, minimal), make plots 0 (no), print labels 0 (no)
             print('======================================')
             sys.exit()
     #ok, dooo it
-    make_npz()
+    make_jpgs()
