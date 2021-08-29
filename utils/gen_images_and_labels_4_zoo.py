@@ -107,4 +107,4 @@ if __name__ == '__main__':
             print('======================================')
             sys.exit()
     #ok, dooo it
-    make_jpgs()
+    make_jpegs()
