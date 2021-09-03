@@ -68,11 +68,13 @@ def make_jpegs():
             data[k] = dat[k]
         del dat
 
+
         try:
             classes = data['classes']
         except:
             classes = ['water', 'land']
 
+        NCLASSES  = len(classes)
         class_string = '_'.join([c.strip() for c in classes])
 
         if 'orig_image' in data.keys():
@@ -83,8 +85,14 @@ def make_jpegs():
         io.imsave(anno_file.replace('.npz','.jpg'),
                   im, quality=100, chroma_subsampling=False)
 
+        l = np.argmax(data['label'],-1).astype('uint8')+1
+        nx,ny = l.shape
+        lstack = np.zeros((nx,ny,NCLASSES))
+        lstack[:,:,:NCLASSES] = (np.arange(NCLASSES) == l[...,None]-1).astype(int) #one-hot encode
+        l = np.argmax(lstack,-1).astype('uint8')
+
         io.imsave(anno_file.replace('.npz','_label.jpg'),
-                  np.argmax(data['label'],-1).astype('uint8'), quality=100, chroma_subsampling=False)
+                  l, quality=100, chroma_subsampling=False)
 
         del im
 
