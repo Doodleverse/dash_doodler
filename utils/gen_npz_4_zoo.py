@@ -27,7 +27,7 @@
 
 # allows loading of functions from the src directory
 import sys, os, getopt
-sys.path.insert(1, '../src')
+sys.path.insert(1, '../app_files/src')
 # from annotations_to_segmentations import *
 from image_segmentation import *
 
@@ -61,11 +61,14 @@ def make_npz():
     for anno_file in tqdm(files):
 
         # print("Working on %s" % (file))
-        print("Working on %s" % (anno_file))
+        #print("Working on %s" % (anno_file))
         dat = np.load(anno_file)
         data = dict()
         for k in dat.keys():
-            data[k] = dat[k]
+            try:
+                data[k] = dat[k]
+            except:
+                pass
         del dat
 
         try:
@@ -85,7 +88,9 @@ def make_npz():
         savez_dict['arr_0'] = im #data['image']
         del data
 
-        np.savez(anno_file.replace('.npz',class_string+'_4zoo.npz'), **savez_dict )
+        outfile = os.path.normpath(anno_file.replace('.npz','_'+str(len(classes))+'classes_4zoo.npz'))
+        
+        np.savez_compressed(outfile, **savez_dict )
         del savez_dict
 
 

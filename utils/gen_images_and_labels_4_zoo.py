@@ -65,7 +65,10 @@ def make_jpegs():
         dat = np.load(anno_file)
         data = dict()
         for k in dat.keys():
-            data[k] = dat[k]
+            try:
+                data[k] = dat[k]
+            except:
+                pass
         del dat
 
 
