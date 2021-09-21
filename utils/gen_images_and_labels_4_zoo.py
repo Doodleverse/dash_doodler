@@ -26,12 +26,13 @@
 # ##========================================================
 
 # allows loading of functions from the src directory
-import sys, os, getopt
+import sys, os, getopt, shutil
 sys.path.insert(1, '../app_files/src')
 # from annotations_to_segmentations import *
 from image_segmentation import *
 
 from glob import glob
+import matplotlib.pyplot as plt
 import skimage.io as io
 from tqdm import tqdm
 
@@ -53,9 +54,9 @@ def make_jpegs():
     direc = askdirectory(title='Select directory of results (annotations)', initialdir=os.getcwd()+os.sep+'results')
     files = sorted(glob(direc+'/*.npz'))
 
-    files = [f for f in files if 'labelgen' not in f]
-    files = [f for f in files if '4zoo' not in f]
-
+    #these files are not made in this script
+    #files = [f for f in files if 'labelgen' not in f]
+    #files = [f for f in files if '4zoo' not in f]
 
     #### loop through each file
     for counter, anno_file in tqdm(enumerate(files)):
@@ -80,6 +81,7 @@ def make_jpegs():
         NCLASSES  = len(classes)
         class_string = '_'.join([c.strip() for c in classes])
 
+        #Make the original images as jpg
         if 'orig_image' in data.keys():
             im = np.squeeze(data['orig_image'].astype('uint8'))[:,:,:3]
         else:
@@ -88,6 +90,7 @@ def make_jpegs():
         io.imsave(anno_file.replace('.npz','.jpg'),
                   im, quality=100, chroma_subsampling=False)
 
+        #Make the label as jpg
         l = np.argmax(data['label'],-1).astype('uint8')+1
         nx,ny = l.shape
         lstack = np.zeros((nx,ny,NCLASSES))
@@ -96,8 +99,37 @@ def make_jpegs():
 
         io.imsave(anno_file.replace('.npz','_label.jpg'),
                   l, quality=100, chroma_subsampling=False)
+        
+        #Make an overlay
+        plt.imshow(im)
+        plt.imshow(l, cmap='bwr', alpha=0.5, vmin=0, vmax=NCLASSES)
+        plt.savefig(anno_file.replace('.npz','_overlay.png'))
 
         del im
+
+    #mk directories for labels and images, to make transition to zoo easy
+    imdir = os.path.join(direc, 'images')
+    ladir = os.path.join(direc, 'labels')
+    overdir = os.path.join(direc, 'overlays')
+    os.mkdir(imdir)
+    os.mkdir(ladir)
+    os.mkdir(overdir)
+
+    lafiles = glob(direc+'/*_label.jpg')
+
+    for a_file in lafiles:
+        shutil.move(a_file, direc + '/labels')
+    
+    imfiles = glob(direc+'/*.jpg')
+
+    for a_file in imfiles:
+        shutil.move(a_file, direc + '/images')
+
+    ovfiles = glob(direc+'/*.png')
+
+    for a_file in ovfiles:
+        shutil.move(a_file, direc + '/overlays')
+
 
 
 ###==================================================================
@@ -119,3 +151,4 @@ if __name__ == '__main__':
             sys.exit()
     #ok, dooo it
     make_jpegs()
+
