@@ -3,7 +3,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020, Marda Science LLC
+# Copyright (c) 2020-2021, Marda Science LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -89,7 +89,7 @@ def make_npz():
         del data
 
         outfile = os.path.normpath(anno_file.replace('.npz','_'+str(len(classes))+'classes_4zoo.npz'))
-        
+
         np.savez_compressed(outfile, **savez_dict )
         del savez_dict
 

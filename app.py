@@ -355,6 +355,16 @@ app.layout = html.Div(
                             value=DEFAULT_RF_DOWNSAMPLE,
                         ),
 
+                        html.H6(id="numscales-display"),
+                        # Slider for specifying pen width
+                        dcc.Slider(
+                            id="numscales-slider",
+                            min=2,
+                            max=6,
+                            step=1,
+                            value=DEFAULT_NUMSCALES,
+                        ),
+
                     ],
                     className="three columns app-background",
                 ),
@@ -473,6 +483,7 @@ app.layout = html.Div(
     Output("crf-downsample-display", "children"),
     Output("crf-gtprob-display", "children"),
     Output("rf-downsample-display", "children"),
+    Output("numscales-display", "children"),
     Output("classified-image-store", "data"),
     ],
     [
@@ -490,6 +501,7 @@ app.layout = html.Div(
     Input("crf-downsample-slider", "value"),
     Input("crf-gtprob-slider", "value"),
     Input("rf-downsample-slider", "value"),
+    Input("numscales-slider", "value"),
     Input("select-image", "value"),
     Input('interval-component', 'n_intervals'),
     ],
@@ -518,6 +530,7 @@ def update_output(
     crf_downsample_value,
     gt_prob,
     rf_downsample_value,
+    n_sigmas,
     select_image_value,
     n_intervals,
     image_list_data,
@@ -632,7 +645,7 @@ def update_output(
         segimgpng, seg, img, color_doodles, doodles  = show_segmentation(
             [select_image_value], masks_data["shapes"], callback_context,
              crf_theta_slider_value, crf_mu_slider_value, results_folder, rf_downsample_value, crf_downsample_value, gt_prob, my_id_value,
-             multichannel, intensity, edges, texture,class_label_colormap
+             n_sigmas, multichannel, intensity, edges, texture,class_label_colormap
         )
 
         logging.info('... showing segmentation on screen')
@@ -689,7 +702,7 @@ def update_output(
         logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('RGB label image saved to %s' % (colfile))
 
-        settings_dict = np.array([pen_width, crf_downsample_value, rf_downsample_value, crf_theta_slider_value, crf_mu_slider_value, gt_prob])
+        settings_dict = np.array([pen_width, crf_downsample_value, rf_downsample_value, crf_theta_slider_value, crf_mu_slider_value, gt_prob, n_sigmas])
 
         if type(select_image_value) is list:
             if 'jpg' in select_image_value[0]:
@@ -819,6 +832,8 @@ def update_output(
             the_file.write('DEFAULT_CRF_THETA = {}\n'.format(crf_theta_slider_value))
             the_file.write('DEFAULT_CRF_MU = {}\n'.format(crf_mu_slider_value))
             the_file.write('DEFAULT_CRF_GTPROB = {}\n'.format(gt_prob))
+            the_file.write('DEFAULT_NUMSCALES = {}\n'.format(n_sigmas))
+
         print('my_defaults.py overwritten with parameter settings')
 
         logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
@@ -842,6 +857,7 @@ def update_output(
         "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
         "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
         "Classifier downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
+        "Number of scales (default: %d): %d" % (DEFAULT_NUMSCALES,n_sigmas),
         segmentation_store_data,
         ]
     else:
@@ -859,5 +875,6 @@ def update_output(
         "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
         "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
         "Classifier downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
+        "Number of scales (default: %d): %d" % (DEFAULT_NUMSCALES,n_sigmas),
         segmentation_store_data,
         ]

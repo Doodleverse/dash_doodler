@@ -51,6 +51,7 @@ def show_segmentation(image_path,
     crf_downsample_factor,
     gt_prob,
     my_id_value,
+    n_sigmas,
     multichannel,
     intensity,
     edges,
@@ -73,7 +74,7 @@ def show_segmentation(image_path,
     segimg, seg, img, color_doodles, doodles = compute_segmentations(
         mask_shapes, crf_theta_slider_value,crf_mu_slider_value,
         results_folder, rf_downsample_value,
-        crf_downsample_factor, gt_prob, my_id_value, callback_context,
+        crf_downsample_factor, gt_prob, my_id_value, callback_context, n_sigmas,
         multichannel, intensity, edges, texture, sigma_min, sigma_max,
         img_path=image_path,
         shape_layers=shape_layers,
@@ -307,6 +308,7 @@ def compute_segmentations(
     gt_prob,
     my_id_value,
     callback_context,
+    n_sigmas,
     multichannel,
     intensity,
     edges,
@@ -345,7 +347,7 @@ def compute_segmentations(
 
     seg = segmentation(img, img_path, results_folder, callback_context, #rf_file, data_file,
                        crf_theta_slider_value, crf_mu_slider_value,  rf_downsample_value, #median_filter_value,
-                       crf_downsample_factor, gt_prob, mask, multichannel, intensity, edges, texture,
+                       crf_downsample_factor, gt_prob, mask, n_sigmas, multichannel, intensity, edges, texture,
                        sigma_min, sigma_max)#, SAVE_RF) #n_estimators,
     logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     logging.info('Segmentation computed')

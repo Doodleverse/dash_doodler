@@ -54,9 +54,8 @@ def make_jpegs():
     direc = askdirectory(title='Select directory of results (annotations)', initialdir=os.getcwd()+os.sep+'results')
     files = sorted(glob(direc+'/*.npz'))
 
-    #these files are not made in this script
-    #files = [f for f in files if 'labelgen' not in f]
-    #files = [f for f in files if '4zoo' not in f]
+    files = [f for f in files if 'labelgen' not in f]
+    files = [f for f in files if '4zoo' not in f]
 
     #### loop through each file
     for counter, anno_file in tqdm(enumerate(files)):
@@ -76,6 +75,7 @@ def make_jpegs():
         try:
             classes = data['classes']
         except:
+            print('No classes found in settings! Using defaults of "water" and "land"')
             classes = ['water', 'land']
 
         NCLASSES  = len(classes)
@@ -99,7 +99,7 @@ def make_jpegs():
 
         io.imsave(anno_file.replace('.npz','_label.jpg'),
                   l, quality=100, chroma_subsampling=False)
-        
+
         #Make an overlay
         plt.imshow(im)
         plt.imshow(l, cmap='bwr', alpha=0.5, vmin=0, vmax=NCLASSES)
@@ -111,15 +111,19 @@ def make_jpegs():
     imdir = os.path.join(direc, 'images')
     ladir = os.path.join(direc, 'labels')
     overdir = os.path.join(direc, 'overlays')
-    os.mkdir(imdir)
-    os.mkdir(ladir)
-    os.mkdir(overdir)
+
+    try:
+        os.mkdir(imdir)
+        os.mkdir(ladir)
+        os.mkdir(overdir)
+    except:
+        pass
 
     lafiles = glob(direc+'/*_label.jpg')
 
     for a_file in lafiles:
         shutil.move(a_file, direc + '/labels')
-    
+
     imfiles = glob(direc+'/*.jpg')
 
     for a_file in imfiles:
@@ -151,4 +155,3 @@ if __name__ == '__main__':
             sys.exit()
     #ok, dooo it
     make_jpegs()
-

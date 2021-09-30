@@ -3,7 +3,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020, Marda Science LLC
+# Copyright (c) 2020-2021, Marda Science LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,10 +27,12 @@
 
 # allows loading of functions from the src directory
 import sys, os, getopt
-sys.path.insert(1, '../src')
+sys.path.insert(1, '../app_files/src')
+
 # from annotations_to_segmentations import *
 from image_segmentation import *
 
+import plotly.express as px
 from glob import glob
 import skimage.util
 from tqdm import tqdm

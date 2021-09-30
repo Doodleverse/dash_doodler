@@ -36,17 +36,21 @@ from glob import glob
 if __name__ == "__main__":
 
     #========================================================
-    ## downlaod the sample if APP_DOWNLOAD_SAMPLE is True
+    ## downlaod the sample if APP_DOWNLOAD_SAMPLE is True in settings.py
     #========================================================
     if APP_DOWNLOAD_SAMPLE:
-        url='https://github.com/dbuscombe-usgs/dash_doodler/releases/download/data/sample_images.zip'
-        filename = os.path.join(os.getcwd(), "sample_images.zip")
-        r = requests.get(url, allow_redirects=True)
-        open(filename, 'wb').write(r.content)
+        # check for existig files and if none, download the sample set
+        if len(glob('assets/*.jpg')+glob('assets/*.JPG')+glob('assets/*.jpeg'))==0:
+            print('Downloading the sample images from the web ....')
+            url='https://github.com/dbuscombe-usgs/dash_doodler/releases/download/data/sample_images.zip'
+            filename = os.path.join(os.getcwd(), "sample_images.zip")
+            r = requests.get(url, allow_redirects=True)
+            open(filename, 'wb').write(r.content)
 
-        with zipfile.ZipFile(filename, "r") as z_fp:
-            z_fp.extractall("./assets/")
-        os.remove(filename)
+            with zipfile.ZipFile(filename, "r") as z_fp:
+                z_fp.extractall("./assets/")
+            os.remove(filename)
+            print('Downloaded and extracted %s'%(filename))
 
     #if labeled images exist in labaled folder, zip them up with a timestamp, and remove the individual files
     try:
