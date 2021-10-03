@@ -38,7 +38,8 @@ from tqdm import tqdm
 
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename, askdirectory
-
+import plotly.express as px
+import matplotlib
 
 ###===========================================================
 try:
@@ -100,12 +101,47 @@ def make_jpegs():
         io.imsave(anno_file.replace('.npz','_label.jpg'),
                   l, quality=100, chroma_subsampling=False)
 
+
+        if 'classes' not in locals():
+
+            try:
+                classes = data['classes']
+            except:
+                Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+                classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
+
+                with open(classfile) as f:
+                    classes = f.readlines()
+
+        class_label_names = [c.strip() for c in classes]
+
+        NUM_LABEL_CLASSES = len(class_label_names)
+
+        if NUM_LABEL_CLASSES<=10:
+            class_label_colormap = px.colors.qualitative.G10
+        else:
+            class_label_colormap = px.colors.qualitative.Light24
+
+        # we can't have fewer colors than classes
+        assert NUM_LABEL_CLASSES <= len(class_label_colormap)
+
+        colormap = [
+            tuple([fromhex(h[s : s + 2]) for s in range(0, len(h), 2)])
+            for h in [c.replace("#", "") for c in class_label_colormap]
+        ]
+
+        cmap = matplotlib.colors.ListedColormap(class_label_colormap[:NUM_LABEL_CLASSES+1])
+        # cmap2 = matplotlib.colors.ListedColormap(['#000000']+class_label_colormap[:NUM_LABEL_CLASSES])
+
         #Make an overlay
         plt.imshow(im)
-        plt.imshow(l, cmap='bwr', alpha=0.5, vmin=0, vmax=NCLASSES)
-        plt.savefig(anno_file.replace('.npz','_overlay.png'))
+        plt.imshow(l, cmap=cmap, alpha=0.5, vmin=0, vmax=NCLASSES)
+        plt.axis('off')
+        plt.savefig(anno_file.replace('.npz','_overlay.png'), dpi=200, bbox_inches='tight')
 
         del im
+
+        plt.close('all')
 
     #mk directories for labels and images, to make transition to zoo easy
     imdir = os.path.join(direc, 'images')
