@@ -56,8 +56,8 @@ if __name__ == "__main__":
                 z_fp.write(k)
         z_fp.close()
 
-        for k in glob("./labeled/*.jpeg")+glob("./labeled/*.JPG")+glob("./labeled/*.jpg"):
-            os.remove(k)
+        # for k in glob("./labeled/*.jpeg")+glob("./labeled/*.JPG")+glob("./labeled/*.jpg"):
+        #     os.remove(k)
 
     except:
         pass
