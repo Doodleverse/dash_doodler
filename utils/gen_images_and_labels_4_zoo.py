@@ -26,18 +26,20 @@
 # ##========================================================
 
 # allows loading of functions from the src directory
-import sys, os, getopt
+import sys, os, getopt, shutil
 sys.path.insert(1, '../app_files/src')
 # from annotations_to_segmentations import *
 from image_segmentation import *
 
 from glob import glob
+import matplotlib.pyplot as plt
 import skimage.io as io
 from tqdm import tqdm
 
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename, askdirectory
-
+import plotly.express as px
+import matplotlib
 
 ###===========================================================
 try:
@@ -55,7 +57,6 @@ def make_jpegs():
 
     files = [f for f in files if 'labelgen' not in f]
     files = [f for f in files if '4zoo' not in f]
-
 
     #### loop through each file
     for counter, anno_file in tqdm(enumerate(files)):
@@ -75,11 +76,13 @@ def make_jpegs():
         try:
             classes = data['classes']
         except:
+            print('No classes found in settings! Using defaults of "water" and "land"')
             classes = ['water', 'land']
 
         NCLASSES  = len(classes)
         class_string = '_'.join([c.strip() for c in classes])
 
+        #Make the original images as jpg
         if 'orig_image' in data.keys():
             im = np.squeeze(data['orig_image'].astype('uint8'))[:,:,:3]
         else:
@@ -88,6 +91,7 @@ def make_jpegs():
         io.imsave(anno_file.replace('.npz','.jpg'),
                   im, quality=100, chroma_subsampling=False)
 
+        #Make the label as jpg
         l = np.argmax(data['label'],-1).astype('uint8')+1
         nx,ny = l.shape
         lstack = np.zeros((nx,ny,NCLASSES))
@@ -97,7 +101,75 @@ def make_jpegs():
         io.imsave(anno_file.replace('.npz','_label.jpg'),
                   l, quality=100, chroma_subsampling=False)
 
+
+        if 'classes' not in locals():
+
+            try:
+                classes = data['classes']
+            except:
+                Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+                classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
+
+                with open(classfile) as f:
+                    classes = f.readlines()
+
+        class_label_names = [c.strip() for c in classes]
+
+        NUM_LABEL_CLASSES = len(class_label_names)
+
+        if NUM_LABEL_CLASSES<=10:
+            class_label_colormap = px.colors.qualitative.G10
+        else:
+            class_label_colormap = px.colors.qualitative.Light24
+
+        # we can't have fewer colors than classes
+        assert NUM_LABEL_CLASSES <= len(class_label_colormap)
+
+        colormap = [
+            tuple([fromhex(h[s : s + 2]) for s in range(0, len(h), 2)])
+            for h in [c.replace("#", "") for c in class_label_colormap]
+        ]
+
+        cmap = matplotlib.colors.ListedColormap(class_label_colormap[:NUM_LABEL_CLASSES+1])
+        # cmap2 = matplotlib.colors.ListedColormap(['#000000']+class_label_colormap[:NUM_LABEL_CLASSES])
+
+        #Make an overlay
+        plt.imshow(im)
+        plt.imshow(l, cmap=cmap, alpha=0.5, vmin=0, vmax=NCLASSES)
+        plt.axis('off')
+        plt.savefig(anno_file.replace('.npz','_overlay.png'), dpi=200, bbox_inches='tight')
+
         del im
+
+        plt.close('all')
+
+    #mk directories for labels and images, to make transition to zoo easy
+    imdir = os.path.join(direc, 'images')
+    ladir = os.path.join(direc, 'labels')
+    overdir = os.path.join(direc, 'overlays')
+
+    try:
+        os.mkdir(imdir)
+        os.mkdir(ladir)
+        os.mkdir(overdir)
+    except:
+        pass
+
+    lafiles = glob(direc+'/*_label.jpg')
+
+    for a_file in lafiles:
+        shutil.move(a_file, direc + '/labels')
+
+    imfiles = glob(direc+'/*.jpg')
+
+    for a_file in imfiles:
+        shutil.move(a_file, direc + '/images')
+
+    ovfiles = glob(direc+'/*.png')
+
+    for a_file in ovfiles:
+        shutil.move(a_file, direc + '/overlays')
+
 
 
 ###==================================================================

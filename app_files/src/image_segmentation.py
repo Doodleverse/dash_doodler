@@ -321,6 +321,7 @@ def features_sigma(img,
 def extract_features_2d(
     dim,
     img,
+    n_sigmas,
     intensity=True,
     edges=True,
     texture=True,
@@ -339,7 +340,7 @@ def extract_features_2d(
     sigmas = np.logspace(
         np.log2(sigma_min),
         np.log2(sigma_max),
-        num=int(np.log2(sigma_max) - np.log2(sigma_min) + 1),
+        num=n_sigmas, #int(np.log2(sigma_max) - np.log2(sigma_min) + 1),
         base=2,
         endpoint=True,
     )
@@ -372,6 +373,7 @@ def extract_features_2d(
 ##========================================================
 def extract_features(
     img,
+    n_sigmas,
     multichannel=True,
     intensity=True,
     edges=True,
@@ -386,6 +388,7 @@ def extract_features(
             extract_features_2d(
                 dim,
                 img[..., dim],
+                n_sigmas,
                 intensity=intensity,
                 edges=edges,
                 texture=texture,
@@ -398,6 +401,7 @@ def extract_features(
     else:
         features = extract_features_2d(0,
             img,
+            n_sigmas,
             intensity=intensity,
             edges=edges,
             texture=texture,
@@ -438,13 +442,14 @@ def memmap_feats(features):
     return features
 
 ##========================================================
-def do_classify(img,mask,multichannel,intensity,edges,texture,sigma_min,sigma_max, downsample_value):
+def do_classify(img,mask,n_sigmas,multichannel,intensity,edges,texture,sigma_min,sigma_max, downsample_value):
     """
     Apply classifier to features to extract unary potentials for the CRF
     """
     if np.ndim(img)==3:
         features = extract_features(
             img,
+            n_sigmas,
             multichannel=multichannel,
             intensity=intensity,
             edges=edges,
@@ -455,6 +460,7 @@ def do_classify(img,mask,multichannel,intensity,edges,texture,sigma_min,sigma_ma
     else:
         features = extract_features(
             np.dstack((img,img,img)),
+            n_sigmas,
             multichannel=multichannel,
             intensity=intensity,
             edges=edges,
@@ -541,6 +547,7 @@ def segmentation(
     crf_downsample_factor,
     gt_prob,
     mask,#=None,
+    n_sigmas,
     multichannel,#=True,
     intensity,#=True,
     edges,#=True,
@@ -575,7 +582,7 @@ def segmentation(
 
     else:
 
-        result = do_classify(img,mask,multichannel,intensity,edges,texture, sigma_min,sigma_max, rf_downsample_value)#,SAVE_RF) # n_estimators,rf_file,data_file,
+        result = do_classify(img,mask,n_sigmas,multichannel,intensity,edges,texture, sigma_min,sigma_max, rf_downsample_value)#,SAVE_RF) # n_estimators,rf_file,data_file,
 
         Worig = img.shape[0]
         result = filter_one_hot(result, 2*Worig)

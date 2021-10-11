@@ -213,7 +213,8 @@ Please don't ask me about Docker - that's all I know. Please contribute Docker w
 
 Doodler is compatible with my other segmentation program, [Zoo](https://github.com/dbuscombe-usgs/segmentation_zoo) in a couple of different ways:
 
-1. You could run the function `gen_npz_4_zoo.py` to create npz files that contain only image and label pairs. This is the same output as you would get from running the Zoo program `make_datasets.py'.
+1. You could run the function `gen_npz_4_zoo.py` to create npz files that contain only image and label pairs. This is the same output as you would get from running the Zoo program `make_datasets.py'
+
 2. You could alternatively run the function `gen_images_and_labels_4_zoo.py` that would generate jpeg greyscale image files and image jpegs for use with the Zoo program `make_datasets.py'.
 
 The first scenario might be most common because it requires one less step, however the second scenario might be useful for using the labels with another software package, or for further post-processing of the labels
@@ -505,9 +506,18 @@ Changes include:
 * ports, IPS and other deployment variables can be changed or added to `environment\settings.py` that gets imported at startup
 * added [Developer's Notes](#developers) to this README, with more details about program setup and function
 
+
+09/30/21. v 1.2.6
+(some of these in response to USGS colleague code review by Frank Engel, USGS)
+* minor fixes to all utils scripts
+* added 'number of scales' functionality to help with low-resource machines and give greater flexibility to the user
+* the program will now automatically download the sample images by default, but only if there are no (jpeg) images in the assets folder
+
 ## <a name="roadmap"></a>Roadmap
 
 <!-- * Maybe a button to reset the coefficients to the defaults? [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2) -->
+
+* fix image file selection bug
 
 * Docker deployment--HELP!!
 
@@ -521,6 +531,5 @@ Changes include:
 
 * 'label here' feature based on analysis of doodles in real time -- how?
 
-* consolidate data/models script
 
 Use the issues tab to suggest new features!
