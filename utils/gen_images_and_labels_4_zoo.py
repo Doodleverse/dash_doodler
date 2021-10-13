@@ -50,10 +50,17 @@ except:
 
 ###===========================================================
 def make_dir(dirname):
-    try:
-        os.mkdir(dirname)
-    except:
-        pass
+    # check that the directory does not already exist
+    if not os.path.isdir(dirname):
+        # if not, try to create the directory
+        try:
+            os.mkdir(dirname)
+        # if there is an exception, print to screen and try to continue
+        except Exception as e:
+            print(e)
+    # if the dir already exists, let the user know
+    else:
+        print('{} directory already exists'.format(dirname))
 
 def move_files(files, outdirec):
     for a_file in files:        
@@ -79,7 +86,8 @@ def make_jpegs():
         for k in dat.keys():
             try:
                 data[k] = dat[k]
-            except:
+            except Exception as e:
+                print(e)
                 pass
         del dat
 
