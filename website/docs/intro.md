@@ -5,7 +5,7 @@ sidebar_position: 1
 # What is Doodler for?
 
 
-Doodler is a web application for image segmentation, which is the process of turning this (for example):
+Doodler is a web application for image segmentation, which is the process of turning this (for example, or almost any type of image):
 
 ![](/img/ex_image.jpg)
 
@@ -37,7 +37,7 @@ For natural and other scenes, doodler can be a relatively quick (in terms of the
 
 Here's a movie of Doodler in action:
 
-![](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/quick-satshoreline-x2c.gif)
+![](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/short_1024px_30fps.gif)
 
 There are two tabs, one for 'doodling' on images, and one for selecting new images from a 'to-do' list. Doodler will remove image names from the list if a label image has previously been generated. The basic workflow is:
 
