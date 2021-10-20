@@ -49,6 +49,24 @@ except:
     from defaults import *
 
 ###===========================================================
+def make_dir(dirname):
+    # check that the directory does not already exist
+    if not os.path.isdir(dirname):
+        # if not, try to create the directory
+        try:
+            os.mkdir(dirname)
+        # if there is an exception, print to screen and try to continue
+        except Exception as e:
+            print(e)
+    # if the dir already exists, let the user know
+    else:
+        print('{} directory already exists'.format(dirname))
+
+def move_files(files, outdirec):
+    for a_file in files:        
+        shutil.move(a_file, outdirec+os.sep+a_file.split(os.sep)[-1])
+
+
 def make_jpegs():
 
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
@@ -68,7 +86,8 @@ def make_jpegs():
         for k in dat.keys():
             try:
                 data[k] = dat[k]
-            except:
+            except Exception as e:
+                print(e)
                 pass
         del dat
 
@@ -139,6 +158,17 @@ def make_jpegs():
         plt.axis('off')
         plt.savefig(anno_file.replace('.npz','_overlay.png'), dpi=200, bbox_inches='tight')
 
+
+        #Make an doodles overlay
+        # plt = matplotlib.pyplot
+        doodles = data['doodles'].astype('float')
+        doodles[doodles<1] = np.nan
+        doodles -= 1
+        plt.imshow(im)
+        plt.imshow(doodles, cmap=cmap, alpha=0.5, vmin=0, vmax=NCLASSES)
+        plt.axis('off')
+        plt.savefig(anno_file.replace('.npz','_doodles.png'), dpi=200, bbox_inches='tight')
+
         del im
 
         plt.close('all')
@@ -147,28 +177,27 @@ def make_jpegs():
     imdir = os.path.join(direc, 'images')
     ladir = os.path.join(direc, 'labels')
     overdir = os.path.join(direc, 'overlays')
-
-    try:
-        os.mkdir(imdir)
-        os.mkdir(ladir)
-        os.mkdir(overdir)
-    except:
-        pass
+    doodlesdir = os.path.join(direc, 'doodles')
+    make_dir(imdir)
+    make_dir(ladir)
+    make_dir(overdir)
+    make_dir(doodlesdir)
 
     lafiles = glob(direc+'/*_label.jpg')
+    outdirec = os.path.normpath(direc + os.sep+'labels')
+    move_files(lafiles, outdirec)
 
-    for a_file in lafiles:
-        shutil.move(a_file, direc + '/labels')
-
+    doodlefiles = glob(direc+'/*_doodles.png')
+    outdirec = os.path.normpath(direc + os.sep+'doodles')
+    move_files(doodlefiles, outdirec)
+    
     imfiles = glob(direc+'/*.jpg')
-
-    for a_file in imfiles:
-        shutil.move(a_file, direc + '/images')
-
+    outdirec = os.path.normpath(direc + os.sep+'images')
+    move_files(imfiles, outdirec)
+    
     ovfiles = glob(direc+'/*.png')
-
-    for a_file in ovfiles:
-        shutil.move(a_file, direc + '/overlays')
+    outdirec = os.path.normpath(direc + os.sep+'overlays')
+    move_files(ovfiles, outdirec)
 
 
 

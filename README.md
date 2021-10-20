@@ -47,9 +47,13 @@ This is a "Human-In-The-Loop" machine learning tool for partially supervised ima
 
 The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder
 
-![Doodler](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/quick-satshoreline-x2c.gif)
+Here's a movie of Doodler in action:
 
-![Doodler](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/quick-satshore2-x2c.gif)
+![](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/short_1024px_30fps.gif)
+
+<!-- ![Doodler](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/quick-satshoreline-x2c.gif)
+
+![Doodler](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/quick-satshore2-x2c.gif) -->
 
 
 ## Contents

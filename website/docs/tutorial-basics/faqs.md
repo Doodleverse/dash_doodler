@@ -11,12 +11,16 @@ Please read this page before submitting your Issue on Github
 In typical order of importance:
 
 1. Use smaller images
-2. Make fewer doodles
-3. Use a larger RF downsample factor
-4. Use a larger CRF downsample factor
-5. If possible, use fewer classes
-6. If possible, use more and faster CPU cores
+2. Use fewer scales (the last slider at the bottom of the control panel)
+3. Make fewer doodles
+5. Use a larger RF downsample factor
+6. Use a larger CRF downsample factor
+7. If possible, use fewer classes
+8. If possible, use more and faster CPU cores
 
+
+### Why did it go crash or act weirdly?
+You probably ran out of memory. All of the above fixes also work for memory
 
 ### What is the maximum number of classes?
 
