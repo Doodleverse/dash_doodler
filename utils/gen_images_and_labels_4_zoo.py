@@ -63,7 +63,7 @@ def make_dir(dirname):
         print('{} directory already exists'.format(dirname))
 
 def move_files(files, outdirec):
-    for a_file in files:        
+    for a_file in files:
         shutil.move(a_file, outdirec+os.sep+a_file.split(os.sep)[-1])
 
 
@@ -81,97 +81,107 @@ def make_jpegs():
 
         # print("Working on %s" % (file))
         print("Working on %s" % (anno_file))
-        dat = np.load(anno_file)
-        data = dict()
-        for k in dat.keys():
-            try:
-                data[k] = dat[k]
-            except Exception as e:
-                print(e)
-                pass
-        del dat
-
 
         try:
-            classes = data['classes']
+            dat = np.load(anno_file)
         except:
-            print('No classes found in settings! Using defaults of "water" and "land"')
-            classes = ['water', 'land']
+            dat = np.load(anno_file, allow_pickle=True)
+        finally:
+            print("Could not load"+anno_file)
+            pass
 
-        NCLASSES  = len(classes)
-        class_string = '_'.join([c.strip() for c in classes])
+        if 'dat' in locals():
 
-        #Make the original images as jpg
-        if 'orig_image' in data.keys():
-            im = np.squeeze(data['orig_image'].astype('uint8'))[:,:,:3]
-        else:
-            im = np.squeeze(data['image'].astype('uint8'))[:,:,:3]
+            data = dict()
+            for k in dat.keys():
+                try:
+                    data[k] = dat[k]
+                except Exception as e:
+                    print(e)
+                    pass
+            del dat
 
-        io.imsave(anno_file.replace('.npz','.jpg'),
-                  im, quality=100, chroma_subsampling=False)
-
-        #Make the label as jpg
-        l = np.argmax(data['label'],-1).astype('uint8')+1
-        nx,ny = l.shape
-        lstack = np.zeros((nx,ny,NCLASSES))
-        lstack[:,:,:NCLASSES] = (np.arange(NCLASSES) == l[...,None]-1).astype(int) #one-hot encode
-        l = np.argmax(lstack,-1).astype('uint8')
-
-        io.imsave(anno_file.replace('.npz','_label.jpg'),
-                  l, quality=100, chroma_subsampling=False)
-
-
-        if 'classes' not in locals():
 
             try:
                 classes = data['classes']
             except:
-                Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-                classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
+                print('No classes found in settings! Using defaults of "water" and "land"')
+                classes = ['water', 'land']
 
-                with open(classfile) as f:
-                    classes = f.readlines()
+            NCLASSES  = len(classes)
+            class_string = '_'.join([c.strip() for c in classes])
 
-        class_label_names = [c.strip() for c in classes]
+            #Make the original images as jpg
+            if 'orig_image' in data.keys():
+                im = np.squeeze(data['orig_image'].astype('uint8'))[:,:,:3]
+            else:
+                im = np.squeeze(data['image'].astype('uint8'))[:,:,:3]
 
-        NUM_LABEL_CLASSES = len(class_label_names)
+            io.imsave(anno_file.replace('.npz','.jpg'),
+                      im, quality=100, chroma_subsampling=False)
 
-        if NUM_LABEL_CLASSES<=10:
-            class_label_colormap = px.colors.qualitative.G10
-        else:
-            class_label_colormap = px.colors.qualitative.Light24
+            #Make the label as jpg
+            l = np.argmax(data['label'],-1).astype('uint8')+1
+            nx,ny = l.shape
+            lstack = np.zeros((nx,ny,NCLASSES))
+            lstack[:,:,:NCLASSES] = (np.arange(NCLASSES) == l[...,None]-1).astype(int) #one-hot encode
+            l = np.argmax(lstack,-1).astype('uint8')
 
-        # we can't have fewer colors than classes
-        assert NUM_LABEL_CLASSES <= len(class_label_colormap)
-
-        colormap = [
-            tuple([fromhex(h[s : s + 2]) for s in range(0, len(h), 2)])
-            for h in [c.replace("#", "") for c in class_label_colormap]
-        ]
-
-        cmap = matplotlib.colors.ListedColormap(class_label_colormap[:NUM_LABEL_CLASSES+1])
-        # cmap2 = matplotlib.colors.ListedColormap(['#000000']+class_label_colormap[:NUM_LABEL_CLASSES])
-
-        #Make an overlay
-        plt.imshow(im)
-        plt.imshow(l, cmap=cmap, alpha=0.5, vmin=0, vmax=NCLASSES)
-        plt.axis('off')
-        plt.savefig(anno_file.replace('.npz','_overlay.png'), dpi=200, bbox_inches='tight')
+            io.imsave(anno_file.replace('.npz','_label.jpg'),
+                      l, quality=100, chroma_subsampling=False)
 
 
-        #Make an doodles overlay
-        # plt = matplotlib.pyplot
-        doodles = data['doodles'].astype('float')
-        doodles[doodles<1] = np.nan
-        doodles -= 1
-        plt.imshow(im)
-        plt.imshow(doodles, cmap=cmap, alpha=0.5, vmin=0, vmax=NCLASSES)
-        plt.axis('off')
-        plt.savefig(anno_file.replace('.npz','_doodles.png'), dpi=200, bbox_inches='tight')
+            if 'classes' not in locals():
 
-        del im
+                try:
+                    classes = data['classes']
+                except:
+                    Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+                    classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
 
-        plt.close('all')
+                    with open(classfile) as f:
+                        classes = f.readlines()
+
+            class_label_names = [c.strip() for c in classes]
+
+            NUM_LABEL_CLASSES = len(class_label_names)
+
+            if NUM_LABEL_CLASSES<=10:
+                class_label_colormap = px.colors.qualitative.G10
+            else:
+                class_label_colormap = px.colors.qualitative.Light24
+
+            # we can't have fewer colors than classes
+            assert NUM_LABEL_CLASSES <= len(class_label_colormap)
+
+            colormap = [
+                tuple([fromhex(h[s : s + 2]) for s in range(0, len(h), 2)])
+                for h in [c.replace("#", "") for c in class_label_colormap]
+            ]
+
+            cmap = matplotlib.colors.ListedColormap(class_label_colormap[:NUM_LABEL_CLASSES+1])
+            # cmap2 = matplotlib.colors.ListedColormap(['#000000']+class_label_colormap[:NUM_LABEL_CLASSES])
+
+            #Make an overlay
+            plt.imshow(im)
+            plt.imshow(l, cmap=cmap, alpha=0.5, vmin=0, vmax=NCLASSES)
+            plt.axis('off')
+            plt.savefig(anno_file.replace('.npz','_overlay.png'), dpi=200, bbox_inches='tight')
+
+
+            #Make an doodles overlay
+            # plt = matplotlib.pyplot
+            doodles = data['doodles'].astype('float')
+            doodles[doodles<1] = np.nan
+            doodles -= 1
+            plt.imshow(im)
+            plt.imshow(doodles, cmap=cmap, alpha=0.5, vmin=0, vmax=NCLASSES)
+            plt.axis('off')
+            plt.savefig(anno_file.replace('.npz','_doodles.png'), dpi=200, bbox_inches='tight')
+
+            del im
+
+            plt.close('all')
 
     #mk directories for labels and images, to make transition to zoo easy
     imdir = os.path.join(direc, 'images')
@@ -190,11 +200,11 @@ def make_jpegs():
     doodlefiles = glob(direc+'/*_doodles.png')
     outdirec = os.path.normpath(direc + os.sep+'doodles')
     move_files(doodlefiles, outdirec)
-    
+
     imfiles = glob(direc+'/*.jpg')
     outdirec = os.path.normpath(direc + os.sep+'images')
     move_files(imfiles, outdirec)
-    
+
     ovfiles = glob(direc+'/*.png')
     outdirec = os.path.normpath(direc + os.sep+'overlays')
     move_files(ovfiles, outdirec)
