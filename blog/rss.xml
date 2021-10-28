@@ -15,6 +15,27 @@
             <description><![CDATA[Just a quick note about changes in 08/28/21. v 1.2.6]]></description>
         </item>
         <item>
+            <title><![CDATA[How to Change Doodle's Shape]]></title>
+            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/07/09/Doodler-Shape</link>
+            <guid>How to Change Doodle's Shape</guid>
+            <pubDate>Fri, 09 Jul 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[How to change doodles shapes in doodler]]></description>
+        </item>
+        <item>
+            <title><![CDATA[How to Use the Erase Tool]]></title>
+            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/07/08/Doodler-Erase</link>
+            <guid>How to Use the Erase Tool</guid>
+            <pubDate>Thu, 08 Jul 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Tutorial: How to use the erase tool in doodler.]]></description>
+        </item>
+        <item>
+            <title><![CDATA[How to Use Zoom & Pan Tools]]></title>
+            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/07/08/Doodler-Zoom</link>
+            <guid>How to Use Zoom &amp; Pan Tools</guid>
+            <pubDate>Thu, 08 Jul 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[How to use the zoom and pan tools in doodler]]></description>
+        </item>
+        <item>
             <title><![CDATA[What's new in version 1.2.1? (May 10, 2021)]]></title>
             <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/05/16/blog-post</link>
             <guid>What's new in version 1.2.1? (May 10, 2021)</guid>
