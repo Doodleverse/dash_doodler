@@ -28,6 +28,9 @@
 ## Website
 Check out the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/)
 
+## Paper
+[![Earth ArXiv Preprint
+DOI](https://img.shields.io/badge/%F0%9F%8C%8D%F0%9F%8C%8F%F0%9F%8C%8E%20EarthArXiv-doi.org%2F10.31223%2FX59K83-%23FF7F2A)](https://doi.org/10.31223/X59K83)
 
 ## Changes in 08/28/21. v 1.2.6
 * npz files now use compression
