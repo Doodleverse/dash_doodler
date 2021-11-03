@@ -27,6 +27,7 @@ from glob import glob
 import dash_html_components as html
 import io, os, psutil, logging, base64, PIL.Image
 from plot_utils import dummy_fig, add_layout_images_to_fig
+import zipfile
 
 ##========================================================
 def get_asset_files():
@@ -91,6 +92,17 @@ def uploaded_files(filelist,UPLOAD_DIRECTORY,LABELED_DIRECTORY):
                 labeled_files.append(filename)
             if 'jpeg' in filename:
                 labeled_files.append(filename)
+            if 'zip' in filename:
+                zipF = zipfile.ZipFile(path)
+                zfilelist = zipF.namelist()
+                for zfiles in zfilelist:
+                    if 'jpg' in zfiles:
+                        labeled_files.append(zfiles)
+                    if 'JPG' in zfiles:
+                        labeled_files.append(zfiles)
+                    if 'jpeg' in zfiles:
+                        labeled_files.append(zfiles)
+                
 
     with open(filelist, 'w') as filehandle:
         for listitem in labeled_files:
