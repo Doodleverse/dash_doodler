@@ -131,8 +131,8 @@ def make_jpegs():
             im = np.squeeze(data['orig_image'].astype('uint8'))[:,:,:3]
         else:
             if data['image'].shape[-1]==4:
-                im=np.squeeze(data['image'].astype('uint8'))[:,:,1:]
-                band4=np.squeeze(data['image'].astype('uint8'))[:,:,0]
+                im=np.squeeze(data['image'].astype('uint8'))[:,:,:-1]
+                band4=np.squeeze(data['image'].astype('uint8'))[:,:,-1]
             else:
                 im = np.squeeze(data['image'].astype('uint8'))[:,:,:3]
 
