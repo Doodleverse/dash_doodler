@@ -231,7 +231,7 @@ def make_jpegs():
     outdirec = os.path.normpath(direc + os.sep+'images')
     move_files(imfiles, outdirec)
 
-    ovfiles = glob(direc+'/*.png')
+    ovfiles = glob(direc+'/*_overlay.png')
     outdirec = os.path.normpath(direc + os.sep+'overlays')
     move_files(ovfiles, outdirec)
 
