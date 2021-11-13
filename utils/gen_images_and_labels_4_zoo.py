@@ -41,6 +41,8 @@ from tkinter.filedialog import askopenfilename, askdirectory
 import plotly.express as px
 import matplotlib
 
+from numpy.lib.npyio import load
+
 ###===========================================================
 try:
     from my_defaults import *
@@ -63,7 +65,7 @@ def make_dir(dirname):
         print('{} directory already exists'.format(dirname))
 
 def move_files(files, outdirec):
-    for a_file in files:        
+    for a_file in files:
         shutil.move(a_file, outdirec+os.sep+a_file.split(os.sep)[-1])
 
 
@@ -81,22 +83,45 @@ def make_jpegs():
 
         # print("Working on %s" % (file))
         print("Working on %s" % (anno_file))
-        dat = np.load(anno_file)
-        data = dict()
-        for k in dat.keys():
-            try:
-                data[k] = dat[k]
-            except Exception as e:
-                print(e)
-                pass
-        del dat
 
+        # try:
+        #     dat = np.load(anno_file)
+        # except:
+        #     dat = np.load(anno_file, allow_pickle=True)
+        #
+        # finally:
+        #     print("Could not load"+anno_file)
+        #     pass
+
+        data = dict()
+        with load(anno_file, allow_pickle=True) as dat:
+            #create a dictionary of variables
+            #automatically converted the keys in the npz file, dat to keys in the dictionary, data, then assigns the arrays to data
+            for k in dat.keys():
+                data[k] = dat[k]
+            del dat
+
+        # if 'dat' in locals():
+        #
+        #     data = dict()
+        #     for k in dat.keys():
+        #         try:
+        #             data[k] = dat[k]
+        #         except Exception as e:
+        #             print(e)
+        #             pass
+        #     del dat
 
         try:
             classes = data['classes']
         except:
-            print('No classes found in settings! Using defaults of "water" and "land"')
-            classes = ['water', 'land']
+            # print('No classes found in settings! Using defaults of "water" and "land"')
+            # classes = ['water', 'land']
+            Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+            classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
+
+            with open(classfile) as f:
+                classes = f.readlines()
 
         NCLASSES  = len(classes)
         class_string = '_'.join([c.strip() for c in classes])
@@ -105,10 +130,20 @@ def make_jpegs():
         if 'orig_image' in data.keys():
             im = np.squeeze(data['orig_image'].astype('uint8'))[:,:,:3]
         else:
-            im = np.squeeze(data['image'].astype('uint8'))[:,:,:3]
+            if data['image'].shape[-1]==4:
+                im=np.squeeze(data['image'].astype('uint8'))[:,:,:-1]
+                band4=np.squeeze(data['image'].astype('uint8'))[:,:,-1]
+            else:
+                im = np.squeeze(data['image'].astype('uint8'))[:,:,:3]
 
         io.imsave(anno_file.replace('.npz','.jpg'),
                   im, quality=100, chroma_subsampling=False)
+
+        if 'band4' in locals():
+                io.imsave(anno_file.replace('.npz','_band4.jpg'),
+                          band4, quality=100, chroma_subsampling=False)
+                del band4
+
 
         #Make the label as jpg
         l = np.argmax(data['label'],-1).astype('uint8')+1
@@ -118,19 +153,18 @@ def make_jpegs():
         l = np.argmax(lstack,-1).astype('uint8')
 
         io.imsave(anno_file.replace('.npz','_label.jpg'),
-                  l, quality=100, chroma_subsampling=False)
+                  l, quality=100, chroma_subsampling=False, check_contrast=False)
 
-
-        if 'classes' not in locals():
-
-            try:
-                classes = data['classes']
-            except:
-                Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-                classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
-
-                with open(classfile) as f:
-                    classes = f.readlines()
+        # if 'classes' not in locals():
+        #
+        #     try:
+        #         classes = data['classes']
+        #     except:
+        #         Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+        #         classfile = askopenfilename(title='Select file containing class (label) names', filetypes=[("Pick classes.txt file","*.txt")])
+        #
+        #         with open(classfile) as f:
+        #             classes = f.readlines()
 
         class_label_names = [c.strip() for c in classes]
 
@@ -161,14 +195,16 @@ def make_jpegs():
 
         #Make an doodles overlay
         # plt = matplotlib.pyplot
-        doodles = data['doodles'].astype('float')
-        doodles[doodles<1] = np.nan
-        doodles -= 1
-        plt.imshow(im)
-        plt.imshow(doodles, cmap=cmap, alpha=0.5, vmin=0, vmax=NCLASSES)
-        plt.axis('off')
-        plt.savefig(anno_file.replace('.npz','_doodles.png'), dpi=200, bbox_inches='tight')
-
+        try:
+            doodles = data['doodles'].astype('float')
+            doodles[doodles<1] = np.nan
+            doodles -= 1
+            plt.imshow(im)
+            plt.imshow(doodles, cmap=cmap, alpha=0.5, vmin=0, vmax=NCLASSES)
+            plt.axis('off')
+            plt.savefig(anno_file.replace('.npz','_doodles.png'), dpi=200, bbox_inches='tight')
+        except:
+            print('no doodles in {}'.format(anno_file))
         del im
 
         plt.close('all')
@@ -190,12 +226,12 @@ def make_jpegs():
     doodlefiles = glob(direc+'/*_doodles.png')
     outdirec = os.path.normpath(direc + os.sep+'doodles')
     move_files(doodlefiles, outdirec)
-    
+
     imfiles = glob(direc+'/*.jpg')
     outdirec = os.path.normpath(direc + os.sep+'images')
     move_files(imfiles, outdirec)
-    
-    ovfiles = glob(direc+'/*.png')
+
+    ovfiles = glob(direc+'/*_overlay.png')
     outdirec = os.path.normpath(direc + os.sep+'overlays')
     move_files(ovfiles, outdirec)
 
