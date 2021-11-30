@@ -33,6 +33,7 @@ import zipfile
 def get_asset_files():
     files = sorted(glob('assets/*.jpg')) + sorted(glob('assets/*.JPG')) + sorted(glob('assets/*.jpeg'))
 
+    # Any image with 'dash' in the name is used for styling and is not data to be processed
     files = [f for f in files if 'dash' not in f]
     return files
 
