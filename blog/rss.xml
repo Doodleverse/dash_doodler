@@ -4,9 +4,16 @@
         <title>Doodler Blog</title>
         <link>https://dbuscombe-usgs.github.io/blog</link>
         <description>Doodler Blog</description>
-        <lastBuildDate>Sat, 28 Aug 2021 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 30 Nov 2021 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Behind the Scenes with Doodler]]></title>
+            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/11/30/Behind-the-Scenes-with-Doodler</link>
+            <guid>Behind the Scenes with Doodler</guid>
+            <pubDate>Tue, 30 Nov 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Get a behind the scenes look into the team working with Doodler, the workflow, Doodler's evolution and much more!]]></description>
+        </item>
         <item>
             <title><![CDATA[Changes in v 1.2.6]]></title>
             <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/08/28/blog-post</link>
@@ -22,18 +29,18 @@
             <description><![CDATA[How to change doodles shapes in doodler]]></description>
         </item>
         <item>
-            <title><![CDATA[How to Use the Erase Tool]]></title>
-            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/07/08/Doodler-Erase</link>
-            <guid>How to Use the Erase Tool</guid>
-            <pubDate>Thu, 08 Jul 2021 00:00:00 GMT</pubDate>
-            <description><![CDATA[Tutorial: How to use the erase tool in doodler.]]></description>
-        </item>
-        <item>
             <title><![CDATA[How to Use Zoom & Pan Tools]]></title>
             <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/07/08/Doodler-Zoom</link>
             <guid>How to Use Zoom &amp; Pan Tools</guid>
             <pubDate>Thu, 08 Jul 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[How to use the zoom and pan tools in doodler]]></description>
+        </item>
+        <item>
+            <title><![CDATA[How to Use the Erase Tool]]></title>
+            <link>https://dbuscombe-usgs.github.io/dash_doodler/blog/2021/07/08/Doodler-Erase</link>
+            <guid>How to Use the Erase Tool</guid>
+            <pubDate>Thu, 08 Jul 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Tutorial: How to use the erase tool in doodler.]]></description>
         </item>
         <item>
             <title><![CDATA[What's new in version 1.2.1? (May 10, 2021)]]></title>

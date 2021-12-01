@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[49],{121:function(a){a.exports=JSON.parse('{"allTagsPath":"/dash_doodler/blog/tags","slug":"erase","name":"erase","count":1,"permalink":"/dash_doodler/blog/tags/erase"}')}}]);
