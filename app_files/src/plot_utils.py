@@ -54,6 +54,9 @@ def add_layout_images_to_fig(fig,
     images,
     update_ranges=True):
     """ images is a sequence of PIL Image objects """
+    """Updates the figure to display the image provided. It places the image on the bottom layer
+    to allow the doodles to show on top. The aspect ratio of the image is not maintained and all grid and tick lines
+    are removed to only display the image."""
 
     if len(images) <= 0:
         return fig
@@ -80,6 +83,8 @@ def add_layout_images_to_fig(fig,
             width, height = [
                 max([pilim(im).size[i] for im in images]) for i in range(2)
             ]
+            # Gets the max height and width for all of the images so the canvas can display
+            #  both the highest and lowest images
 
             fig.update_xaxes(
                 showgrid=False, range=(0, width), showticklabels=False, zeroline=False

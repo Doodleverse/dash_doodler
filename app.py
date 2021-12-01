@@ -560,6 +560,11 @@ def update_output(
     files = ''
     options = []
 
+    # Remove any "_" from my_id_value and if the my_id_value is empty replace with TEMPID
+    my_id_value = my_id_value.replace("_","")
+    if(len(my_id_value) == 0):
+        my_id_value='TEMPID'
+
     if callback_context=='interval-component.n_intervals':
         #this file must exist - it contains a list of images labeled in this session
         filelist = 'files_done.txt'
@@ -808,7 +813,6 @@ def update_output(
 
         logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('%s moved to labeled folder' % (select_image_value.replace('assets', 'labeled')))
-
 
         images_to_draw = []
         if segimgpng is not None:

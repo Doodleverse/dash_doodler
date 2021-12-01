@@ -324,7 +324,7 @@ def compute_segmentations(
     calls segmentation() from image_segmentation
     """
 
-    # load original image
+    # load original image and convert to unit8
     img = img_to_ubyte_array(img_path)
 
     # convert shapes to mask
