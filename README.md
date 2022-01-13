@@ -35,16 +35,6 @@ DOI](https://img.shields.io/badge/%F0%9F%8C%8D%F0%9F%8C%8F%F0%9F%8C%8E%20EarthAr
 ## Code that made the paper
 [![DOI](https://zenodo.org/badge/304798940.svg)](https://zenodo.org/badge/latestdoi/304798940)
 
-
-## Changes in 08/28/21. v 1.2.6
-* npz files now use compression
-* doodler by default now uses threading (disable by editing the environment/settings.py and setting THREADING to False)
-* new variable 'orig_image' written to npz, as well as 'image'. they are identical except for occasions where converting imagery to floats creates a 4th band, to accommodate a nodata band in the input. so 'orig image ' and 'image' would have different uses for segmentation and are therefore both preserved. orig_image is now the one written to npz files for zoo
-* new function  `gen_images_and_labels_4_zoo.py`, which creates greyscale jpegs and 3-band color images (orig images) and writes them to the results folder
-* updated the other utility functions to accommodate the new variable `orig_images`, which now takes priority over the variable `images`
-* website and README updated
-
-
 ## Overview
 > Daniel Buscombe, Marda Science / USGS Pacific Coastal and Marine Science Center
 
