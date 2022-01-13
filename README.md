@@ -32,6 +32,10 @@ Check out the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/)
 [![Earth ArXiv Preprint
 DOI](https://img.shields.io/badge/%F0%9F%8C%8D%F0%9F%8C%8F%F0%9F%8C%8E%20EarthArXiv-doi.org%2F10.31223%2FX59K83-%23FF7F2A)](https://doi.org/10.31223/X59K83)
 
+## Code that made the paper
+[![DOI](https://zenodo.org/badge/304798940.svg)](https://zenodo.org/badge/latestdoi/304798940)
+
+
 ## Changes in 08/28/21. v 1.2.6
 * npz files now use compression
 * doodler by default now uses threading (disable by editing the environment/settings.py and setting THREADING to False)
