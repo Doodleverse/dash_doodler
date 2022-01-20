@@ -64,7 +64,7 @@ If (and only if) the above doesn't work, try this:
 conda create --name dashdoodler python=3.6
 conda activate dashdoodler
 conda install -c conda-forge pydensecrf cairo
-pip install -r install/requirements.txt
+pip install -r environment/requirements.txt
 ```
 :::
 
