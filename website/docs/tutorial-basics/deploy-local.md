@@ -51,7 +51,7 @@ conda update anaconda
 Next create a new conda evironment, called `dashdoodler`
 
 ```shell
-conda env create --file install/dashdoodler.yml
+conda env create --file environment/dashdoodler.yml
 ```
 
 We are using packages from [conda-forge](https://anaconda.org/conda-forge/conda), a channel of software versions contributed by the community
@@ -64,7 +64,7 @@ If (and only if) the above doesn't work, try this:
 conda create --name dashdoodler python=3.6
 conda activate dashdoodler
 conda install -c conda-forge pydensecrf cairo
-pip install -r install/requirements.txt
+pip install -r environment/requirements.txt
 ```
 :::
 
