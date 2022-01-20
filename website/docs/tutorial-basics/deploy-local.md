@@ -51,7 +51,7 @@ conda update anaconda
 Next create a new conda evironment, called `dashdoodler`
 
 ```shell
-conda env create --file install/dashdoodler.yml
+conda env create --file environment/dashdoodler.yml
 ```
 
 We are using packages from [conda-forge](https://anaconda.org/conda-forge/conda), a channel of software versions contributed by the community
