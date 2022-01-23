@@ -11,7 +11,7 @@ https://github.com/dbuscombe-usgs/dash_doodler/commits/main)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)
 ![Keras](https://img.shields.io/badge/Keras-%23D00000.svg?style=for-the-badge&logo=Keras&logoColor=white)
 
-![Doodler Logo](./logo.png)
+![Doodler Logo](./doodler-logo.png)
 
 ## 🌟 Highlights
 This is a "Human-In-The-Loop" machine learning tool for partially supervised image segmentation. The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder
