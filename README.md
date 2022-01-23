@@ -35,6 +35,9 @@ DOI](https://img.shields.io/badge/%F0%9F%8C%8D%F0%9F%8C%8F%F0%9F%8C%8E%20EarthAr
 ## Code that made the paper
 [![DOI](https://zenodo.org/badge/304798940.svg)](https://zenodo.org/badge/latestdoi/304798940)
 
+## Data that made the paper
+[![License: CC0-1.0](https://img.shields.io/badge/License-CC0%201.0-lightgrey.svg)](https://datadryad.org/stash/dataset/doi:10.5061/dryad.2fqz612ps)
+
 ## Overview
 > Daniel Buscombe, Marda Science / USGS Pacific Coastal and Marine Science Center
 
@@ -59,6 +62,7 @@ Here's a movie of Doodler in action:
 * [Installation](#install)
 * [Use](#use)
 * [Outputs](#outputs)
+* [Coast Train](coasttrain)
 * [Utilities](#utilities)
 * [Acknowledgments](#ack)
 * [Contribute](#contribute)
@@ -210,13 +214,20 @@ sudo docker rm www
 Please don't ask me about Docker - that's all I know. Please contribute Docker workflows and suggestions!
 
 
+## <a name="coasttrain"></a>Unpacking Coast Train Data
+
+To use the labels in their native class sets (that vary per image), use the `gen_images_and_labels_4_zoo.py` script as described below. To use the labels in remapped classes (standardized across image sets), use the `gen_remapped_images_and_labels.py` script described below.
+
+
 ## <a name="utilities"></a>Utility scripts
 
 Doodler is compatible with my other segmentation program, [Zoo](https://github.com/dbuscombe-usgs/segmentation_zoo) in a couple of different ways:
 
-1. You could run the function `gen_npz_4_zoo.py` to create npz files that contain only image and label pairs. This is the same output as you would get from running the Zoo program `make_datasets.py'
+1. You could run the function `gen_npz_4_zoo.py` to create npz files that contain only image and label pairs. This is the same output as you would get from running the Zoo program `make_nd_datasets.py'
 
-2. You could alternatively run the function `gen_images_and_labels_4_zoo.py` that would generate jpeg greyscale image files and image jpegs for use with the Zoo program `make_datasets.py'.
+2. You could alternatively run the function `gen_images_and_labels_4_zoo.py` that would generate jpeg greyscale image files and label image jpegs for use with the Zoo program `make_nd_datasets.py'.
+
+3. Finally, you could run the function `gen_remapped_images_and_labels.py` that would generate jpeg greyscale image files and remapped label image jpegs for use with the Zoo program `make_nd_datasets.py'. Labels are remapped based on a dictionary of class aliases and a list of classes present, using a special config file. To remap Coast Train data, use the config files provided [here](https://github.com/dbuscombe-usgs/CoastTrainMetaPlots/tree/main/remap_config_files) 
 
 The first scenario might be most common because it requires one less step, however the second scenario might be useful for using the labels with another software package, or for further post-processing of the labels
 

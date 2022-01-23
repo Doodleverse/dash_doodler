@@ -53,18 +53,18 @@ if __name__ == "__main__":
             print('Downloaded and extracted %s'%(filename))
 
     #if labeled images exist in labaled folder, zip them up with a timestamp, and remove the individual files
-    try:
-        filename = 'labeled'+os.sep+'labeled-'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'.zip'
-        with zipfile.ZipFile(filename, "w") as z_fp:
-            for k in glob("./labeled/*.jpeg")+glob("./labeled/*.JPG")+glob("./labeled/*.jpg"):
-                z_fp.write(k)
-        z_fp.close()
-
-        for k in glob("./labeled/*.jpeg")+glob("./labeled/*.JPG")+glob("./labeled/*.jpg"):
-            os.remove(k)
-
-    except:
-        pass
+    # try:
+    #     filename = 'labeled'+os.sep+'labeled-'+datetime.now().strftime("%Y-%m-%d-%H-%M")+'.zip'
+    #     with zipfile.ZipFile(filename, "w") as z_fp:
+    #         for k in glob("./labeled/*.jpeg")+glob("./labeled/*.JPG")+glob("./labeled/*.jpg"):
+    #             z_fp.write(k)
+    #     z_fp.close()
+    #
+    #     for k in glob("./labeled/*.jpeg")+glob("./labeled/*.JPG")+glob("./labeled/*.jpg"):
+    #         os.remove(k)
+    #
+    # except:
+    #     pass
 
     #========================================================
     ## ``````````````````````````` run the app in the browser at $APP_HOST, port $APP_PORT
