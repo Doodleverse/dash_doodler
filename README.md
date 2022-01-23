@@ -7,7 +7,6 @@ https://github.com/dbuscombe-usgs/dash_doodler/commits/main)
 ![GitHub](https://img.shields.io/github/license/dbuscombe-usgs/dash_doodler)
 [![Wiki](https://img.shields.io/badge/discussion-active-forestgreen)](https://github.com/dbuscombe-usgs/dash_doodler/discussions)
 
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![Doodler Logo](./doodler-logo.png)
 
 ## 🌟 Highlights
