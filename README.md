@@ -14,9 +14,7 @@ https://github.com/dbuscombe-usgs/dash_doodler/commits/main)
 ![Doodler Logo](./logo.png)
 
 ## 🌟 Highlights
-This is a "Human-In-The-Loop" machine learning tool for partially supervised image segmentation and is based on code previously contained in the "doodle_labeller" [repository](https://github.com/dbuscombe-usgs/doodle_labeller) which implements a similar algorithm in OpenCV. The Conditional Random Field (CRF) model used by this tool is described by [Buscombe and Ritchie (2018)](https://www.mdpi.com/2076-3263/8/7/244)
-
-The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder
+This is a "Human-In-The-Loop" machine learning tool for partially supervised image segmentation. The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder
 
 Here's a movie of Doodler in action:
 
@@ -56,8 +54,7 @@ Contributions:
 * [@ebgoldstein](https://github.com/ebgoldstein)
 
 ### <a name="ack"></a>Acknowledgements
-
-Inspired by [this plotly example](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) and the previous openCV based implementation [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller), that actually has origins in a USGS CDI-sponsored class I taught in summer of 2018, called [dl-tools](https://github.com/dbuscombe-usgs/dl_tools). So, it's been a 3+ year effort!
+Doodler is based on code previously contained in the "doodle_labeller" [repository](https://github.com/dbuscombe-usgs/doodle_labeller) which implements a similar algorithm in OpenCV. The Conditional Random Field (CRF) model used by this tool is described by [Buscombe and Ritchie (2018)](https://www.mdpi.com/2076-3263/8/7/244). Inspired by [this plotly example](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) and the previous openCV based implementation [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller), that actually has origins in a USGS CDI-sponsored class I taught in summer of 2018, called [dl-tools](https://github.com/dbuscombe-usgs/dl_tools). So, it's been a 3+ year effort!
 
 
 ## ⬇️ Installation
@@ -141,63 +138,6 @@ More demonstration videos (older version of the program):
 ![Coast Train example 2](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short-coast2.gif)
 
 
-<!--
-```
-sudo docker volume create doodler_data
-sudo docker run -p 8050:8050 mardascience/dash_doodler:d1
-sudo docker volume inspect doodler_data
-
-sudo docker volume create --driver local -o o=bind -o type=none -o device="/home/marda/test" doodler_data
-
-sudo docker run -d -p 8050:8050 --name doodler_container --mount source=doodler_data,target=/app  mardascience/dash_doodler:d1
-sudo docker inspect doodler_container
-```-->
-
-### Docker workflows
-
-To build your own docker image based on miniconda `continuumio/miniconda3`, called `doodler_docker_image`:
-
-
-```
-docker build -t doodler_docker_image .
-```
-
-then when it has finished building (it takes a while), check its size
-
-```
-sudo docker image ls doodler_docker_image
-```
-
-It is large - 4.8 GB. Run it in a container called `www`:
-
-```
-sudo docker run -p 8050:8050 -d -it --name www doodler_docker_image
-```
-
-The terminal will show no output, but you can see the process running a few different ways
-
-Lists running containers:
-
-```
-docker ps
-```
-
-the container name will be at the end of the line of output of docker ps (images don't have logs; they're like classes)
-```
-docker logs [container_name] -
-```
-
-
-To stop and remove:
-
-```
-sudo docker stop www
-sudo docker rm www
-```
-
-Please don't ask me about Docker - that's all I know. Please contribute Docker workflows and suggestions!
-
-
 ### <a name="coasttrain"></a>Unpacking Coast Train Data
 
 To use the labels in their native class sets (that vary per image), use the `gen_images_and_labels_4_zoo.py` script as described below. To use the labels in remapped classes (standardized across image sets), use the `gen_remapped_images_and_labels.py` script described below.
@@ -220,7 +160,6 @@ There are two additional scripts in the `utils` folder:
 1. `viz_npz.py` creates transparent overlay plots of images and labels, and has three modes with the following syntax `viz_npz.py [-t npz type {0}/1/2]` where optional `-t` controls what type of npz file: native from doodler (option 0, default), a `labelgen` file from `plot_label_generation.py`, a npz file used as input for Zoo
 
 2. `plot_label_generation.py` that generates a detailed sequence of plots for every input npz file from doodler, including plots of the doodles themselves, overlays, and internal model outputs.
-
 
 
 ## 💭 Feedback and Contributing
@@ -308,18 +247,76 @@ Submit a pull request through the GitHub website.
 
 * `doodler.py` basically just calls and serves `app`, from `app.py`
 
-## Application
+### Application
 
 * Loads classes and files and creates results folders and log file
 * Creates the application layout and links all buttons to callback functions
 
-## Callbacks
+### Callbacks
 * utility functions are in `app_files\src\app_funcs.py`
 * functions for drawing the imagery on the screen and making label overlays are in `app_files\src\plot_utils.py`
 * functions for converting SVG annotations to raster label annotations and segmentations are in `app_files\src\annotations_to_segmentations.py`
 * image segmentation/ML functions are in `app_files\src\image_segmentation.py`
 
-## <a name="progress"></a>Progress report
+
+<!--
+```
+sudo docker volume create doodler_data
+sudo docker run -p 8050:8050 mardascience/dash_doodler:d1
+sudo docker volume inspect doodler_data
+
+sudo docker volume create --driver local -o o=bind -o type=none -o device="/home/marda/test" doodler_data
+
+sudo docker run -d -p 8050:8050 --name doodler_container --mount source=doodler_data,target=/app  mardascience/dash_doodler:d1
+sudo docker inspect doodler_container
+```-->
+
+### Docker workflows
+
+To build your own docker image based on miniconda `continuumio/miniconda3`, called `doodler_docker_image`:
+
+
+```
+docker build -t doodler_docker_image .
+```
+
+then when it has finished building (it takes a while), check its size
+
+```
+sudo docker image ls doodler_docker_image
+```
+
+It is large - 4.8 GB. Run it in a container called `www`:
+
+```
+sudo docker run -p 8050:8050 -d -it --name www doodler_docker_image
+```
+
+The terminal will show no output, but you can see the process running a few different ways
+
+Lists running containers:
+
+```
+docker ps
+```
+
+the container name will be at the end of the line of output of docker ps (images don't have logs; they're like classes)
+```
+docker logs [container_name] -
+```
+
+
+To stop and remove:
+
+```
+sudo docker stop www
+sudo docker rm www
+```
+
+Please don't ask me about Docker - that's all I know. Please contribute Docker workflows and suggestions!
+
+
+### <a name="progress"></a>Progress report
 
 10/20/20:
 * display numbers for every parameter
