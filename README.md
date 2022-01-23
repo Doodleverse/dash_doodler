@@ -24,15 +24,6 @@ Here's a movie of Doodler in action:
 
 ## ℹ️ Documentation
 
-### Overview
-There are many great tools for exhaustive (i.e. whole image) image labeling for segmentation tasks, using polygons. Examples include [makesense.ai](www.makesense.ai) and [cvat](https://cvat.org). However, for high-resolution imagery with large spatial footprints and complex scenes, such as aerial and satellite imagery, exhaustive labeling using polygonal tools can be prohibitively time-consuming. This is especially true of scenes with many classes of interest, and covering relatively small, spatially discontinuous regions of the image.
-
-What is generally required in the above case is a semi-supervised tool for efficient image labeling, based on sparse examples provided by a human annotator. Those sparse annotations are used by a secondary automated process to estimate the class of every pixel in the image. The number of pixels annotated by the human annotator is typically a small fraction of the total pixels in the image.  
-
-`Doodler` is a tool for sparse, not exhaustive, labeling. The approach taken here is to freehand label only some of the scene, then use a model to complete the scene. Sparse annotations are provided to a Multilayer Perceptron model for initial predictions, refined by a Conditional Random Field (CRF) model, that develops a scene-specific model for each class and creates a dense (i.e. per pixel) label image based on the information you provide it. This approach can reduce the time required for detailed labeling of large and complex scenes by an order of magnitude or more. Your annotations are first used to train and apply a random forest on the entire image, then a CRF is used to refine labels further based on the underlying image.
-
-This is python software that is designed to be used from within a `conda` environment. After setting up that environment, create a `classes.txt` file that tells the program what classes will be labeled (and what buttons to create). The minimum number of classes is 2. The maximum number of classes allowed is 24. The images that you upload will go into the `assets/` folder. The labels images you create are written to the `results` folder.
-
 ### Website
 Check out the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/)
 
@@ -46,9 +37,14 @@ DOI](https://img.shields.io/badge/%F0%9F%8C%8D%F0%9F%8C%8F%F0%9F%8C%8E%20EarthAr
 ### Data that made the paper
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0%201.0-lightgrey.svg)](https://datadryad.org/stash/dataset/doi:10.5061/dryad.2fqz612ps)
 
-### <a name="ack"></a>Acknowledgements
+### Overview
+There are many great tools for exhaustive (i.e. whole image) image labeling for segmentation tasks, using polygons. Examples include [makesense.ai](www.makesense.ai) and [cvat](https://cvat.org). However, for high-resolution imagery with large spatial footprints and complex scenes, such as aerial and satellite imagery, exhaustive labeling using polygonal tools can be prohibitively time-consuming. This is especially true of scenes with many classes of interest, and covering relatively small, spatially discontinuous regions of the image.
 
-Inspired by [this plotly example](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) and the previous openCV based implementation [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller), that actually has origins in a USGS CDI-sponsored class I taught in summer of 2018, called [dl-tools](https://github.com/dbuscombe-usgs/dl_tools). So, it's been a 3+ year effort!
+What is generally required in the above case is a semi-supervised tool for efficient image labeling, based on sparse examples provided by a human annotator. Those sparse annotations are used by a secondary automated process to estimate the class of every pixel in the image. The number of pixels annotated by the human annotator is typically a small fraction of the total pixels in the image.  
+
+`Doodler` is a tool for sparse, not exhaustive, labeling. The approach taken here is to freehand label only some of the scene, then use a model to complete the scene. Sparse annotations are provided to a Multilayer Perceptron model for initial predictions, refined by a Conditional Random Field (CRF) model, that develops a scene-specific model for each class and creates a dense (i.e. per pixel) label image based on the information you provide it. This approach can reduce the time required for detailed labeling of large and complex scenes by an order of magnitude or more. Your annotations are first used to train and apply a random forest on the entire image, then a CRF is used to refine labels further based on the underlying image.
+
+This is python software that is designed to be used from within a `conda` environment. After setting up that environment, create a `classes.txt` file that tells the program what classes will be labeled (and what buttons to create). The minimum number of classes is 2. The maximum number of classes allowed is 24. The images that you upload will go into the `assets/` folder. The labels images you create are written to the `results` folder.
 
 ## ✍️ Authors
 
@@ -58,6 +54,51 @@ Package maintainers:
 Contributions:
 * [@2320sharon](https://github.com/2320sharon)
 * [@ebgoldstein](https://github.com/ebgoldstein)
+
+### <a name="ack"></a>Acknowledgements
+
+Inspired by [this plotly example](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) and the previous openCV based implementation [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller), that actually has origins in a USGS CDI-sponsored class I taught in summer of 2018, called [dl-tools](https://github.com/dbuscombe-usgs/dl_tools). So, it's been a 3+ year effort!
+
+
+## ⬇️ Installation
+
+> Check out the installation guide on the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/docs/tutorial-basics/deploy-local)
+
+
+We advise creating a new conda environment to run the program.
+
+1. Clone the repo:
+
+```
+git clone --depth 1 https://github.com/dbuscombe-usgs/dash_doodler.git
+```
+
+(`--depth 1` means "give me only the present code, not the whole history of git commits" - this saves disk space, and time)
+
+2. Create a conda environment called `dashdoodler`
+
+```
+conda env create --file install/dashdoodler-clean.yml
+conda activate dashdoodler
+```
+
+*If* the above doesn't work, try this:
+
+```bash
+conda env create --file environment/dashdoodler.yml
+conda activate dashdoodler
+```
+
+*If neither of the above* work, try this:
+
+```bash
+conda create --name dashdoodler python=3.6
+conda activate dashdoodler
+conda install -c conda-forge pydensecrf cairo
+pip install -r environment/requirements.txt
+```
+
+and good luck to you!
 
 ## 🚀 Usage
 
@@ -180,46 +221,6 @@ There are two additional scripts in the `utils` folder:
 
 2. `plot_label_generation.py` that generates a detailed sequence of plots for every input npz file from doodler, including plots of the doodles themselves, overlays, and internal model outputs.
 
-
-## ⬇️ Installation
-
-> Check out the installation guide on the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/docs/tutorial-basics/deploy-local)
-
-
-We advise creating a new conda environment to run the program.
-
-1. Clone the repo:
-
-```
-git clone --depth 1 https://github.com/dbuscombe-usgs/dash_doodler.git
-```
-
-(`--depth 1` means "give me only the present code, not the whole history of git commits" - this saves disk space, and time)
-
-2. Create a conda environment called `dashdoodler`
-
-```
-conda env create --file install/dashdoodler-clean.yml
-conda activate dashdoodler
-```
-
-*If* the above doesn't work, try this:
-
-```bash
-conda env create --file environment/dashdoodler.yml
-conda activate dashdoodler
-```
-
-*If neither of the above* work, try this:
-
-```bash
-conda create --name dashdoodler python=3.6
-conda activate dashdoodler
-conda install -c conda-forge pydensecrf cairo
-pip install -r environment/requirements.txt
-```
-
-and good luck to you!
 
 
 ## 💭 Feedback and Contributing
