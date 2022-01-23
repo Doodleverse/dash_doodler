@@ -1,48 +1,19 @@
-<!-- # Written by Dr Daniel Buscombe, Marda Science LLC
-# for the USGS Coastal Change Hazards Program
-#
-# MIT License
-#
-# Copyright (c) 2020-2021, Marda Science LLC
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE. -->
+# 📦 Dash-Doodler
 
-![](doodler-logo.png)
+[![Last Commit](https://img.shields.io/github/last-commit/dbuscombe-usgs/dash_doodler)](
+https://github.com/dbuscombe-usgs/dash_doodler/commits/main)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/dbuscombe-usgs/dash_doodler/graphs/commit-activity)
+[![Wiki](https://img.shields.io/badge/wiki-documentation-forestgreen)](https://github.com/dbuscombe-usgs/dash_doodler/wiki)
+![GitHub](https://img.shields.io/github/license/dbuscombe-usgs/dash_doodler)
+[![Wiki](https://img.shields.io/badge/discussion-active-forestgreen)](https://github.com/dbuscombe-usgs/dash_doodler/discussions)
 
-## Website
-Check out the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)
+![Keras](https://img.shields.io/badge/Keras-%23D00000.svg?style=for-the-badge&logo=Keras&logoColor=white)
 
-## Paper
-[![Earth ArXiv Preprint
-DOI](https://img.shields.io/badge/%F0%9F%8C%8D%F0%9F%8C%8F%F0%9F%8C%8E%20EarthArXiv-doi.org%2F10.31223%2FX59K83-%23FF7F2A)](https://doi.org/10.31223/X59K83)
+![Doodler Logo](./logo.png)
 
-## Code that made the paper
-[![DOI](https://zenodo.org/badge/304798940.svg)](https://zenodo.org/badge/latestdoi/304798940)
-
-## Data that made the paper
-[![License: CC0-1.0](https://img.shields.io/badge/License-CC0%201.0-lightgrey.svg)](https://datadryad.org/stash/dataset/doi:10.5061/dryad.2fqz612ps)
-
-## Overview
-> Daniel Buscombe, Marda Science / USGS Pacific Coastal and Marine Science Center
-
-> Developed for the USGS Coastal Marine Geology program, as part of the Florence Supplemental project
-
+## 🌟 Highlights
 This is a "Human-In-The-Loop" machine learning tool for partially supervised image segmentation and is based on code previously contained in the "doodle_labeller" [repository](https://github.com/dbuscombe-usgs/doodle_labeller) which implements a similar algorithm in OpenCV. The Conditional Random Field (CRF) model used by this tool is described by [Buscombe and Ritchie (2018)](https://www.mdpi.com/2076-3263/8/7/244)
 
 The video shows a basic usage of doodler. 1) Annotate the scene with a few examples of each class (colorful buttons).  2) Check 'compute and show segmentation' and wait for the result. The label image is written to the 'results' folder
@@ -51,28 +22,9 @@ Here's a movie of Doodler in action:
 
 ![](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/short_1024px_30fps.gif)
 
-<!-- ![Doodler](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/quick-satshoreline-x2c.gif)
+## ℹ️ Documentation
 
-![Doodler](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/quick-satshore2-x2c.gif) -->
-
-
-## Contents
-* [Rationale](#rationale)
-* [How does it work?](#intro)
-* [Installation](#install)
-* [Use](#use)
-* [Outputs](#outputs)
-* [Coast Train](coasttrain)
-* [Utilities](#utilities)
-* [Acknowledgments](#ack)
-* [Contribute](#contribute)
-* [Developer's Notes](#developers)
-* [Progress](#progress)
-* [Roadmap](#roadmap)
-
-<!-- Please go to the [project website](https://dbuscombe-usgs.github.io/dash_doodler/) for more details and documentation -->
-
-## <a name="rationale"></a>Rationale
+### Overview
 There are many great tools for exhaustive (i.e. whole image) image labeling for segmentation tasks, using polygons. Examples include [makesense.ai](www.makesense.ai) and [cvat](https://cvat.org). However, for high-resolution imagery with large spatial footprints and complex scenes, such as aerial and satellite imagery, exhaustive labeling using polygonal tools can be prohibitively time-consuming. This is especially true of scenes with many classes of interest, and covering relatively small, spatially discontinuous regions of the image.
 
 What is generally required in the above case is a semi-supervised tool for efficient image labeling, based on sparse examples provided by a human annotator. Those sparse annotations are used by a secondary automated process to estimate the class of every pixel in the image. The number of pixels annotated by the human annotator is typically a small fraction of the total pixels in the image.  
@@ -81,43 +33,34 @@ What is generally required in the above case is a semi-supervised tool for effic
 
 This is python software that is designed to be used from within a `conda` environment. After setting up that environment, create a `classes.txt` file that tells the program what classes will be labeled (and what buttons to create). The minimum number of classes is 2. The maximum number of classes allowed is 24. The images that you upload will go into the `assets/` folder. The labels images you create are written to the `results` folder.
 
-## <a name="install"></a>Installation
+### Website
+Check out the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/)
 
-> Check out the installation guide on the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/docs/tutorial-basics/deploy-local)
+### Paper
+[![Earth ArXiv Preprint
+DOI](https://img.shields.io/badge/%F0%9F%8C%8D%F0%9F%8C%8F%F0%9F%8C%8E%20EarthArXiv-doi.org%2F10.31223%2FX59K83-%23FF7F2A)](https://doi.org/10.31223/X59K83)
 
-Open a terminal
+### Code that made the paper
+[![DOI](https://zenodo.org/badge/304798940.svg)](https://zenodo.org/badge/latestdoi/304798940)
 
-Clone/download this repository
+### Data that made the paper
+[![License: CC0-1.0](https://img.shields.io/badge/License-CC0%201.0-lightgrey.svg)](https://datadryad.org/stash/dataset/doi:10.5061/dryad.2fqz612ps)
 
-```
-git clone --depth 1 https://github.com/dbuscombe-usgs/dash_doodler.git
-```
+### <a name="ack"></a>Acknowledgements
 
-Install the requirements
+Inspired by [this plotly example](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) and the previous openCV based implementation [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller), that actually has origins in a USGS CDI-sponsored class I taught in summer of 2018, called [dl-tools](https://github.com/dbuscombe-usgs/dl_tools). So, it's been a 3+ year effort!
 
-```bash
-conda env create --file environment/dashdoodler-clean.yml
-conda activate dashdoodler
-```
-*If* the above doesn't work, try this:
+## ✍️ Authors
 
-```bash
-conda env create --file environment/dashdoodler.yml
-conda activate dashdoodler
-```
+Package maintainers:
+* [@dbuscombe-usgs](https://github.com/dbuscombe-usgs) Marda Science / USGS Pacific Coastal and Marine Science Center. Developed originally for the USGS Coastal Marine Geology program, as part of the Florence Supplemental project
 
-*If neither of the above* work, try this:
+Contributions:
+* [@2320sharon](https://github.com/2320sharon)
+* [@ebgoldstein](https://github.com/ebgoldstein)
 
-```bash
-conda create --name dashdoodler python=3.6
-conda activate dashdoodler
-conda install -c conda-forge pydensecrf cairo
-pip install -r environment/requirements.txt
-```
+## 🚀 Usage
 
-and good luck to you!
-
-## <a name="use"></a>Use
 > Check out the user guide on the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/docs/tutorial-basics/what-to-do)
 
 Move your images into the `assets` folder. For the moment, they must be jpegs with the `.jpg` (or `JPG` or `jpeg`) extension. Support for other image types forthcoming ...
@@ -169,7 +112,7 @@ sudo docker run -d -p 8050:8050 --name doodler_container --mount source=doodler_
 sudo docker inspect doodler_container
 ```-->
 
-## Docker workflows
+### Docker workflows
 
 To build your own docker image based on miniconda `continuumio/miniconda3`, called `doodler_docker_image`:
 
@@ -214,14 +157,14 @@ sudo docker rm www
 Please don't ask me about Docker - that's all I know. Please contribute Docker workflows and suggestions!
 
 
-## <a name="coasttrain"></a>Unpacking Coast Train Data
+### <a name="coasttrain"></a>Unpacking Coast Train Data
 
 To use the labels in their native class sets (that vary per image), use the `gen_images_and_labels_4_zoo.py` script as described below. To use the labels in remapped classes (standardized across image sets), use the `gen_remapped_images_and_labels.py` script described below.
 
 
-## <a name="utilities"></a>Utility scripts
+### <a name="utilities"></a>Utility scripts
 
-Doodler is compatible with my other segmentation program, [Zoo](https://github.com/dbuscombe-usgs/segmentation_zoo) in a couple of different ways:
+Doodler is compatible with the partner segmentation program, [Zoo](https://github.com/dbuscombe-usgs/segmentation_zoo) in a couple of different ways:
 
 1. You could run the function `gen_npz_4_zoo.py` to create npz files that contain only image and label pairs. This is the same output as you would get from running the Zoo program `make_nd_datasets.py'
 
@@ -237,11 +180,58 @@ There are two additional scripts in the `utils` folder:
 
 2. `plot_label_generation.py` that generates a detailed sequence of plots for every input npz file from doodler, including plots of the doodles themselves, overlays, and internal model outputs.
 
-## <a name="ack"></a>Acknowledgements
 
-Inspired by [this plotly example](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) and the previous openCV based implementation [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller), that actually has origins in a USGS CDI-sponsored class I taught in summer of 2018, called [dl-tools](https://github.com/dbuscombe-usgs/dl_tools). So, it's been a 3+ year effort!
+## ⬇️ Installation
 
-## <a name="contribute"></a>Contributing
+> Check out the installation guide on the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/docs/tutorial-basics/deploy-local)
+
+
+We advise creating a new conda environment to run the program.
+
+1. Clone the repo:
+
+```
+git clone --depth 1 https://github.com/dbuscombe-usgs/dash_doodler.git
+```
+
+(`--depth 1` means "give me only the present code, not the whole history of git commits" - this saves disk space, and time)
+
+2. Create a conda environment called `dashdoodler`
+
+```
+conda env create --file install/dashdoodler-clean.yml
+conda activate dashdoodler
+```
+
+*If* the above doesn't work, try this:
+
+```bash
+conda env create --file environment/dashdoodler.yml
+conda activate dashdoodler
+```
+
+*If neither of the above* work, try this:
+
+```bash
+conda create --name dashdoodler python=3.6
+conda activate dashdoodler
+conda install -c conda-forge pydensecrf cairo
+pip install -r environment/requirements.txt
+```
+
+and good luck to you!
+
+
+## 💭 Feedback and Contributing
+
+Please read our [code of conduct](https://github.com/dbuscombe-usgs/dash_doodler/blob/main/CODE_OF_CONDUCT.md)
+
+Please contribute to the [Discussions tab](https://github.com/dbuscombe-usgs/dash_doodler/discussions) - we welcome your ideas and feedback.
+
+We also invite all to open issues for bugs/feature requests using the [Issues tab](https://github.com/dbuscombe-usgs/dash_doodler/issues)
+
+
+### <a name="contribute"></a>Contributing
 Contributions are welcome, and they are greatly appreciated! Credit will always be given.
 
 #### Report Bugs
@@ -524,24 +514,3 @@ Changes include:
 * minor fixes to all utils scripts
 * added 'number of scales' functionality to help with low-resource machines and give greater flexibility to the user
 * the program will now automatically download the sample images by default, but only if there are no (jpeg) images in the assets folder
-
-## <a name="roadmap"></a>Roadmap
-
-<!-- * Maybe a button to reset the coefficients to the defaults? [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2) -->
-
-* fix image file selection bug
-
-* Docker deployment--HELP!!
-
-* User authentication using O-Auth e.g. https://pypi.org/project/dash-google-oauth/ or Auth0 --HELP!!
-
-* Delay running the model until all of the coefficients are adjusted...right now it jumps right into the calcs as soon a slider is moved, but maybe you want to adjust two sliders first. Maybe change the compute segmentation to a button that changes color if the model is out of date wrt to the current settings. [here](https://github.com/dbuscombe-usgs/dash_doodler/issues/2)
-
-<!-- * pymongo (mongoDB) database backend - thanks Evan and Shah @UNCG-DAISY! See [here](https://api.mongodb.com/python/current/tools.html), [here](https://strapi.io/pricing) -->
-
-* on Ctrl+C, clear 'labeled' folder, etc
-
-* 'label here' feature based on analysis of doodles in real time -- how?
-
-
-Use the issues tab to suggest new features!
