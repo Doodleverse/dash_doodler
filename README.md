@@ -19,7 +19,7 @@ Here's a movie of Doodler in action:
 ## ℹ️ Documentation
 
 ### Website
-Check out the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/)
+Check out the [Doodler website](https://doodleverse.github.io/dash_doodler/)
 
 ### Paper
 [![Earth ArXiv Preprint
@@ -136,24 +136,24 @@ More demonstration videos (older version of the program):
 
 ### <a name="coasttrain"></a>Unpacking Coast Train Data
 
-To use the labels in their native class sets (that vary per image), use the `gen_images_and_labels_4_zoo.py` script as described below. To use the labels in remapped classes (standardized across image sets), use the `gen_remapped_images_and_labels.py` script described below.
+To use the labels in their native class sets (that vary per image), use the `gen_images_and_labels.py` script as described below. To use the labels in remapped classes (standardized across image sets), use the `gen_remapped_images_and_labels.py` script described below.
 
 
 ### <a name="utilities"></a>Utility scripts
 
-Doodler is compatible with the partner segmentation program, [Zoo](https://github.com/dbuscombe-usgs/segmentation_zoo) in a couple of different ways:
+Doodler is compatible with the partner segmentation program, [Segmentation Gym](https://github.com/Doodleverse/segmentation_gym) in a couple of different ways:
 
-1. You could run the function `gen_npz_4_zoo.py` to create npz files that contain only image and label pairs. This is the same output as you would get from running the Zoo program `make_nd_datasets.py'
+1. You could run the function `gen_npz_4gym.py` to create npz files that contain only image and label pairs. This is the same output as you would get from running the Gym program `make_nd_datasets.py'
 
-2. You could alternatively run the function `gen_images_and_labels_4_zoo.py` that would generate jpeg greyscale image files and label image jpegs for use with the Zoo program `make_nd_datasets.py'.
+2. You could alternatively run the function `gen_images_and_labels.py` that would generate jpeg greyscale image files and label image jpegs for use with the Gym program `make_nd_datasets.py'.
 
-3. Finally, you could run the function `gen_remapped_images_and_labels.py` that would generate jpeg greyscale image files and remapped label image jpegs for use with the Zoo program `make_nd_datasets.py'. Labels are remapped based on a dictionary of class aliases and a list of classes present, using a special config file. To remap Coast Train data, use the config files provided [here](https://github.com/dbuscombe-usgs/CoastTrainMetaPlots/tree/main/remap_config_files) 
+3. Finally, you could run the function `gen_remapped_images_and_labels.py` that would generate jpeg greyscale image files and remapped label image jpegs for use with the Gym program `make_nd_datasets.py'. Labels are remapped based on a dictionary of class aliases and a list of classes present, using a special config file. To remap Coast Train data, use the config files provided [here](https://github.com/dbuscombe-usgs/CoastTrainMetaPlots/tree/main/remap_config_files) 
 
 The first scenario might be most common because it requires one less step, however the second scenario might be useful for using the labels with another software package, or for further post-processing of the labels
 
 There are two additional scripts in the `utils` folder:
 
-1. `viz_npz.py` creates transparent overlay plots of images and labels, and has three modes with the following syntax `viz_npz.py [-t npz type {0}/1/2]` where optional `-t` controls what type of npz file: native from doodler (option 0, default), a `labelgen` file from `plot_label_generation.py`, a npz file used as input for Zoo
+1. `viz_npz.py` creates transparent overlay plots of images and labels, and has three modes with the following syntax `viz_npz.py [-t npz type {0}/1/2]` where optional `-t` controls what type of npz file: native from doodler (option 0, default), a `labelgen` file from `plot_label_generation.py`, a npz file used as input for Gym
 
 2. `plot_label_generation.py` that generates a detailed sequence of plots for every input npz file from doodler, including plots of the doodles themselves, overlays, and internal model outputs.
 
@@ -311,200 +311,3 @@ sudo docker rm www
 
 Please don't ask me about Docker - that's all I know. Please contribute Docker workflows and suggestions!
 
-
-### <a name="progress"></a>Progress report
-
-10/20/20:
-* display numbers for every parameter
-* fixed label creation and display in situations where there is a null image value (0), and where there are not as many classes in the scene as in the collection
-
-10/22/20
-* modified layout so image window is larger, and button bank is narrower. Hopefully easier to label, less zooming, etc. see https://github.com/dbuscombe-usgs/dash_doodler/issues/4. Thanks Dan Nowacki
-* added yml installation file, modified requirements.txt to remove gunicorn dependency. see https://github.com/dbuscombe-usgs/dash_doodler/issues/1.
-* updates to docs, README, videos
-
-10/29/20
-* switched to a Flask backend server
-* added upload button/drap-and-drop
-* those images now download into the assets folder and get listed in the dropdown menu
-* figured out how to serve using gunicorn (`gunicorn -w 4 -b 127.0.0.1:8050 app:server`)
-* results are now handled per session, with the results written to a folder with the timestamp of the session start
-* organized files so top level directory has the main files, and then subfunctions are in `src`. conda and pip files are in `install`
-* no more banner and instructions - saves space. Instructions on github.
-* more economical use of space in drop down list - can load and display more files
-* when an image is labeled, it disappears from the list when new images are uploaded
-* new videos
-
-11/04/20
-* fixed bug in how annotations were being generated and written to png file
-* new version uses a cumulatively trained random forest. First image annotated, builds RF, makes prediction. Then subsequent images build upon the last RF. Uses scikit-learn RandomForestClassifier's `warm_start` parameter and saving model to pickle file
-* all the CRF functions and controls are removed in `appRF.py`. Just RF is implemented. Faster, also perhaps better (more testing)
-* fixed bug that was making it redo segmentations automatically on file change and other callbacks
-* time strings now ISO conformable (thanks Dan Nowacki)
-* image printing now in the main app function rather than subfunction, aids incorporation into more sophisticated callback workflows
-
-11/10/20
-* added sliders for CRF and RF downsample factors
-* fixed bug that causes error when no files present upon launch
-* fixed bug that caused incorrect colormap on color label outputs where nodata also present (orthomosaics)
-* automatically selects colormap based on number of classes (G10 for up to 10, Light24 for up to 24)
-* tested on large set of orthomosaics and other types of imagery
-* 6-stack no longer used in CRF (too slow). Back to RGB. Later will add 6-stack as an option, or individual bands as options (like for RF)
-* resize now uses nearest nearest (order 0 polynomial) interpolation rather than linear. Makes more sense for discrete values
-* callback context now passed to segmentation function
-* `app.py` is now `appyCRF.py` and now uses CRF with fixed RF inputs, and different defaults for MU and THETA
-* median filter size adjustments no longer force redoing of segmentation. Instead, it disables the segmentation so after you have set the new median filter kernel size, recheck the compute/show segmentation box
-
-02/09/21
-* Uses two tabs: tab 1 is for image annotations and controls, and tab 2 is for file selection and instructions
-* RF model updating properly implemented. RF model file name contains classes
-* CRF version fully exposes all parameters to user
-* optionally, users can enter their unique ID for saving results
-* Log file created for a session
-* Better instructions
-* RF-only version no longer available. Only CRF. App now called `doodler.py`
-* Images that are done are copied to the 'labeled' folder. Every 2 seconds the program checks the assets and labeled folders and only lists the difference of those two sets.
-* Image names are copied below into a box, for copy/pasting (note taking). The names of images done are copied to a text file, for later use
-
-02/12/21
-* Re-implemented RF updating by writing out data to file, then refitting to all data
-* some argument passing changes
-* RF now uses intensity, edges and texture by default (no choice)
-* updated `predict_flder.py` script - first usable version
-
-02/12/21
-* If only one class example provided, whole scene assumed to be that class
-* Checks for old classifiers and data files and renames (restarts each new session)
-* By default now only uses 3 trees per image to update the RF model
-* Each setting default now displayed on control panel
-* class_weight="balanced_subsample", min_samples_split=3
-
-03/17/21. *Release* version 1.1.0
-* max samples now 1e5, subsampled thereafter from all values (new and concatenated from file)
-* crf_refine now loops through 5 different 'rolled' versions of the label/image combo and and an average is taken. Rolling (wot I made up) is shifting an image and unary potentials on the x axis and recomputing the label raster in the shifted position, then unrolling back and averaging down the stack of unrolled label rasters
-* min_samples_split=5 in RF
-* in `predict_folder.py`, now loops through 5 different 'rolled' versions of the label/image combo and a weighted average is taken
-* added a 'sample' set to test `predict_folder.py`, and provide model
-* provided a 'clean' yml file (no version numbers) and added tqdm as a dependency
-* program now reads in default values from `src\defaults.py` or `my_defaults.py`(see below)
-* program uses SIGMA_MAX and SIGMA_MIN from  `src\defaults.py` or `my_defaults.py`(see below) rather than hard-coded in
-* created `refine_labels.py` (not yet documented)
-* program now writes and reads `my_defaults.py` that keeps track of your settings preferences
-* IP address (http://127.0.0.1:8050/) now displayed in terminal window
-* added example workflow for sample dataset
-
-03/20/21. version 1.1.1
-* support for 1-band (greyscale) images (and tested on sidescan imagery)
-* adds rudimentary metric for RF and CRF to use space, the i.e. the pixel locations in x and y. seems to improve predictions in sidescan and water masking imagery
-* added some explanatory text to README on how Doodler works
-* increased max samples to 500,000
-* DEFAULT_CRF_DOWNSAMPLE = 3 (up from 2) to accomodate larger feature stack (two more, position in x, and position in y)
-* added more logging info in RF/VRF models
-* added timer to show how long each inference takes
-
-05/09/21. version 1.2.1 (MAJOR UPGRADE)
-GUI:
-* `Model independence factor ` and `blur factor` now used for mu and theta respectively. More approachable, easier to explain
-* reordered crf controls so theta/mu, then downsample and probability of doodle (order of likelihood to tweak)
-* no longer median filter controls
-* made 'show/compute seg' button blue :)
-* no longer the sigma for 'sigma range'
-
-Modeling:
-* per image standardization and rescaling [0,1]
-* no antialiasing when resizing CRF label, and replacement of values not present in original
-* decreased max samples to 200,000
-* remove small holes and islands in the one-hote encoded CRF mask
-* median filtering now removed. not needed, creates problems, extra buttons/complexity. Instead ...
-* implements 'one-hot encoded mask spatial filtering'
-* implements inpainting on regions spatially filtered
-* pen width is used as-is, no longer exponentially scaled
-* SIGMA_MAX=16; SIGMA_MIN=1. Hardcoded. Easier to manage number of features, which now have to be 75. Also, they make very little difference
-
-I/O:
-* greyscale and annotations no longer saved to png file, instead to numpy area (npz compressed), which encodes
-  * 'image'' = image
-  * 'label' = one-hot-encoded label array
-  * 'color_doodles' = color 3D or color doodles
-  * 'doodles' = 2D or greyscale doodles
-  * the npz file is overwritten, but old arrays are kept, prefixed with '0', and prepended with another '0', such that the more '0's the newer, but the above names without '0's are always the newest. Color images are still produced with time tags.
-* DEFAULT_CRF_DOWNSAMPLE = 4 by default
-* accepts jpg, JPG, and jpeg
-* in implementation using `predict_folder.py`, user decides between two modes, saving either default basic outputs (final output label) or the full stack out outputs for debugging or optimizing
-* in `predict_folder`, extracted features are memory mapped to save RAM
-
-Other:
-* RF feature extraction now in parallel
-* CRF 'test time augmentation' now in parallel
-* `utils/plot_label_generation.py` is a new script that plots all the minutae of the steps involved in label generation, making plots and large npz files containing lots of variables I will explain later. By default each image is modeled with its own random forest. Uncomment "#do_sim = True" to run in 'chain simulation mode', where the model is updated in a chain, simulating what Doodler does.
-* `utils/convert_annotations2npz.py` is a new script that will convert annotation label images and associated images (created and used respectively by/during a previous incarnation of Doodler)
-* `utils/gen_npz_4_zoo.py` is a new script that will strip just the image and one-hot encoded label stack image for model training with Zoo
-
-Website:
-https://dbuscombe-usgs.github.io/dash_doodler/
-
-
-06/01/21. version 1.2.2
-* versions with S3 integration: `usgs_only_server.py` and `doodler_server.py`, in which:
-  * remove all code to do with timing and file lookup in assets and labeled
-  * fsspec read file
-  * fsspec write results
-  * 'one chance" doodling. Next image retrieved automatically from s3 when 'segment image' unchecked
-* the minimal version has one chance doodling, no controls except pen width. Next image retrieved automatically from s3 when 'segment image' unchecked
-* worked out more details for serving using gunicorn/nginx/systemctl services
-
-06/06/21. `docker-dev` branch
-* make better requirements.txt using `pipreqs` (https://pypi.org/project/pipreqs/)
-* Dockerfile
-
-06/09/21. v 1.2.3
-* fixed bug in CRF making all labels a minimum of 1
-
-06/21/21. v 1.2.4
-* Doodler no longer learns as it goes by default. Large trials suggested that strategy was inferior to an extremely task-specific approach.
-* Doodler now uses a MLP classifier using features - applies gaussian blur to image and x,y location for feat extraction as inputs to MLP with 2 hidden layers each with 100 neurons, relu activation, alpha=2 regularization
-* applies standard scaler as pre-filter
-* no predict in folder script
-* partially fixed bug with file select (interval just 200 milliseconds)
-* cleaned up and further tested all utils scripts
-
-07/30/21. v 1.2.5
-* code tidied up and commented, added docstrings
-* removed last traces of RF code implementation
-* added logging details, including RAM utilization throughout
-* CRF and feature extraction only happen in parallel now when RAM < 10GB and usage is <50%, i.e. there is 5GB of available RAM for parallel processing
-* %d-%m-%Y-%H-%M-%S changed to sortable %Y-%m-%d-%H-%M-%S format in log file
-* reorganized code into modular components
-* moved assets to downloadable zipped file than downloads and unpacks automatically
-* removed samples
-* moved gifs to a release, so could be linked in this README (used a lot of space, large download)
-* two new dependencies, Flasking-Cahing, and psutil
-* flask-caching is for caching - clear cache for the program independently of the browser by deleting files in the app_files/cache_directory
-* now has a `.gitignore` file to ignore cached files
-
-This is a major update and may require a new clone.
-
-Changes include:
-* revised file structure, to be modular/easier to read and parse
-  * new directory `app_files` contains `cache-directory`, `logs`, and `src`
-  * `logs` contains program logs - now reports RAM usage throughout program for troubleshooting. Requires new dependency `psutil`
-  * `src` contains the main program code, including all of the segmentation codes (in `image_segmentation.py` and `annotations_to_segmentations.py`) and most of the app codes (`app_funcs.py` and `plot_utils.py`)
-  *  `cache-directory` - clear cache for the program independently of the browser by deleting files here. Requires new dependency `flask-caching`
-  * `assets` comes with no imagery, but sample imagery is, by default, downloaded automatically into that folder. You can disable the automatic downloading of the imagery by editing `environment/settings.py` where indicated
-  * `install` folder is now called `environment`
-  * removed the large gifs from the `assets/logos` folder (they now render in html from a github release)
-  * you still run `doodler.py`, but most of the app is now in `app.py`, and a lot more of the functions are in the `app_files/src/` functions. This allows for better readability and modularity, therefore portability into other frameworks, and more effective troubleshooting
-* example results files are now downloadable [here](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/example-results/results2021-06-21-11-05.zip) rather than shipped by default with the program. Run `python download_sample_results.py` from the `results` folder
-* overall the download is much, much smaller, and will break less with `git pull` because the `.gitignore` contains the common gotchas
-* removed superfluous buttons in the modebar
-* code commented better and better docstrings and README details
-* added example Dockerfile
-* ports, IPS and other deployment variables can be changed or added to `environment\settings.py` that gets imported at startup
-* added [Developer's Notes](#developers) to this README, with more details about program setup and function
-
-
-09/30/21. v 1.2.6
-(some of these in response to USGS colleague code review by Frank Engel, USGS)
-* minor fixes to all utils scripts
-* added 'number of scales' functionality to help with low-resource machines and give greater flexibility to the user
-* the program will now automatically download the sample images by default, but only if there are no (jpeg) images in the assets folder
