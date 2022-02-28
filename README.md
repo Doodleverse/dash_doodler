@@ -71,7 +71,7 @@ git clone --depth 1 https://github.com/dbuscombe-usgs/dash_doodler.git
 2. Create a conda environment called `dashdoodler`
 
 ```
-conda env create --file install/dashdoodler-clean.yml
+conda env create --file environment/dashdoodler-clean.yml
 conda activate dashdoodler
 ```
 
