@@ -111,21 +111,27 @@ Open a browser and go to 127.0.0.1:8050. You may have to hit the refresh button.
 
 ### Example screenshots of use with example dataset
 
-(note: these are screengrabs of an older version of the program, so the buttons and their names are now slightly different)
+<!-- (note: these are screengrabs of an older version of the program, so the buttons and their names are now slightly different) -->
 
 #### `doodler.py`
 
-![Example 1](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py.png)
+Videos showing Doodler in action:
+
+![Doodler example 2](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler_demo_simple_watermask_v2.gif)
+
+![Doodler example 3](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler_demo_sediment_v2.gif)
+
+<!-- ![Example 1](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py.png)
 ![Example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py1.png)
 ![Example 3](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py2.png)
 ![Example 4](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py3.png)
 ![Example 5](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py4.png)
-![Example 6](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py5.png)
+![Example 6](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py5.png) -->
 
-### Videos
-More demonstration videos (older version of the program):
+<!-- ### Videos
+More demonstration videos (older version of the program): -->
 
-![Doodler example 2](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/quick-saturban-x2c.gif)
+<!-- ![Doodler example 2](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/quick-saturban-x2c.gif)
 
 ![Doodler example 3](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short.gif)
 
@@ -133,7 +139,7 @@ More demonstration videos (older version of the program):
 
 ![Coast Train example](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short-coast.gif)
 
-![Coast Train example 2](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short-coast2.gif)
+![Coast Train example 2](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short-coast2.gif) -->
 
 
 ### <a name="coasttrain"></a>Unpacking Coast Train Data
@@ -153,11 +159,15 @@ Doodler is compatible with the partner segmentation program, [Segmentation Gym](
 
 The first scenario might be most common because it requires one less step, however the second scenario might be useful for using the labels with another software package, or for further post-processing of the labels
 
-There are two additional scripts in the `utils` folder:
+There are additional scripts in the `utils` folder:
 
 1. `viz_npz.py` creates transparent overlay plots of images and labels, and has three modes with the following syntax `viz_npz.py [-t npz type {0}/1/2]` where optional `-t` controls what type of npz file: native from doodler (option 0, default), a `labelgen` file from `plot_label_generation.py`, a npz file used as input for Gym
 
 2. `plot_label_generation.py` that generates a detailed sequence of plots for every input npz file from doodler, including plots of the doodles themselves, overlays, and internal model outputs.
+
+3. `gen_overlays_from_images_and_labels.py` that generates color overlay figures from folders of images and greyscale labels
+
+4. `gen_remapped_images_and_labels.py` that generates remapped label images from one class set to another
 
 
 ## 💭 Feedback and Contributing

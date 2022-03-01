@@ -46,7 +46,7 @@ There are two tabs, one for 'doodling' on images, and one for selecting new imag
 3. Add or remove doodles as necessary, repeating steps 1. and 2. above
 4. [if still not happy with the result] Modify the parameters and repeat step 2. above
 
-Here are more examples of Doodler in action
+Here are more examples of Doodler (older versions) in action
 ![](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short-elwha.gif)
 
 ![](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short-coast2.gif)
@@ -68,6 +68,11 @@ Before we begin, let's state some important factors around Doodler and its use
 Doodler is written and maintained by Dr Daniel Buscombe, Marda Science, LLC, contracted to the U.S. Geological Survey Pacific Coastal and Marine Science Center in Santa Cruz, CA. Doodler development is funded by the U.S. Geological Survey Coastal Hazards Program, and is for the primary usage of U.S. Geological Survey scientists, researchers and affiliated colleagues working on the Hurricane Florence Supplemental Project and other coastal hazards research.
 
 Thanks to Jon Warrick, Phil Wernette, Chris Sherwood, Jenna Brown, Andy Ritchie, Jin-Si Over, Christine Kranenburg, and the rest of the Florence Supplemental team; to Evan Goldstein and colleagues at University of North Carolina Greensboro; Leslie Hsu at the USGS Community for Data Integration; and LCDR Brodie Wells, formerly of Naval Postgraduate School, Monterey. Doodler was inspired by [this](https://github.com/plotly/dash-sample-apps/tree/master/apps/dash-image-segmentation) plotly example and also the previous openCV based implementation called [doodle_labeller](https://github.com/dbuscombe-usgs/doodle_labeller), also written by Dr Daniel Buscombe.
+
+See our [journal manuscript](https://doi.org/10.1029/2021EA002085) for the most comprehensive explanation for how Doodler works
+
+Citation: Buscombe, D., Goldstein, E.B., Sherwood, C.R., Bodine, C., Brown, J.A., Favela, J., Fitzpatrick, S., Kranenburg, C.J., Over, J.R., Ritchie, A.C. and Warrick, J.A., 2021. Human‐in‐the‐Loop Segmentation of Earth Surface Imagery. Earth and Space Science, p.e2021EA002085 https://doi.org/10.1029/2021EA002085
+
 
 ### Sounds good! How do I install?
 

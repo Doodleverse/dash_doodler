@@ -4,23 +4,12 @@ sidebar_position: 1
 
 # [ADVANCED] How Doodler works
 
-(Please note that this material will be included in a forthcoming journal manuscript that describes Doodler and its uses. That manuscript is currently in preparation)
+See our [journal manuscript](https://doi.org/10.1029/2021EA002085) for the most comprehensive explanation for how Doodler works
 
-Images are labeled in sessions. During a session, a Machine Learning model is built progressively using provided labels from each image. Below, we illustrate each of the various processing steps in turn, using a single example of a 2-class labeling exercise. The two classes are 'land' (red) and 'water' (blue).
+Citation: Buscombe, D., Goldstein, E.B., Sherwood, C.R., Bodine, C., Brown, J.A., Favela, J., Fitzpatrick, S., Kranenburg, C.J., Over, J.R., Ritchie, A.C. and Warrick, J.A., 2021. Human‐in‐the‐Loop Segmentation of Earth Surface Imagery. Earth and Space Science, p.e2021EA002085 https://doi.org/10.1029/2021EA002085
 
-:::tip Tip
-
-Doodler 'learns as you go'. In a Doodler session, the skill of predictions usually improves the more images you doodle in a single session. That's because it updates the model with each set if new image feature-class pairings you provide it
-
-:::
 
 ### Overview
-
-The figure below depicts a typical Doodler session in which images (from left to right) are labeled sequentially. The figure is read from left to right, depicting the sequential nature of image labeling, as well as from top to bottom, which depicts the sequence of processes that occur to collectively turn the image at the top, to the label image at the bottom.
-
-![](/img/paperfig_RFchain_ann.jpg)
-
-There is a lot going on in this figure, and it is read from top to bottom (single image) and from left to right (a sequence of images in a session), so let's break it down a little ...
 
 ### Sparse annotation or 'doodling'
 
