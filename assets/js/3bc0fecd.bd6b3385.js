@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[23],{94:function(o){o.exports=JSON.parse('{"allTagsPath":"/dash_doodler/blog/tags","slug":"zoom-out","name":"zoom out","count":1,"permalink":"/dash_doodler/blog/tags/zoom-out"}')}}]);
