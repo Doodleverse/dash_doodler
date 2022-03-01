@@ -25,6 +25,8 @@ Check out the [Doodler website](https://doodleverse.github.io/dash_doodler/)
 [![Earth ArXiv Preprint
 DOI](https://img.shields.io/badge/%F0%9F%8C%8D%F0%9F%8C%8F%F0%9F%8C%8E%20EarthArXiv-doi.org%2F10.31223%2FX59K83-%23FF7F2A)](https://doi.org/10.31223/X59K83)
 
+Buscombe, D., Goldstein, E.B., Sherwood, C.R., Bodine, C., Brown, J.A., Favela, J., Fitzpatrick, S., Kranenburg, C.J., Over, J.R., Ritchie, A.C. and Warrick, J.A., 2021. Human‐in‐the‐Loop Segmentation of Earth Surface Imagery. Earth and Space Science, p.e2021EA002085[https://doi.org/10.1029/2021EA002085](https://doi.org/10.1029/2021EA002085)
+
 ### Code that made the paper
 [![DOI](https://zenodo.org/badge/304798940.svg)](https://zenodo.org/badge/latestdoi/304798940)
 
