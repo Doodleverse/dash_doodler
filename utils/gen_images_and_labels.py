@@ -79,7 +79,7 @@ def make_jpegs():
     files = [f for f in files if '4zoo' not in f]
 
     #### loop through each file
-    for counter, anno_file in tqdm(enumerate(files)):
+    for counter, anno_file in enumerate(files):
 
         # print("Working on %s" % (file))
         print("Working on %s" % (anno_file))
