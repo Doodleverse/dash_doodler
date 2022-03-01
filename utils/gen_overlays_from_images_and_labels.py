@@ -93,8 +93,7 @@ def make_jpegs():
         # print("Working on %s" % (file))
         print("Working on %s" % (l))
         lab = np.round(io.imread(l, as_gray=True))
-        im = io.imread(i)
-
+        im = io.imread(i)[:,:,0]
 
         class_label_names = [c.strip() for c in classes]
 
@@ -118,7 +117,7 @@ def make_jpegs():
 
         #Make an overlay
         plt.imshow(im)
-        plt.imshow(lab, cmap=cmap, alpha=0.25, vmin=0, vmax=NCLASSES)
+        plt.imshow(lab, cmap=cmap, alpha=0.6, vmin=0, vmax=NCLASSES)
         plt.axis('off')
         plt.savefig(i.replace('.jpg','_overlay.png'), dpi=200, bbox_inches='tight')
 
