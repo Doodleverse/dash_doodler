@@ -30,6 +30,8 @@
 
 import numpy as np
 import PIL.Image, skimage.util, skimage.io, skimage.color
+from PIL import ExifTags
+
 import io, os, psutil, logging, base64, json
 from datetime import datetime
 from image_segmentation import segmentation
@@ -235,16 +237,49 @@ def img_to_ubyte_array(img):
     can be passed as img and parsed into an image. Passing a path to an image
     for img will also work.
     """
+    # try:
+    #    img = np.array(PIL.Image.open(img))
+    #    if np.ndim(img)>3:
+    #        img = img[:,:,:3]
+    #    ret = skimage.util.img_as_ubyte(img)
+    # except:
+    #    img = np.array(PIL.Image.open(img[0]))
+    #    if np.ndim(img)>3:
+    #        img = img[:,:,:3]
+    #    ret = skimage.util.img_as_ubyte(img)
+
+    # if np.ndim(ret)>3:
+    #     ret = ret[:,:,:3]
+
+    # return ret
+
     try:
-       img = np.array(PIL.Image.open(img))
-       if np.ndim(img)>3:
-           img = img[:,:,:3]
-       ret = skimage.util.img_as_ubyte(img)
+        image = PIL.Image.open(img)		 	
     except:
-       img = np.array(PIL.Image.open(img[0]))
-       if np.ndim(img)>3:
-           img = img[:,:,:3]
-       ret = skimage.util.img_as_ubyte(img)
+        image = PIL.Image.open(img[0])		 	
+
+    for orientation in ExifTags.TAGS.keys():
+        # if ExifTags.TAGS[orientation]=='Orientation':
+        #    break
+        try:
+            exif=dict(image._getexif().items())
+            if exif[orientation] == 3:
+                image=image.rotate(180, expand=True)
+                print("Image rotated 180 deg")
+            elif exif[orientation] == 6:
+                image=image.rotate(270, expand=True)
+                print("Image rotated 270 deg")
+            elif exif[orientation] == 8:
+                image=image.rotate(90, expand=True)
+                print("Image rotated 90 deg")
+        except:
+            # print('no exif')
+            pass
+
+    img = np.array(image)
+    if np.ndim(img)>3:
+        img = img[:,:,:3]
+    ret = skimage.util.img_as_ubyte(img)
 
     if np.ndim(ret)>3:
         ret = ret[:,:,:3]
