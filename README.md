@@ -89,7 +89,8 @@ conda activate dashdoodler
 ```bash
 conda create --name dashdoodler python=3.6
 conda activate dashdoodler
-conda install -c conda-forge pydensecrf cairo
+conda install -c conda-forge pydensecrf cairo cairosvg
+conda install -c conda-forge scikit-learn scikit-image psutil dash flask-caching requests
 pip install -r environment/requirements.txt
 ```
 
