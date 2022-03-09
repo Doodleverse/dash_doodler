@@ -686,6 +686,7 @@ def update_output(
             orig_image = imread(select_image_value[0])
             if np.ndim(orig_image)>3:
                orig_image = orig_image[:,:,:3]
+            # orig_image = img_to_ubyte_array(select_image_value[0])
 
         else:
             if 'jpg' in select_image_value:
@@ -703,6 +704,7 @@ def update_output(
             orig_image = imread(select_image_value)
             if np.ndim(orig_image)>3:
                orig_image = orig_image[:,:,:3]
+            # orig_image = img_to_ubyte_array(select_image_value)
 
         logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('RGB label image saved to %s' % (colfile))

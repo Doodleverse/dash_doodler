@@ -30,6 +30,7 @@ import PIL.Image
 import plotly.graph_objects as go
 import skimage.util
 from plotly.utils import ImageUriValidator
+from PIL import ExifTags
 
 ##========================================================
 def dummy_fig():
@@ -42,11 +43,34 @@ def dummy_fig():
     )
     return fig
 
+# ##========================================================
+# def pilim(im):
+#     """ open and return an image file as PIL Image """
+#     if type(im) == type(str()):
+#         return PIL.Image.open(im)
+#     return im
 ##========================================================
 def pilim(im):
-    """ open and return an image file as PIL Image """
     if type(im) == type(str()):
-        return PIL.Image.open(im)
+        im = PIL.Image.open(im)		 	 	
+
+        for orientation in ExifTags.TAGS.keys():
+            # if ExifTags.TAGS[orientation]=='Orientation':
+            #    break
+            try:
+                exif=dict(im._getexif().items())
+                if exif[orientation] == 3:
+                    im=im.rotate(180, expand=True)
+                    # print("Image rotated 180 deg")
+                elif exif[orientation] == 6:
+                    im=im.rotate(270, expand=True)
+                    # print("Image rotated 270 deg")
+                elif exif[orientation] == 8:
+                    im=im.rotate(90, expand=True)
+                    # print("Image rotated 90 deg")
+            except:
+                # print('no exif')
+                pass
     return im
 
 ##========================================================

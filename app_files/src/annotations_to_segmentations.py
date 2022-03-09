@@ -265,13 +265,13 @@ def img_to_ubyte_array(img):
             exif=dict(image._getexif().items())
             if exif[orientation] == 3:
                 image=image.rotate(180, expand=True)
-                print("Image rotated 180 deg")
+                # print("Image rotated 180 deg")
             elif exif[orientation] == 6:
                 image=image.rotate(270, expand=True)
-                print("Image rotated 270 deg")
+                # print("Image rotated 270 deg")
             elif exif[orientation] == 8:
                 image=image.rotate(90, expand=True)
-                print("Image rotated 90 deg")
+                # print("Image rotated 90 deg")
         except:
             # print('no exif')
             pass
