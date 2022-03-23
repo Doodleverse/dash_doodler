@@ -34,7 +34,7 @@ Buscombe, D., Goldstein, E.B., Sherwood, C.R., Bodine, C., Brown, J.A., Favela, 
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0%201.0-lightgrey.svg)](https://datadryad.org/stash/dataset/doi:10.5061/dryad.2fqz612ps)
 
 ### Overview
-There are many great tools for exhaustive (i.e. whole image) image labeling for segmentation tasks, using polygons. Examples include [makesense.ai](www.makesense.ai) and [cvat](https://cvat.org). However, for high-resolution imagery with large spatial footprints and complex scenes, such as aerial and satellite imagery, exhaustive labeling using polygonal tools can be prohibitively time-consuming. This is especially true of scenes with many classes of interest, and covering relatively small, spatially discontinuous regions of the image.
+There are many great tools for exhaustive (i.e. whole image) image labeling for segmentation tasks, using polygons. Examples include [makesense.ai](https://www.makesense.ai) and [cvat](https://cvat.org). However, for high-resolution imagery with large spatial footprints and complex scenes, such as aerial and satellite imagery, exhaustive labeling using polygonal tools can be prohibitively time-consuming. This is especially true of scenes with many classes of interest, and covering relatively small, spatially discontinuous regions of the image.
 
 What is generally required in the above case is a semi-supervised tool for efficient image labeling, based on sparse examples provided by a human annotator. Those sparse annotations are used by a secondary automated process to estimate the class of every pixel in the image. The number of pixels annotated by the human annotator is typically a small fraction of the total pixels in the image.  
 
@@ -65,7 +65,7 @@ We advise creating a new conda environment to run the program.
 1. Clone the repo:
 
 ```
-git clone --depth 1 https://github.com/dbuscombe-usgs/dash_doodler.git
+git clone --depth 1 https://github.com/Doodleverse/dash_doodler.git
 ```
 
 (`--depth 1` means "give me only the present code, not the whole history of git commits" - this saves disk space, and time)
@@ -98,7 +98,7 @@ and good luck to you!
 
 ## 🚀 Usage
 
-> Check out the user guide on the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/docs/tutorial-basics/what-to-do)
+> Check out the user guide on the [Doodler website](https://doodleverse.github.io/dash_doodler/docs/tutorial-basics/what-to-do)
 
 Move your images into the `assets` folder. For the moment, they must be jpegs with the `.jpg` (or `JPG` or `jpeg`) extension. Support for other image types forthcoming ...
 
@@ -118,9 +118,9 @@ Open a browser and go to 127.0.0.1:8050. You may have to hit the refresh button.
 
 Videos showing Doodler in action:
 
-![Doodler example 2](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler_demo_simple_watermask_v2.gif)
+![Doodler example 2](https://github.com/Doodleverse/dash_doodler/releases/download/gifs/doodler_demo_simple_watermask_v2.gif)
 
-![Doodler example 3](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler_demo_sediment_v2.gif)
+![Doodler example 3](https://github.com/Doodleverse/dash_doodler/releases/download/gifs/doodler_demo_sediment_v2.gif)
 
 <!-- ![Example 1](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py.png)
 ![Example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py1.png)
@@ -173,11 +173,11 @@ There are additional scripts in the `utils` folder:
 
 ## 💭 Feedback and Contributing
 
-Please read our [code of conduct](https://github.com/dbuscombe-usgs/dash_doodler/blob/main/CODE_OF_CONDUCT.md)
+Please read our [code of conduct](https://github.com/Doodleverse/dash_doodler/blob/main/CODE_OF_CONDUCT.md)
 
-Please contribute to the [Discussions tab](https://github.com/dbuscombe-usgs/dash_doodler/discussions) - we welcome your ideas and feedback.
+Please contribute to the [Discussions tab](https://github.com/Doodleverse/dash_doodler/discussions) - we welcome your ideas and feedback.
 
-We also invite all to open issues for bugs/feature requests using the [Issues tab](https://github.com/dbuscombe-usgs/dash_doodler/issues)
+We also invite all to open issues for bugs/feature requests using the [Issues tab](https://github.com/Doodleverse/dash_doodler/issues)
 
 
 ### <a name="contribute"></a>Contributing
@@ -185,7 +185,7 @@ Contributions are welcome, and they are greatly appreciated! Credit will always 
 
 #### Report Bugs
 
-Report bugs at https://github.com/dbuscombe-usgs/dash_doodler/issues.
+Report bugs at https://github.com/Doodleverse/dash_doodler/issues.
 
 Please include:
 
@@ -208,7 +208,7 @@ We could always use more documentation, whether as part of the docs, in docstrin
 
 #### Get Started!
 
-> See the [how to contribute](https://dbuscombe-usgs.github.io/dash_doodler/docs/tutorial-extras/how-to-contribute) section of the Doodler website
+> See the [how to contribute](https://Doodleverse.github.io/dash_doodler/docs/tutorial-extras/how-to-contribute) section of the Doodler website
 
 Ready to contribute? Here's how to set up for local development.
 
