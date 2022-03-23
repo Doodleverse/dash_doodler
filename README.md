@@ -57,7 +57,7 @@ Doodler is based on code previously contained in the "doodle_labeller" [reposito
 
 ## ⬇️ Installation
 
-> Check out the installation guide on the [Doodler website](https://dbuscombe-usgs.github.io/dash_doodler/docs/tutorial-basics/deploy-local)
+> Check out the installation guide on the [Doodler website](https://doodleverse.github.io/dash_doodler/docs/tutorial-basics/deploy-local)
 
 
 We advise creating a new conda environment to run the program.
