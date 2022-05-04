@@ -585,7 +585,7 @@ def segmentation(
     else:
 
         result, unique_labels = do_classify(img,mask,n_sigmas,multichannel,intensity,edges,texture, sigma_min,sigma_max, rf_downsample_value)
-        print(unique_labels)
+        # print(unique_labels)
 
         Worig = img.shape[0]
         result = filter_one_hot(result, 2*Worig)
