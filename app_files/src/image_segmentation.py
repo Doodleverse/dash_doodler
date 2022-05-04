@@ -480,6 +480,8 @@ def do_classify(img,mask,n_sigmas,multichannel,intensity,edges,texture,sigma_min
     training_data = training_data[::downsample_value]
     training_labels = training_labels[::downsample_value]
 
+    unique_labels = np.unique(training_labels)
+
     lim_samples = 100000 #200000
 
     if training_data.shape[0]>lim_samples:
@@ -533,7 +535,7 @@ def do_classify(img,mask,n_sigmas,multichannel,intensity,edges,texture,sigma_min
     logging.info('RF feature extraction and model fitting complete')
     logging.info('percent RAM usage: %f' % (psutil.virtual_memory()[2]))
 
-    return result2
+    return result2, unique_labels
 
 ##========================================================
 def segmentation(
@@ -582,7 +584,8 @@ def segmentation(
 
     else:
 
-        result = do_classify(img,mask,n_sigmas,multichannel,intensity,edges,texture, sigma_min,sigma_max, rf_downsample_value)#,SAVE_RF) # n_estimators,rf_file,data_file,
+        result, unique_labels = do_classify(img,mask,n_sigmas,multichannel,intensity,edges,texture, sigma_min,sigma_max, rf_downsample_value)
+        print(unique_labels)
 
         Worig = img.shape[0]
         result = filter_one_hot(result, 2*Worig)
@@ -599,9 +602,20 @@ def segmentation(
             logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
             logging.info('One-hot labels not spatially filtered because width < 512 pixels')
 
+        # set to zero any labels not present in the original labels
+        for k in np.setdiff1d(np.unique(result), unique_labels):
+            result[result==k]=0
+        # print(np.unique(result))
+
         result = result.astype('float')
         result[result==0] = np.nan
         result = inpaint_nans(result).astype('uint8')
+
+        # set to zero any labels not present in the original labels
+        for k in np.setdiff1d(np.unique(result), unique_labels):
+            result[result==k]=0
+        match = np.unique(result)
+        # print(match)
 
         logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('Spatially filtered values inpainted')
@@ -645,6 +659,13 @@ def segmentation(
         logging.info('CRF model applied with %i test-time augmentations' % ( num_tta))
 
         result2 = np.round(np.average(np.dstack(R), axis=-1, weights = W)).astype('uint8')
+
+        result2, n = crf_refine(result, img, crf_theta_slider_value, crf_mu_slider_value, crf_downsample_factor, gt_prob)
+
+        # set to zero any labels not present in the original labels
+        for k in np.setdiff1d(np.unique(result), unique_labels):
+            result2[result2==k]=0
+
         del R,W
         logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('Weighted average applied to test-time augmented outputs')
@@ -659,8 +680,19 @@ def segmentation(
         result2 = result2.astype('float')
         result2[result2==0] = np.nan
         result2 = inpaint_nans(result2).astype('uint8')
+
+        for k in np.setdiff1d(np.unique(result2), unique_labels):
+            result2[result2==k]=0
+        # print(np.unique(result2))
+
         logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('Spatially filtered values inpainted')
         logging.info('percent RAM usage: %f' % (psutil.virtual_memory()[2]))
+
+        match2 = np.unique(result2)
+        # print(match2)
+        if not np.all(np.array(match)==np.array(match2)):
+            print("Problem with CRF solution.... reverting back to MLP solution")
+            result2 = result.copy()
 
     return result2

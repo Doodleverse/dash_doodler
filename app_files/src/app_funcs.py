@@ -24,7 +24,12 @@
 # SOFTWARE.
 
 from glob import glob
-import dash_html_components as html
+
+try:
+    from dash import html
+except:
+    import dash_html_components as html
+
 import io, os, psutil, logging, base64, PIL.Image
 from plot_utils import dummy_fig, add_layout_images_to_fig
 import zipfile

@@ -38,8 +38,16 @@ from annotations_to_segmentations import *
 import plotly.express as px
 import dash
 from dash.dependencies import Input, Output, State
-import dash_html_components as html
-import dash_core_components as dcc
+try:
+    from dash import html
+except:
+    import dash_html_components as html
+
+try:
+    from dash import dcc
+except:
+    import dash_core_components as dcc
+
 from flask import Flask
 from flask_caching import Cache
 

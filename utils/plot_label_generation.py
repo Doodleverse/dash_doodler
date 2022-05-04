@@ -231,6 +231,9 @@ def gen_plot_seq(orig_distance, save_mode):
             doodles = data['doodles']
             training_data = features[:, doodles > 0].T
             training_labels = doodles[doodles > 0].ravel()
+
+            unique_labels = np.unique(training_labels)
+
             del doodles
 
             training_data = training_data[::DEFAULT_RF_DOWNSAMPLE]
@@ -292,6 +295,7 @@ def gen_plot_seq(orig_distance, save_mode):
                 ## filter based on distance
                 rf_result_filt = filter_one_hot_spatial(rf_result_filt, orig_distance)
 
+
             if save_mode:
                 savez_dict['rf_result_spatfilt'] = rf_result_filt
 
@@ -303,6 +307,10 @@ def gen_plot_seq(orig_distance, save_mode):
             rf_result_filt = rf_result_filt.astype('float')
             rf_result_filt[rf_result_filt==0] = np.nan
             rf_result_filt_inp = inpaint_nans(rf_result_filt).astype('uint8')
+
+            for k in np.setdiff1d(np.unique(rf_result_filt_inp), unique_labels):
+                rf_result_filt_inp[rf_result_filt_inp==k]=0
+
 
             plt.subplot(224); plt.imshow(rf_result_filt_inp, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
             plt.title('d) Inpainted', loc='left', fontsize=7)
@@ -442,41 +450,41 @@ def gen_plot_seq(orig_distance, save_mode):
                 crf_result = np.round(np.average(np.dstack(R), axis=-1, weights = W)).astype('uint8')
                 del R, W, n, w, r
 
-                #================================
-                plt.subplot(221); plt.imshow(crf_result-1, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap); plt.axis('off')
-                plt.title('a) Original', loc='left', fontsize=7)
+                # #================================
+                # plt.subplot(221); plt.imshow(crf_result, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap); plt.axis('off')
+                # plt.title('a) Original', loc='left', fontsize=7)
 
-                crf_result_filt = filter_one_hot(crf_result, 2*crf_result.shape[0])
-
-                if save_mode:
-                    savez_dict['crf_result_filt'] = crf_result_filt
-                    savez_dict['crf_result'] = crf_result-1
-
-                del crf_result
-
-                plt.subplot(222); plt.imshow(crf_result_filt, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
-                plt.title('b) Filtered', loc='left', fontsize=7)
-
-                if crf_result_filt.shape[0]>512:
-                    ## filter based on distance
-                    crf_result_filt = filter_one_hot_spatial(crf_result_filt, distance)
+                # crf_result_filt = filter_one_hot(crf_result, 2*crf_result.shape[0])
 
                 if save_mode:
-                    savez_dict['rf_result_spatfilt'] = crf_result_filt
+                    # savez_dict['crf_result_filt'] = crf_result_filt
+                    savez_dict['crf_result'] = crf_result
 
-                plt.subplot(223); plt.imshow(crf_result_filt, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
-                plt.title('c) Spatially filtered', loc='left', fontsize=7)
+                # del crf_result
 
-                crf_result_filt = crf_result_filt.astype('float')
-                crf_result_filt[crf_result_filt==0] = np.nan
-                crf_result_filt_inp = inpaint_nans(crf_result_filt).astype('uint8')
-                del crf_result_filt
+                # plt.subplot(222); plt.imshow(crf_result_filt, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
+                # plt.title('b) Filtered', loc='left', fontsize=7)
 
-                plt.subplot(224); plt.imshow(crf_result_filt_inp, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
-                plt.title('d) Inpainted (final label)', loc='left', fontsize=7)
+                # if crf_result_filt.shape[0]>512:
+                #     ## filter based on distance
+                #     crf_result_filt = filter_one_hot_spatial(crf_result_filt, distance)
 
-                plt.savefig(anno_file.replace('.npz','_crf_label_filtered_labelgen.png'), dpi=200, bbox_inches='tight')
-                plt.close()
+                # if save_mode:
+                #     savez_dict['rf_result_spatfilt'] = crf_result_filt
+
+                # plt.subplot(223); plt.imshow(crf_result_filt, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
+                # plt.title('c) Spatially filtered', loc='left', fontsize=7)
+
+                # crf_result_filt = crf_result_filt.astype('float')
+                # crf_result_filt[crf_result_filt==0] = np.nan
+                # crf_result_filt_inp = inpaint_nans(crf_result_filt).astype('uint8')
+                # del crf_result_filt
+
+                # plt.subplot(224); plt.imshow(crf_result_filt_inp, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
+                # plt.title('d) Inpainted (final label)', loc='left', fontsize=7)
+
+                # plt.savefig(anno_file.replace('.npz','_crf_label_filtered_labelgen.png'), dpi=200, bbox_inches='tight')
+                # plt.close()
 
             else:
 
@@ -484,48 +492,48 @@ def gen_plot_seq(orig_distance, save_mode):
 
                     crf_result, n = crf_refine(rf_result_filt_inp, img, DEFAULT_CRF_THETA, DEFAULT_CRF_MU, DEFAULT_CRF_DOWNSAMPLE, DEFAULT_CRF_GTPROB)
 
-                    #================================
-                    plt.subplot(221); plt.imshow(crf_result-1, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap); plt.axis('off')
-                    plt.title('a) Original', loc='left', fontsize=7)
+                    # #================================
+                    # plt.subplot(221); plt.imshow(crf_result, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap); plt.axis('off')
+                    # plt.title('a) Original', loc='left', fontsize=7)
 
-                    crf_result_filt = filter_one_hot(crf_result, 2*crf_result.shape[0])
-
-                    if save_mode:
-                        savez_dict['crf_result_filt'] = crf_result_filt
-                        savez_dict['crf_result'] = crf_result-1
-
-                    del crf_result
-
-                    plt.subplot(222); plt.imshow(crf_result_filt, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
-                    plt.title('b) Filtered', loc='left', fontsize=7)
-
-                    if crf_result_filt.shape[0]>512:
-                        ## filter based on distance
-                        crf_result_filt = filter_one_hot_spatial(crf_result_filt, orig_distance)
+                    # crf_result_filt = filter_one_hot(crf_result, 2*crf_result.shape[0])
 
                     if save_mode:
-                        savez_dict['rf_result_spatfilt'] = crf_result_filt
+                        # savez_dict['crf_result_filt'] = crf_result_filt
+                        savez_dict['crf_result'] = crf_result
 
-                    plt.subplot(223); plt.imshow(crf_result_filt, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
-                    plt.title('c) Spatially filtered', loc='left', fontsize=7)
+                    # del crf_result
 
-                    #crf_result_filt_inp = inpaint_zeros(crf_result_filt).astype('uint8')
-                    crf_result_filt = crf_result_filt.astype('float')
-                    crf_result_filt[crf_result_filt==0] = np.nan
-                    crf_result_filt_inp = inpaint_nans(crf_result_filt).astype('uint8')
-                    del crf_result_filt
+                    # plt.subplot(222); plt.imshow(crf_result_filt, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap); plt.axis('off')
+                    # plt.title('b) Filtered', loc='left', fontsize=7)
 
-                    plt.subplot(224); plt.imshow(crf_result_filt_inp, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
-                    plt.title('d) Inpainted (final label)', loc='left', fontsize=7)
+                    # if crf_result_filt.shape[0]>512:
+                    #     ## filter based on distance
+                    #     crf_result_filt = filter_one_hot_spatial(crf_result_filt, orig_distance)
 
-                    plt.savefig(anno_file.replace('.npz','_crf_label_filtered_labelgen.png'), dpi=200, bbox_inches='tight')
-                    plt.close()
+                    # if save_mode:
+                    #     savez_dict['rf_result_spatfilt'] = crf_result_filt
+
+                    # plt.subplot(223); plt.imshow(crf_result_filt, vmin=1, vmax=NUM_LABEL_CLASSES, cmap=cmap); plt.axis('off')
+                    # plt.title('c) Spatially filtered', loc='left', fontsize=7)
+
+                    # #crf_result_filt_inp = inpaint_zeros(crf_result_filt).astype('uint8')
+                    # crf_result_filt = crf_result_filt.astype('float')
+                    # crf_result_filt[crf_result_filt==0] = np.nan
+                    # crf_result_filt_inp = inpaint_nans(crf_result_filt).astype('uint8')
+                    # del crf_result_filt
+
+                    # plt.subplot(224); plt.imshow(crf_result_filt_inp, vmin=1, vmax=NUM_LABEL_CLASSES, cmap=cmap); plt.axis('off')
+                    # plt.title('d) Inpainted (final label)', loc='left', fontsize=7)
+
+                    # plt.savefig(anno_file.replace('.npz','_crf_label_filtered_labelgen.png'), dpi=200, bbox_inches='tight')
+                    # plt.close()
                 else:
-                    crf_result_filt_inp = rf_result_filt_inp.copy()
+                    crf_result = rf_result_filt_inp.copy()
 
             #================================
             plt.imshow(img)
-            plt.imshow(crf_result_filt_inp-1, alpha=0.25, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
+            plt.imshow(crf_result, alpha=0.25, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
             plt.axis('off')
             plt.colorbar(shrink=0.5)
             plt.savefig(anno_file.replace('.npz','_image_label_final_labelgen.png'), dpi=200, bbox_inches='tight')
@@ -533,10 +541,10 @@ def gen_plot_seq(orig_distance, save_mode):
 
 
             if save_mode:
-                tosave = (np.arange(crf_result_filt_inp.max()) == crf_result_filt_inp[...,None]-1).astype(int)
+                tosave = (np.arange(crf_result.max()) == crf_result[...,None]-1).astype(int)
                 savez_dict['final_label'] = tosave.astype('uint8')#crf_result_filt_inp-1
                 savez_dict['image'] = (255*img).astype('uint8')
-            del img, crf_result_filt_inp
+            del img, crf_result
 
             imwrite(anno_file.replace('.npz','_label_labelgen.png'), np.argmax(savez_dict['final_label'],-1).astype('uint8'))
             imwrite(anno_file.replace('.npz','_doodles_labelgen.png'), savez_dict['doodles'].astype('uint8'))
