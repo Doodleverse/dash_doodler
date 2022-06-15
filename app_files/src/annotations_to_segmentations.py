@@ -42,6 +42,8 @@ from datetime import datetime
 from app_funcs import *
 from plot_utils import *
 
+    # gt_prob,
+
 ##========================================================
 def show_segmentation(image_path,
     mask_shapes,
@@ -51,7 +53,7 @@ def show_segmentation(image_path,
     results_folder,
     rf_downsample_value,
     crf_downsample_factor,
-    gt_prob,
+    null,
     my_id_value,
     n_sigmas,
     multichannel,
@@ -75,8 +77,8 @@ def show_segmentation(image_path,
 
     segimg, seg, img, color_doodles, doodles = compute_segmentations(
         mask_shapes, crf_theta_slider_value,crf_mu_slider_value,
-        results_folder, rf_downsample_value,
-        crf_downsample_factor, gt_prob, my_id_value, callback_context, n_sigmas,
+        rf_downsample_value, #results_folder, 
+        crf_downsample_factor,  n_sigmas, #my_id_value, callback_context, gt_prob,
         multichannel, intensity, edges, texture, sigma_min, sigma_max,
         img_path=image_path,
         shape_layers=shape_layers,
@@ -332,17 +334,17 @@ def label_to_colors(
     else:
         return cimg
 
+    gt_prob,
+    # results_folder,
+    # my_id_value,
+    # callback_context,
 ##========================================================
 def compute_segmentations(
     shapes,
     crf_theta_slider_value,
     crf_mu_slider_value,
-    results_folder,
     rf_downsample_value,
     crf_downsample_factor,
-    gt_prob,
-    my_id_value,
-    callback_context,
     n_sigmas,
     multichannel,
     intensity,
@@ -380,10 +382,10 @@ def compute_segmentations(
     logging.info('percent RAM usage: %f' % (psutil.virtual_memory()[2]))
     logging.info('Calling segmentation function')
 
-    seg = segmentation(img, img_path, results_folder, callback_context, #rf_file, data_file,
+    seg = segmentation(img, #img_path, results_folder, callback_context, 
                        crf_theta_slider_value, crf_mu_slider_value,  rf_downsample_value, #median_filter_value,
-                       crf_downsample_factor, gt_prob, mask, n_sigmas, multichannel, intensity, edges, texture,
-                       sigma_min, sigma_max)#, SAVE_RF) #n_estimators,
+                       crf_downsample_factor, mask, n_sigmas, multichannel, intensity, edges, texture, #gt_prob, 
+                       sigma_min, sigma_max)
     logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     logging.info('Segmentation computed')
 
