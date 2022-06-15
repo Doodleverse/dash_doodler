@@ -42,7 +42,7 @@ if __name__ == "__main__":
         # check for existig files and if none, download the sample set
         if len(glob('assets/*.jpg')+glob('assets/*.JPG')+glob('assets/*.jpeg'))==0:
             print('Downloading the sample images from the web ....')
-            url='https://github.com/dbuscombe-usgs/dash_doodler/releases/download/data/sample_images.zip'
+            url='https://github.com/Doodleverse/dash_doodler/releases/download/data/sample_images.zip'
             filename = os.path.join(os.getcwd(), "sample_images.zip")
             r = requests.get(url, allow_redirects=True)
             open(filename, 'wb').write(r.content)
