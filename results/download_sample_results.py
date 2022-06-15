@@ -25,7 +25,7 @@
 
 import os, requests, zipfile
 
-url='https://github.com/dbuscombe-usgs/dash_doodler/releases/download/example-results/results2021-06-21-11-05.zip'
+url='https://github.com/Doodleverse/dash_doodler/releases/download/example-results/results2021-06-21-11-05.zip'
 filename = os.path.join(os.getcwd(), "results2021-06-21-11-05.zip")
 r = requests.get(url, allow_redirects=True)
 open(filename, 'wb').write(r.content)
