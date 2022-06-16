@@ -25,3 +25,4 @@ dependencies:
  - pip:
    - Flask-Caching
    - requests
+   - doodler-engine

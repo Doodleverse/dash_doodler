@@ -27,8 +27,9 @@
 ## ``````````````````````````` local imports
 # allows loading of functions from the src directory
 import sys,os
-sys.path.insert(1, 'app_files'+os.sep+'src')
-from annotations_to_segmentations import *
+# sys.path.insert(1, 'app_files'+os.sep+'src')
+# from annotations_to_segmentations import *
+from doodler_engine.annotations_to_segmentations import *
 
 #========================================================
 ## ``````````````````````````` imports
@@ -65,7 +66,7 @@ try:
     from my_defaults import *
     print('Hyperparameters imported from my_defaults.py')
 except:
-    from defaults import *
+    from doodler_engine.defaults import *
     print('Default hyperparameters imported from src/my_defaults.py')
 
 #========================================================
