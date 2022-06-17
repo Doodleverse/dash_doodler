@@ -56,6 +56,24 @@ from flask_caching import Cache
 import base64, PIL.Image, json, shutil, time, logging, psutil
 from datetime import datetime
 
+
+##========================================================
+def parse_contents(contents, filename, date):
+    return html.Div([
+        html.H5(filename),
+        html.H6(datetime.fromtimestamp(date)),
+
+        # HTML images accept base64 encoded strings in the same format
+        # that is supplied by the upload
+        html.Img(src=contents),
+        html.Hr(),
+        html.Div('Raw Content'),
+        html.Pre(contents[0:200] + '...', style={
+            'whiteSpace': 'pre-wrap',
+            'wordBreak': 'break-all'
+        })
+    ])
+
 #========================================================
 ## defaults
 #========================================================
