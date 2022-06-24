@@ -37,6 +37,11 @@ from doodler_engine.annotations_to_segmentations import *
 
 ## dash/plotly/flask
 import plotly.express as px
+import plotly.graph_objects as go
+# import skimage.util
+from plotly.utils import ImageUriValidator
+
+
 import dash
 from dash.dependencies import Input, Output, State
 try:
@@ -55,6 +60,51 @@ from flask_caching import Cache
 #others
 import base64, PIL.Image, json, shutil, time, logging, psutil
 from datetime import datetime
+
+
+##========================================================
+def make_and_return_default_figure(
+    images,#=[DEFAULT_IMAGE_PATH],
+    stroke_color,#=convert_integer_class_to_color(class_label_colormap,DEFAULT_LABEL_CLASS),
+    pen_width,#=DEFAULT_PEN_WIDTH,
+    shapes#=[],
+):
+    """
+    create and return the default Dash/plotly figure object
+    """
+    fig = dummy_fig() #plot_utils.
+
+    add_layout_images_to_fig(fig, images) #plot_utils.
+
+    fig.update_layout(
+        {
+            "dragmode": "drawopenpath",
+            "shapes": shapes,
+            "newshape.line.color": stroke_color,
+            "newshape.line.width": pen_width,
+            "margin": dict(l=0, r=0, b=0, t=0, pad=4),
+            "height": 650
+        }
+    )
+
+    return fig
+
+
+##========================================================
+def dummy_fig():
+    """ create a dummy figure to be later modified """
+    fig = go.Figure(go.Scatter(x=[], y=[]))
+    fig.update_layout(template=None)
+    fig.update_xaxes(showgrid=False, showticklabels=False, zeroline=False)
+    fig.update_yaxes(
+        showgrid=False, scaleanchor="x", showticklabels=False, zeroline=False
+    )
+    return fig
+
+##========================================================
+def pil2uri(img):
+    """ conevrts PIL image to uri"""
+    return ImageUriValidator.pil_image_to_uri(img)
 
 
 ##========================================================
