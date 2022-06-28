@@ -27,8 +27,9 @@
 ## ``````````````````````````` local imports
 # allows loading of functions from the src directory
 import sys,os
-sys.path.insert(1, 'app_files'+os.sep+'src')
-from annotations_to_segmentations import *
+# sys.path.insert(1, 'app_files'+os.sep+'src')
+# from annotations_to_segmentations import *
+from doodler_engine.annotations_to_segmentations import *
 
 #========================================================
 ## ``````````````````````````` imports
@@ -36,6 +37,11 @@ from annotations_to_segmentations import *
 
 ## dash/plotly/flask
 import plotly.express as px
+import plotly.graph_objects as go
+# import skimage.util
+from plotly.utils import ImageUriValidator
+
+
 import dash
 from dash.dependencies import Input, Output, State
 try:
@@ -55,6 +61,69 @@ from flask_caching import Cache
 import base64, PIL.Image, json, shutil, time, logging, psutil
 from datetime import datetime
 
+
+##========================================================
+def make_and_return_default_figure(
+    images,#=[DEFAULT_IMAGE_PATH],
+    stroke_color,#=convert_integer_class_to_color(class_label_colormap,DEFAULT_LABEL_CLASS),
+    pen_width,#=DEFAULT_PEN_WIDTH,
+    shapes#=[],
+):
+    """
+    create and return the default Dash/plotly figure object
+    """
+    fig = dummy_fig() #plot_utils.
+
+    add_layout_images_to_fig(fig, images) #plot_utils.
+
+    fig.update_layout(
+        {
+            "dragmode": "drawopenpath",
+            "shapes": shapes,
+            "newshape.line.color": stroke_color,
+            "newshape.line.width": pen_width,
+            "margin": dict(l=0, r=0, b=0, t=0, pad=4),
+            "height": 650
+        }
+    )
+
+    return fig
+
+
+##========================================================
+def dummy_fig():
+    """ create a dummy figure to be later modified """
+    fig = go.Figure(go.Scatter(x=[], y=[]))
+    fig.update_layout(template=None)
+    fig.update_xaxes(showgrid=False, showticklabels=False, zeroline=False)
+    fig.update_yaxes(
+        showgrid=False, scaleanchor="x", showticklabels=False, zeroline=False
+    )
+    return fig
+
+##========================================================
+def pil2uri(img):
+    """ conevrts PIL image to uri"""
+    return ImageUriValidator.pil_image_to_uri(img)
+
+
+##========================================================
+def parse_contents(contents, filename, date):
+    return html.Div([
+        html.H5(filename),
+        html.H6(datetime.fromtimestamp(date)),
+
+        # HTML images accept base64 encoded strings in the same format
+        # that is supplied by the upload
+        html.Img(src=contents),
+        html.Hr(),
+        html.Div('Raw Content'),
+        html.Pre(contents[0:200] + '...', style={
+            'whiteSpace': 'pre-wrap',
+            'wordBreak': 'break-all'
+        })
+    ])
+
 #========================================================
 ## defaults
 #========================================================
@@ -65,7 +134,7 @@ try:
     from my_defaults import *
     print('Hyperparameters imported from my_defaults.py')
 except:
-    from defaults import *
+    from doodler_engine.defaults import *
     print('Default hyperparameters imported from src/my_defaults.py')
 
 #========================================================
@@ -339,15 +408,15 @@ app.layout = html.Div(
                             value=DEFAULT_CRF_DOWNSAMPLE,
                         ),
 
-                        html.H6(id="crf-gtprob-display"),
-                        # Slider for specifying pen width
-                        dcc.Slider(
-                            id="crf-gtprob-slider",
-                            min=0.5,
-                            max=0.95,
-                            step=0.05,
-                            value=DEFAULT_CRF_GTPROB,
-                        ),
+                        # html.H6(id="crf-gtprob-display"),
+                        # # Slider for specifying pen width
+                        # dcc.Slider(
+                        #     id="crf-gtprob-slider",
+                        #     min=0.5,
+                        #     max=0.95,
+                        #     step=0.05,
+                        #     value=DEFAULT_CRF_GTPROB,
+                        # ),
 
                         dcc.Markdown(
                             ">Classifier settings"
@@ -489,7 +558,7 @@ app.layout = html.Div(
     Output("theta-display", "children"),
     Output("mu-display", "children"),
     Output("crf-downsample-display", "children"),
-    Output("crf-gtprob-display", "children"),
+    # Output("crf-gtprob-display", "children"),
     Output("rf-downsample-display", "children"),
     Output("numscales-display", "children"),
     Output("classified-image-store", "data"),
@@ -507,7 +576,7 @@ app.layout = html.Div(
     Input("pen-width", "value"),
     Input("crf-show-segmentation", "value"),
     Input("crf-downsample-slider", "value"),
-    Input("crf-gtprob-slider", "value"),
+    # Input("crf-gtprob-slider", "value"),
     Input("rf-downsample-slider", "value"),
     Input("numscales-slider", "value"),
     Input("select-image", "value"),
@@ -536,7 +605,6 @@ def update_output(
     pen_width_value,
     show_segmentation_value,
     crf_downsample_value,
-    gt_prob,
     rf_downsample_value,
     n_sigmas,
     select_image_value,
@@ -564,7 +632,7 @@ def update_output(
     texture = True
 
     image_list_data = []
-    all_image_value = ''
+    # all_image_value = ''
     files = ''
     options = []
 
@@ -578,7 +646,6 @@ def update_output(
         filelist = 'files_done.txt'
         files, labeled_files = uploaded_files(filelist,UPLOAD_DIRECTORY,LABELED_DIRECTORY)
 
-        logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('File list written to %s' % (filelist))
 
         files = [f.split('assets/')[-1] for f in files]
@@ -589,11 +656,11 @@ def update_output(
 
         options = [{'label': image, 'value': image } for image in files]
 
-        logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('Checked assets and labeled lists and revised list of images yet to label')
 
-    if 'assets' not in select_image_value:
-        select_image_value = 'assets'+os.sep+select_image_value
+    if select_image_value is not None:
+        if 'assets' not in select_image_value:
+            select_image_value = 'assets'+os.sep+select_image_value
 
     if callback_context == "graph.relayoutData":
         try:
@@ -608,7 +675,6 @@ def update_output(
        masks_data={"shapes": []}
        segmentation_data={}
 
-       logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
        logging.info('New image selected')
 
     pen_width = pen_width_value
@@ -629,7 +695,6 @@ def update_output(
         shapes=masks_data["shapes"],
     )
 
-    logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     logging.info('Main figure window updated with new image')
 
     if ("Show segmentation" in show_segmentation_value) and (
@@ -657,7 +722,7 @@ def update_output(
         # this is the function that computes and updates the segmentation whenever the checkbox is checked
         segimgpng, seg, img, color_doodles, doodles  = show_segmentation(
             [select_image_value], masks_data["shapes"], callback_context,
-             crf_theta_slider_value, crf_mu_slider_value, results_folder, rf_downsample_value, crf_downsample_value, gt_prob, my_id_value,
+             crf_theta_slider_value, crf_mu_slider_value, results_folder, rf_downsample_value, crf_downsample_value, 1.0, my_id_value,
              n_sigmas, multichannel, intensity, edges, texture,class_label_colormap
         )
 
@@ -669,12 +734,10 @@ def update_output(
         else: # windows
            elapsed = (time.clock() - start)#/60
 
-        logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('Processing took %s seconds' % (str(elapsed)))
 
         lstack = (np.arange(seg.max()) == seg[...,None]-1).astype(int) #one-hot encode the 2D label into 3D stack of IxJxN classes
 
-        logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('One-hot encoded label stack created')
 
 
@@ -694,7 +757,6 @@ def update_output(
             orig_image = imread(select_image_value[0])
             if np.ndim(orig_image)>3:
                orig_image = orig_image[:,:,:3]
-            # orig_image = img_to_ubyte_array(select_image_value[0])
 
         else:
             if 'jpg' in select_image_value:
@@ -714,10 +776,9 @@ def update_output(
                orig_image = orig_image[:,:,:3]
             # orig_image = img_to_ubyte_array(select_image_value)
 
-        logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('RGB label image saved to %s' % (colfile))
 
-        settings_dict = np.array([pen_width, crf_downsample_value, rf_downsample_value, crf_theta_slider_value, crf_mu_slider_value, gt_prob, n_sigmas])
+        settings_dict = np.array([pen_width, crf_downsample_value, rf_downsample_value, crf_theta_slider_value, crf_mu_slider_value, 1.0, n_sigmas])
 
         if type(select_image_value) is list:
             if 'jpg' in select_image_value[0]:
@@ -793,14 +854,11 @@ def update_output(
                 savez_dict['classes'] = class_label_names
                 np.savez_compressed(numpyfile, **savez_dict )#save settings too
 
-        logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('percent RAM usage: %f' % (psutil.virtual_memory()[2]))
 
         del img, seg, lstack, doodles, color_doodles
-        logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('Numpy arrays saved to %s' % (numpyfile))
 
-        logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('percent RAM usage: %f' % (psutil.virtual_memory()[2]))
 
         segmentation_data = shapes_seg_pair_as_dict(
@@ -821,7 +879,6 @@ def update_output(
             )
             shutil.copyfile(select_image_value, select_image_value.replace('assets', 'labeled')) #move
 
-        logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('%s moved to labeled folder' % (select_image_value.replace('assets', 'labeled')))
 
         images_to_draw = []
@@ -845,15 +902,15 @@ def update_output(
             the_file.write('DEFAULT_RF_DOWNSAMPLE = {}\n'.format(rf_downsample_value))
             the_file.write('DEFAULT_CRF_THETA = {}\n'.format(crf_theta_slider_value))
             the_file.write('DEFAULT_CRF_MU = {}\n'.format(crf_mu_slider_value))
-            the_file.write('DEFAULT_CRF_GTPROB = {}\n'.format(gt_prob))
+            # the_file.write('DEFAULT_CRF_GTPROB = {}\n'.format(gt_prob))
             the_file.write('DEFAULT_NUMSCALES = {}\n'.format(n_sigmas))
 
         print('my_defaults.py overwritten with parameter settings')
 
-        logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+        # logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('my_defaults.py overwritten with parameter settings')
 
-        logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+        # logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         logging.info('percent RAM usage: %f' % (psutil.virtual_memory()[2]))
 
     if len(files) == 0:
@@ -869,7 +926,7 @@ def update_output(
         "Blur factor (default: %d): %d" % (DEFAULT_CRF_THETA, crf_theta_slider_value),
         "Model independence factor (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value),
         "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
-        "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
+        # "User-defined quality score (1=perfect. default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
         "Classifier downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
         "Number of scales (default: %d): %d" % (DEFAULT_NUMSCALES,n_sigmas),
         segmentation_store_data,
@@ -887,7 +944,7 @@ def update_output(
         "Blur factor (default: %d): %d" % (DEFAULT_CRF_THETA, crf_theta_slider_value),
         "Model independence factor  (default: %d): %d" % (DEFAULT_CRF_MU,crf_mu_slider_value),
         "CRF downsample factor (default: %d): %d" % (DEFAULT_CRF_DOWNSAMPLE,crf_downsample_value),
-        "Probability of doodle (default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
+        # "User-defined quality score (1=perfect. default: %f): %f" % (DEFAULT_CRF_GTPROB,gt_prob),
         "Classifier downsample factor (default: %d): %d" % (DEFAULT_RF_DOWNSAMPLE,rf_downsample_value),
         "Number of scales (default: %d): %d" % (DEFAULT_NUMSCALES,n_sigmas),
         segmentation_store_data,
