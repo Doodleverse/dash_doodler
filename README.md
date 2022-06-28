@@ -73,18 +73,11 @@ git clone --depth 1 https://github.com/Doodleverse/dash_doodler.git
 2. Create a conda environment called `dashdoodler`
 
 ```
-conda env create --file environment/dashdoodler-clean.yml
-conda activate dashdoodler
-```
-
-*If* the above doesn't work, try this:
-
-```bash
 conda env create --file environment/dashdoodler.yml
 conda activate dashdoodler
 ```
 
-*If neither of the above* work, try this:
+*If* the above doesn't work, try this:
 
 ```bash
 conda create --name dashdoodler python=3.6
