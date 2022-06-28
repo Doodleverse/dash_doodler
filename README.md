@@ -72,31 +72,9 @@ git clone --depth 1 https://github.com/Doodleverse/dash_doodler.git
 
 2. Create a conda environment called `dashdoodler`
 
-Prepare:
-
 ```
-conda clean --all
-conda update -n base conda
-conda install -c conda-forge mamba
-```
-
-Install
-
-```
-mamba env create --file environment/dashdoodler.yml
-conda activate dashdoodler3
-```
-
-Install `pydensecrf`
-
-If you are on a Windows machine (why?), you'll need to do this:
-
-`conda install -c anaconda vs2015_runtime`
-
-Then (or if you are on Linux/Mac, go straight to this step)
-
-```
-pip install git+https://github.com/li-plus/pydensecrf.git@0d53acbcf5123d4c88040fe68fbb9805fc5b2fb9
+conda env create --file environment/dashdoodler.yml
+conda activate dashdoodler
 ```
 
 *If* the above doesn't work, try this:
