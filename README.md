@@ -72,8 +72,17 @@ git clone --depth 1 https://github.com/Doodleverse/dash_doodler.git
 
 2. Create a conda environment called `dashdoodler`
 
+
+First, clean up conda and install mamba
+
 ```
-conda env create --file environment/dashdoodler.yml
+conda clean --all
+conda install -c conda-forge mamba
+```
+
+
+```
+mamba env create --file environment/dashdoodler.yml
 conda activate dashdoodler
 ```
 
