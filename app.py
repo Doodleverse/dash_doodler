@@ -658,8 +658,9 @@ def update_output(
 
         logging.info('Checked assets and labeled lists and revised list of images yet to label')
 
-    if 'assets' not in select_image_value:
-        select_image_value = 'assets'+os.sep+select_image_value
+    if select_image_value is not None:
+        if 'assets' not in select_image_value:
+            select_image_value = 'assets'+os.sep+select_image_value
 
     if callback_context == "graph.relayoutData":
         try:
