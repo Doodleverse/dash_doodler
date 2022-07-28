@@ -27,9 +27,12 @@
 
 # allows loading of functions from the src directory
 import sys, os, getopt
-sys.path.insert(1, '../app_files/src')
+sys.path.insert(1, '../')
 # from annotations_to_segmentations import *
-from image_segmentation import *
+# from image_segmentation import *
+from doodler_engine.annotations_to_segmentations import *
+from doodler_engine.image_segmentation import *
+
 
 from glob import glob
 import skimage.util
