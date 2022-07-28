@@ -383,7 +383,7 @@ app.layout = html.Div(
                         dcc.Slider(
                             id="crf-theta-slider",
                             min=1,
-                            max=100,
+                            max=20,
                             step=1,
                             value=DEFAULT_CRF_THETA,
                         ),
@@ -393,7 +393,7 @@ app.layout = html.Div(
                         dcc.Slider(
                             id="crf-mu-slider",
                             min=1,
-                            max=100,
+                            max=20,
                             step=1,
                             value=DEFAULT_CRF_MU,
                         ),
@@ -715,9 +715,12 @@ def update_output(
 
         # start timer
         if os.name=='posix': # true if linux/mac or cygwin on windows
-           start = time.time()
+            start = time.time()
         else: # windows
-           start = time.clock()
+            try:
+                start = time.clock()
+            except:
+                start = time.perf_counter()
 
         # this is the function that computes and updates the segmentation whenever the checkbox is checked
         segimgpng, seg, img, color_doodles, doodles  = show_segmentation(
@@ -730,9 +733,13 @@ def update_output(
         logging.info('percent RAM usage: %f' % (psutil.virtual_memory()[2]))
 
         if os.name=='posix': # true if linux/mac
-           elapsed = (time.time() - start)#/60
+            elapsed = (time.time() - start)#/60
         else: # windows
-           elapsed = (time.clock() - start)#/60
+            #elapsed = (time.clock() - start)#/60
+            try:
+                elapsed = (time.clock() - start)#/60
+            except:
+                elapsed = (time.perf_counter() - start)#/60
 
         logging.info('Processing took %s seconds' % (str(elapsed)))
 

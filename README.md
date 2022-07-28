@@ -70,21 +70,25 @@ git clone --depth 1 https://github.com/Doodleverse/dash_doodler.git
 
 (`--depth 1` means "give me only the present code, not the whole history of git commits" - this saves disk space, and time)
 
-2. Create a conda environment called `dashdoodler`
+2. Create and activate a conda environment called `dashdoodler`
 
-```
-conda env create --file environment/dashdoodler.yml
+```bash
+conda create --name dashdoodler python=3.8
 conda activate dashdoodler
+```
+
+3. Install the dependencies:
+
+```bash
+conda install -c conda-forge pydensecrf cairo cairosvg scikit-learn scikit-image psutil dash flask-caching requests pandas
+pip install doodler-engine
 ```
 
 *If* the above doesn't work, try this:
 
-```bash
-conda create --name dashdoodler python=3.6
+```
+conda env create --file environment/dashdoodler.yml
 conda activate dashdoodler
-conda install -c conda-forge pydensecrf cairo cairosvg
-conda install -c conda-forge scikit-learn scikit-image psutil dash flask-caching requests
-pip install -r environment/requirements.txt
 ```
 
 and good luck to you!
