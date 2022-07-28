@@ -45,6 +45,7 @@ import plotly.express as px
 import matplotlib
 
 from numpy.lib.npyio import load
+from joblib import delayed, Parallel
 
 ###===========================================================
 try:
@@ -67,33 +68,15 @@ def make_dir(dirname):
     else:
         print('{} directory already exists'.format(dirname))
 
+###===========================================================
 def move_files(files, outdirec):
     for a_file in files:
         shutil.move(a_file, outdirec+os.sep+a_file.split(os.sep)[-1])
 
+###===========================================================
+def print_jpeg(l, i, classes):
+        NCLASSES  = len(classes)
 
-def make_jpegs():
-
-    Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-    direc = askdirectory(title='Select directory of images', initialdir=os.getcwd())
-    image_files = sorted(glob(direc+'/*.jpg'))
-
-    Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-    label_direc = askdirectory(title='Select directory of label images', initialdir=direc)
-    label_files = sorted(glob(label_direc+'/*.jpg'))
-
-    Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-    classfile = askopenfilename(title='Select file containing class (label) names', initialdir=label_direc, filetypes=[("Pick classes.txt file","*.txt")])
-
-    with open(classfile) as f:
-        classes = f.readlines()
-
-    NCLASSES  = len(classes)
-    class_string = '_'.join([c.strip() for c in classes])
-
-    for counter, (l,i) in enumerate(zip(label_files,image_files)):
-
-        # print("Working on %s" % (file))
         print("Working on %s" % (l))
         lab = np.round(io.imread(l, as_gray=True))
         im = io.imread(i)[:,:,0]
@@ -110,19 +93,36 @@ def make_jpegs():
         # we can't have fewer colors than classes
         assert NUM_LABEL_CLASSES <= len(class_label_colormap)
 
-        colormap = [
-            tuple([fromhex(h[s : s + 2]) for s in range(0, len(h), 2)])
-            for h in [c.replace("#", "") for c in class_label_colormap]
-        ]
-
         cmap = matplotlib.colors.ListedColormap(class_label_colormap[:NUM_LABEL_CLASSES+1])
-        # cmap2 = matplotlib.colors.ListedColormap(['#000000']+class_label_colormap[:NUM_LABEL_CLASSES])
 
         #Make an overlay
         plt.imshow(im)
         plt.imshow(lab, cmap=cmap, alpha=0.6, vmin=0, vmax=NCLASSES)
         plt.axis('off')
         plt.savefig(i.replace('.jpg','_overlay.png'), dpi=200, bbox_inches='tight')
+
+###===========================================================
+def make_jpegs():
+
+    Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+    direc = askdirectory(title='Select directory of images', initialdir=os.getcwd())
+    image_files = sorted(glob(direc+'/*.jpg'))
+
+    Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+    label_direc = askdirectory(title='Select directory of label images', initialdir=direc)
+    label_files = sorted(glob(label_direc+'/*.jpg'))
+
+    Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+    classfile = askopenfilename(title='Select file containing class (label) names', initialdir=label_direc, filetypes=[("Pick classes.txt file","*.txt")])
+
+    with open(classfile) as f:
+        classes = f.readlines()
+    
+    classes_list = [classes for k in label_files]
+
+    print('Found {} image and {} label files'.format(len(image_files),len(label_files)))
+
+    Parallel(n_jobs=-1)(delayed(print_jpeg)(l,i,c) for l,i,c in zip(label_files,image_files, classes_list))
 
     overdir = os.path.join(direc, 'overlays')
     make_dir(overdir)
@@ -138,15 +138,15 @@ if __name__ == '__main__':
 
     argv = sys.argv[1:]
     try:
-        opts, args = getopt.getopt(argv,"h:") #m:p:l:")
+        opts, args = getopt.getopt(argv,"h:") 
     except getopt.GetoptError:
         print('======================================')
-        print('python gen_overlays_from_imagesd_and_labels.py') #
+        print('python gen_overlays_from_images_and_labels.py') 
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
             print('======================================')
-            print('Example usage: python gen_overlays_from_imagesd_and_labels.py') #, save mode mode 1 (default, minimal), make plots 0 (no), print labels 0 (no)
+            print('Example usage: python gen_overlays_from_images_and_labels.py') 
             print('======================================')
             sys.exit()
     #ok, dooo it

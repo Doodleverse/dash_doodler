@@ -80,7 +80,7 @@ conda activate dashdoodler
 3. Install the dependencies:
 
 ```bash
-conda install -c conda-forge pydensecrf cairo cairosvg scikit-learn scikit-image psutil dash flask-caching requests pandas
+conda install -c conda-forge pydensecrf cairo cairosvg scikit-learn scikit-image psutil dash flask-caching requests pandas matplotlib ipython tqdm
 pip install doodler-engine
 ```
 
@@ -109,7 +109,6 @@ Open a browser and go to 127.0.0.1:8050. You may have to hit the refresh button.
 
 ### Example screenshots of use with example dataset
 
-<!-- (note: these are screengrabs of an older version of the program, so the buttons and their names are now slightly different) -->
 
 #### `doodler.py`
 
@@ -118,26 +117,6 @@ Videos showing Doodler in action:
 ![Doodler example 2](https://github.com/Doodleverse/dash_doodler/releases/download/gifs/doodler_demo_simple_watermask_v2.gif)
 
 ![Doodler example 3](https://github.com/Doodleverse/dash_doodler/releases/download/gifs/doodler_demo_sediment_v2.gif)
-
-<!-- ![Example 1](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py.png)
-![Example 2](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py1.png)
-![Example 3](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py2.png)
-![Example 4](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py3.png)
-![Example 5](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py4.png)
-![Example 6](https://raw.githubusercontent.com/dbuscombe-usgs/dash_doodler/main/assets/logos/doodler_py5.png) -->
-
-<!-- ### Videos
-More demonstration videos (older version of the program): -->
-
-<!-- ![Doodler example 2](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/quick-saturban-x2c.gif)
-
-![Doodler example 3](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short.gif)
-
-![Elwha example](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short-elwha.gif)
-
-![Coast Train example](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short-coast.gif)
-
-![Coast Train example 2](https://github.com/dbuscombe-usgs/dash_doodler/releases/download/gifs/doodler-demo-2-9-21-short-coast2.gif) -->
 
 
 ### <a name="coasttrain"></a>Unpacking Coast Train Data
