@@ -35,7 +35,6 @@ from doodler_engine.image_segmentation import *
 
 
 from glob import glob
-import skimage.util
 from tqdm import tqdm
 
 from tkinter import Tk
@@ -45,6 +44,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 from imageio import imwrite
+import plotly.express as px
 
 ###===========================================================
 try:
