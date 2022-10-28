@@ -1,0 +1,7 @@
+{
+    "super_classes": {"water":"1","land":"2"},
+    "classes": ["1","2","3","4","5"],
+    "aliases": {"1":"water","2":"land","3":"land","4":"land","5":"land"},
+    "direc": "C:\\Users\\dbuscombe\\github_clones\\dash_doodler\\results\\results2022-10-27-18-26"
+  }
+  

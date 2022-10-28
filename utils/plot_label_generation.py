@@ -3,7 +3,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020-2021, Marda Science LLC
+# Copyright (c) 2020-2022, Marda Science LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,6 @@
 # allows loading of functions from the src directory
 import sys, os, getopt, shutil
 sys.path.insert(1, '../')
-# from annotations_to_segmentations import *
-# from image_segmentation import *
 from doodler_engine.annotations_to_segmentations import *
 from doodler_engine.image_segmentation import *
 
@@ -60,23 +58,8 @@ except:
     DEFAULT_CRF_GTPROB = 0.9
     DEFAULT_NUMSCALES = 3
 
-
 ###===========================================================
-def tta_crf(img, rf_result_filt_inp, k):
-    k = int(k)
-    result2, n = crf_refine(np.roll(rf_result_filt_inp,k), np.roll(img,k), DEFAULT_CRF_THETA, DEFAULT_CRF_MU, DEFAULT_CRF_DOWNSAMPLE, DEFAULT_CRF_GTPROB)
-    result2 = np.roll(result2, -k)
-    if k==0:
-        w=.1
-    else:
-        w = 1/np.sqrt(k)
-
-    return result2, w,n
-
-
-###===========================================================
-def gen_plot_seq(orig_distance, save_mode):
-
+def gen_plot_seq():
 
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     direc = askdirectory(title='Select directory of results (annotations)', initialdir=os.getcwd()+os.sep+'results')
@@ -95,20 +78,12 @@ def gen_plot_seq(orig_distance, save_mode):
         except:
             pass
 
-
-        # if os.path.exists(anno_file.replace('.npz','_label.png')):
-        #     print('%s exists ... skipping' % (anno_file.replace('.npz','_label.png')))
-        #     continue
-        # else:
-
-        # print("Working on %s" % (file))
         print("Working on %s" % (anno_file))
         dat = np.load(anno_file)
         data = dict()
         for k in dat.keys():
             data[k] = dat[k]
         del dat
-        # print(data['image'].shape)
 
         if 'classes' not in locals():
 
@@ -140,25 +115,22 @@ def gen_plot_seq(orig_distance, save_mode):
         cmap = matplotlib.colors.ListedColormap(class_label_colormap[:NUM_LABEL_CLASSES])
         cmap2 = matplotlib.colors.ListedColormap(['#000000']+class_label_colormap[:NUM_LABEL_CLASSES])
 
-
         savez_dict = dict()
 
         ## if more than one label ...
         if len(np.unique(data['doodles']))>2:
 
-            # img = data['image']
-            # del data['image']
-
             if 'orig_image' in data.keys():
                 img = np.squeeze(data['orig_image'].astype('uint8'))[:,:,:3]
             else:
                 img = np.squeeze(data['image'].astype('uint8'))[:,:,:3]
+                data['orig_image'] = data['image']
 
             #================================
             ##fig1 - img versus standardized image
             plt.subplot(121)
             plt.imshow(img); plt.axis('off')
-            plt.title('a) Original', loc='left', fontsize=7)
+            plt.title('a) Original image', loc='left', fontsize=7)
 
             # #standardization using adjusted standard deviation
             img = standardize(img)
@@ -167,7 +139,7 @@ def gen_plot_seq(orig_distance, save_mode):
             ##fig2 - img / doodles
             plt.subplot(122)
             plt.imshow(img); plt.axis('off')
-            plt.title('b) Filtered', loc='left', fontsize=7)
+            plt.title('b) Standardized image', loc='left', fontsize=7)
             plt.savefig(anno_file.replace('.npz','_image_filt_labelgen.png'), dpi=200, bbox_inches='tight')
             plt.close()
 
@@ -175,15 +147,14 @@ def gen_plot_seq(orig_distance, save_mode):
             tmp[tmp==0] = np.nan
 
             ## do plot of images and doodles
-            plt.imshow(img)
-            plt.imshow(tmp, alpha=0.25, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2) #'inferno')
+            plt.imshow(img[:,:,0], cmap='gray')
+            plt.imshow(tmp, alpha=0.5, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2) 
             plt.axis('off')
             plt.colorbar(shrink=0.5)
+            plt.title('Doodles on grayscale image', loc='left', fontsize=7)            
             plt.savefig(anno_file.replace('.npz','_image_doodles_labelgen.png'), dpi=200, bbox_inches='tight')
             plt.close()
             del tmp
-
-            ## "analytical toola" e.g. compute annotations per unit area of image and per class label - is there an ideal number or threshold not to go below or above?
 
             #####=========================== MLP
 
@@ -231,356 +202,147 @@ def gen_plot_seq(orig_distance, save_mode):
             plt.close()
 
             #================================
-            doodles = data['doodles']
-            training_data = features[:, doodles > 0].T
-            training_labels = doodles[doodles > 0].ravel()
+            # MLP analysis
+            n=len(np.unique(data['doodles'])[1:])
 
-            unique_labels = np.unique(training_labels)
+            mlp_result, unique_labels = do_classify(data['orig_image'],data['doodles'], n, #DEFAULT_NUMSCALES
+                                        True,True,True,True,
+                                        0.5,16, DEFAULT_RF_DOWNSAMPLE)
+            
+            n=len(unique_labels)
+            mlp_result = mlp_result.reshape(data['orig_image'].shape[0],data['orig_image'].shape[1],len(unique_labels))
+            savez_dict['mlp_result_softmax'] = mlp_result
 
-            del doodles
+            mlp_result = np.argmax(mlp_result,-1)+1
 
-            training_data = training_data[::DEFAULT_RF_DOWNSAMPLE]
-            training_labels = training_labels[::DEFAULT_RF_DOWNSAMPLE]
+            uniq_doodles = np.unique(data['doodles'])[1:]
+            uniq_mlp = np.unique(mlp_result)
+            mlp_result2 = np.zeros_like(mlp_result)
+            for o,e in zip(uniq_doodles,uniq_mlp):
+                mlp_result2[mlp_result==e] = o
 
-            if save_mode:
-                savez_dict['color_doodles'] = data['color_doodles'].astype('uint8')
-                savez_dict['doodles'] = data['doodles'].astype('uint8')
-                savez_dict['settings'] = data['settings']
-                savez_dict['label'] = data['label'].astype('uint8')
-
-            del data
-
-            #================================
-            clf = make_pipeline(
-                    StandardScaler(),
-                    MLPClassifier(
-                        solver='adam', alpha=1, random_state=1, max_iter=2000,
-                        early_stopping=True, hidden_layer_sizes=[100, 60],
-                    ))
-            clf.fit(training_data, training_labels)
+            mlp_result = mlp_result2.copy()-1
 
             #================================
-
-            del training_data, training_labels
-
-            # use model in predictive mode
-            sh = features.shape
-            features_use = features.reshape((sh[0], np.prod(sh[1:]))).T
-
-            if save_mode:
-                savez_dict['features'] = features.astype('float16')
-            del features
-
-            rf_result = clf.predict(features_use)
-            #del features_use
-            rf_result = rf_result.reshape(sh[1:])
-
-            #================================
-            plt.imshow(img)
-            plt.imshow(rf_result-1, alpha=0.25, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
+            plt.imshow(data['orig_image'])
+            plt.imshow(mlp_result, alpha=0.25, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
             plt.axis('off')
             plt.colorbar(shrink=0.5)
-            plt.savefig(anno_file.replace('.npz','_image_label_RF_labelgen.png'), dpi=200, bbox_inches='tight')
+            plt.savefig(anno_file.replace('.npz','_image_label_MLP_labelgen.png'), dpi=200, bbox_inches='tight')
             plt.close()
 
-            #================================
-            plt.subplot(221); plt.imshow(rf_result-1, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap); plt.axis('off')
-            plt.title('a) Original', loc='left', fontsize=7)
+            savez_dict['mlp_result_label'] = mlp_result ##np.argmax(,-1)
 
-            rf_result_filt = filter_one_hot(rf_result, 2*rf_result.shape[0])
-            if save_mode:
-                savez_dict['rf_result_filt'] = rf_result_filt
+            # make a limited one-hot array and add the available bands
+            nx, ny = mlp_result.shape
+            mlp_result_softmax = np.zeros((nx,ny,n)) #NUM_LABEL_CLASSES
+            mlp_result_softmax[:,:,:n] = (np.arange(n) == 1+mlp_result[...,None]-1).astype(int) #NUM_LABEL_CLASSES
 
-            plt.subplot(222); plt.imshow(rf_result_filt, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
-            plt.title('b) Filtered', loc='left', fontsize=7)
+            if not n==len(np.unique(np.argmax(mlp_result_softmax,-1))):
+            # if not np.all(uniq_doodles-1==np.unique(np.argmax(mlp_result_softmax,-1))):
+                print("MLP failed")
 
-            if rf_result_filt.shape[0]>512:
-                ## filter based on distance
-                rf_result_filt = filter_one_hot_spatial(rf_result_filt, orig_distance)
+                try:
+                    crf_result, n = crf_refine_from_integer_labels(data['doodles'], data['orig_image'], n, #NUM_LABEL_CLASSES,
+                                                                DEFAULT_CRF_THETA, DEFAULT_CRF_MU, 
+                                                                DEFAULT_CRF_DOWNSAMPLE)
 
+                    uniq_crf = np.unique(crf_result)
+                    crf_result2 = np.zeros_like(crf_result)
+                    for o,e in zip(uniq_doodles,uniq_crf):
+                        crf_result2[crf_result==e] = o
 
-            if save_mode:
-                savez_dict['rf_result_spatfilt'] = rf_result_filt
-
-            plt.subplot(223); plt.imshow(rf_result_filt, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
-            plt.title('c) Spatially filtered', loc='left', fontsize=7)
-
-            # rf_result_filt_inp = inpaint_zeros(rf_result_filt).astype('uint8')
-
-            rf_result_filt = rf_result_filt.astype('float')
-            rf_result_filt[rf_result_filt==0] = np.nan
-            rf_result_filt_inp = inpaint_nans(rf_result_filt).astype('uint8')
-
-            for k in np.setdiff1d(np.unique(rf_result_filt_inp), unique_labels):
-                rf_result_filt_inp[rf_result_filt_inp==k]=0
-
-
-            plt.subplot(224); plt.imshow(rf_result_filt_inp, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
-            plt.title('d) Inpainted', loc='left', fontsize=7)
-
-            plt.savefig(anno_file.replace('.npz','_rf_label_filtered_labelgen.png'), dpi=200, bbox_inches='tight')
-            plt.close()
-
-            ###========================================================
-            #### demo of the spatial filter
-
-            if NUM_LABEL_CLASSES==2:
-
-                distance = orig_distance #3
-                shrink_factor= 0.66
-                rf_result_filt = filter_one_hot(rf_result, 2*rf_result.shape[0])
-
-                lstack = (np.arange(rf_result_filt.max()) == rf_result_filt[...,None]-1).astype(int) #one-hot encode
-
-                plt.figure(figsize=(12,16))
-                plt.subplots_adjust(wspace=0.2, hspace=0.5)
-
-                plt.subplot(631)
-                plt.imshow(img); plt.imshow(rf_result_filt-1, cmap='gray', alpha=0.25)
-                plt.axis('off');  plt.title('a) Label', loc='left', fontsize=7) #plt.colorbar(shrink=shrink_factor);
-
-                plt.subplot(635)
-                plt.imshow(img); plt.imshow(lstack[:,:,0], cmap='gray', alpha=0.25)
-                plt.axis('off');  plt.title('b) "Zero-hot"', loc='left', fontsize=7) #plt.colorbar(shrink=shrink_factor);
-
-                plt.subplot(636)
-                plt.imshow(img); plt.imshow(lstack[:,:,1], cmap='gray', alpha=0.25)
-                plt.axis('off');  plt.title('c) "One-hot"', loc='left', fontsize=7) #plt.colorbar(shrink=shrink_factor);
-
-                tmp = np.zeros_like(rf_result_filt)
-                for kk in range(lstack.shape[-1]):
-                    l = lstack[:,:,kk]
-                    d = ndimage.distance_transform_edt(l)
-                    l[d<distance] = 0
-                    lstack[:,:,kk] = np.round(l).astype(np.uint8)
-                    del l
-                    tmp[d<=distance] += 1
-
-                    if kk==0:
-                        plt.subplot(637)
-                        plt.imshow(d, cmap='inferno') # plt.imshow(img);  'gray', alpha=0.5)
-                        plt.axis('off'); plt.title('d) Zero-hot distance < '+str(distance)+' px', loc='left', fontsize=7) #plt.colorbar(shrink=shrink_factor);
-                    else:
-                        plt.subplot(638)
-                        plt.imshow(d, cmap='inferno') #'gray', alpha=0.5)
-                        plt.axis('off'); plt.title('e) One-hot distance < '+str(distance)+' px', loc='left', fontsize=7) # plt.colorbar(shrink=shrink_factor);
-                    del d
-
-                plt.subplot(6,3,11)
-                plt.imshow(img); plt.imshow(tmp==rf_result_filt.max(), cmap='gray', alpha=0.25)
-                plt.axis('off'); plt.title('f) Distance < threshold (= '+str(distance)+' px)', loc='left', fontsize=7) #plt.colorbar(shrink=shrink_factor);
-
-                rf_result_filt = np.argmax(lstack, -1)+1
-
-                rf_result_filt[tmp==rf_result_filt.max()] = 0
-                del tmp
-
-                plt.subplot(6,3,12)
-                plt.imshow(img); plt.imshow(rf_result_filt, cmap='gray', alpha=0.25)
-                plt.axis('off'); plt.title('g) Label encoded with zero class', loc='left', fontsize=7) #plt.colorbar(shrink=shrink_factor);
-
-                ##double distance
-                distance *= 3
-                tmp = np.zeros_like(rf_result_filt)
-                for kk in range(lstack.shape[-1]):
-                    l = lstack[:,:,kk]
-                    d = ndimage.distance_transform_edt(l)
-                    l[d<distance] = 0
-                    lstack[:,:,kk] = np.round(l).astype(np.uint8)
-                    del l
-                    tmp[d<=distance] += 1
-
-                    if kk==0:
-                        plt.subplot(6,3,13)
-                        plt.imshow(d, cmap='inferno') # plt.imshow(img);  'gray', alpha=0.5)
-                        plt.axis('off'); plt.title('d) Zero-hot distance < '+str(distance)+' px', loc='left', fontsize=7) #plt.colorbar(shrink=shrink_factor);
-                    else:
-                        plt.subplot(6,3,14)
-                        plt.imshow(d, cmap='inferno') #'gray', alpha=0.5)
-                        plt.axis('off'); plt.title('e) One-hot distance < '+str(distance)+' px', loc='left', fontsize=7) #plt.colorbar(shrink=shrink_factor);
-                    del d
-
-                plt.subplot(6,3,17)
-                plt.imshow(img); plt.imshow(tmp==rf_result_filt.max(), cmap='gray', alpha=0.25)
-                plt.axis('off');plt.title('h) Distance < threshold (= '+str(distance)+' px)', loc='left', fontsize=7) # plt.colorbar(shrink=shrink_factor);
-
-                ###========================================================
-                rf_result_filt = np.argmax(lstack, -1)+1
-
-
-                rf_result_filt[tmp==rf_result_filt.max()] = 0
-                del tmp
-
-                plt.subplot(6,3,18)
-                plt.imshow(img); plt.imshow(rf_result_filt, cmap='gray', alpha=0.25)
-                plt.axis('off'); plt.title('i) Label encoded with zero class', loc='left', fontsize=7); #plt.colorbar(shrink=shrink_factor);
-
-                plt.savefig(anno_file.replace('.npz','_rf_spatfilt_dist_labelgen.png'), dpi=300, bbox_inches='tight')
-                plt.close()
-
-            if save_mode:
-                savez_dict['rf_result'] = rf_result
-
-            del rf_result, rf_result_filt
-            if save_mode:
-                savez_dict['rf_result_filt_inp'] = rf_result_filt_inp
-
-            #####=========================== CRF
-            if NUM_LABEL_CLASSES==2:
-                # R = W = n = []
-                # for k in np.linspace(0,int(img.shape[0]),10):
-                #     out1, out2, out3 = tta_crf(img, rf_result_filt_inp, k)
-                #     R.append(out1)
-                #     W.append(out2)
-                #     n.append(out3)
-                # this parallel call replaces the above commented out loop
-                w = Parallel(n_jobs=-2, verbose=0)(delayed(tta_crf)(img, rf_result_filt_inp, k) for k in np.linspace(0,int(img.shape[0])/5,10))
-                R,W,n = zip(*w)
-                del rf_result_filt_inp
-
-                for counter,r in enumerate(R):
-                    plt.subplot(5,2,counter+1)
-                    plt.imshow(img)
-                    plt.imshow(r-1, alpha=0.25, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
-                    plt.axis('off')
-                plt.savefig(anno_file.replace('.npz','_crf_tta_labelgen.png'), dpi=200, bbox_inches='tight')
-                plt.close()
-
-                if save_mode:
-                    savez_dict['crf_tta'] = [r.astype('uint8') for r in R]
-                    savez_dict['crf_tta_weights'] = W
-
-                crf_result = np.round(np.average(np.dstack(R), axis=-1, weights = W)).astype('uint8')
-                del R, W, n, w, r
-
-                # #================================
-                # plt.subplot(221); plt.imshow(crf_result, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap); plt.axis('off')
-                # plt.title('a) Original', loc='left', fontsize=7)
-
-                # crf_result_filt = filter_one_hot(crf_result, 2*crf_result.shape[0])
-
-                if save_mode:
-                    # savez_dict['crf_result_filt'] = crf_result_filt
-                    savez_dict['crf_result'] = crf_result
-
-                # del crf_result
-
-                # plt.subplot(222); plt.imshow(crf_result_filt, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
-                # plt.title('b) Filtered', loc='left', fontsize=7)
-
-                # if crf_result_filt.shape[0]>512:
-                #     ## filter based on distance
-                #     crf_result_filt = filter_one_hot_spatial(crf_result_filt, distance)
-
-                # if save_mode:
-                #     savez_dict['rf_result_spatfilt'] = crf_result_filt
-
-                # plt.subplot(223); plt.imshow(crf_result_filt, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
-                # plt.title('c) Spatially filtered', loc='left', fontsize=7)
-
-                # crf_result_filt = crf_result_filt.astype('float')
-                # crf_result_filt[crf_result_filt==0] = np.nan
-                # crf_result_filt_inp = inpaint_nans(crf_result_filt).astype('uint8')
-                # del crf_result_filt
-
-                # plt.subplot(224); plt.imshow(crf_result_filt_inp, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap2); plt.axis('off')
-                # plt.title('d) Inpainted (final label)', loc='left', fontsize=7)
-
-                # plt.savefig(anno_file.replace('.npz','_crf_label_filtered_labelgen.png'), dpi=200, bbox_inches='tight')
-                # plt.close()
-
+                    crf_result = crf_result2.copy()-1
+                except:
+                    crf_result = mlp_result.copy()
             else:
+                #================================
+                # CRF analysis           
+                print('CRF ...')
 
-                if len(np.unique(rf_result_filt_inp.flatten()))>1:
+                try:
+                    crf_result, n = crf_refine(mlp_result_softmax, data['orig_image'], n, #NUM_LABEL_CLASSES,
+                                            DEFAULT_CRF_THETA, 
+                                            DEFAULT_CRF_MU, DEFAULT_CRF_DOWNSAMPLE)
 
-                    crf_result, n = crf_refine(rf_result_filt_inp, img, DEFAULT_CRF_THETA, DEFAULT_CRF_MU, DEFAULT_CRF_DOWNSAMPLE, DEFAULT_CRF_GTPROB)
+                    uniq_crf = np.unique(crf_result)
+                    crf_result2 = np.zeros_like(crf_result)
+                    for o,e in zip(uniq_doodles,uniq_crf):
+                        crf_result2[crf_result==e] = o
 
-                    # #================================
-                    # plt.subplot(221); plt.imshow(crf_result, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap); plt.axis('off')
-                    # plt.title('a) Original', loc='left', fontsize=7)
+                    crf_result = crf_result2.copy()-1
 
-                    # crf_result_filt = filter_one_hot(crf_result, 2*crf_result.shape[0])
+                    if not len(uniq_doodles)==len(np.unique(crf_result)):
+                    # if not np.all(uniq_doodles-1==np.unique(crf_result)):
+                        print("CRF failed")
 
-                    if save_mode:
-                        # savez_dict['crf_result_filt'] = crf_result_filt
-                        savez_dict['crf_result'] = crf_result
+                        crf_result, n = crf_refine_from_integer_labels(data['doodles'], data['orig_image'], n, #NUM_LABEL_CLASSES,
+                                                                    DEFAULT_CRF_THETA, DEFAULT_CRF_MU, 
+                                                                    DEFAULT_CRF_DOWNSAMPLE)
 
-                    # del crf_result
+                        uniq_crf = np.unique(crf_result)
+                        crf_result2 = np.zeros_like(crf_result)
+                        for o,e in zip(uniq_doodles,uniq_crf):
+                            crf_result2[crf_result==e] = o
 
-                    # plt.subplot(222); plt.imshow(crf_result_filt, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap); plt.axis('off')
-                    # plt.title('b) Filtered', loc='left', fontsize=7)
+                        crf_result = crf_result2.copy()-1
 
-                    # if crf_result_filt.shape[0]>512:
-                    #     ## filter based on distance
-                    #     crf_result_filt = filter_one_hot_spatial(crf_result_filt, orig_distance)
-
-                    # if save_mode:
-                    #     savez_dict['rf_result_spatfilt'] = crf_result_filt
-
-                    # plt.subplot(223); plt.imshow(crf_result_filt, vmin=1, vmax=NUM_LABEL_CLASSES, cmap=cmap); plt.axis('off')
-                    # plt.title('c) Spatially filtered', loc='left', fontsize=7)
-
-                    # #crf_result_filt_inp = inpaint_zeros(crf_result_filt).astype('uint8')
-                    # crf_result_filt = crf_result_filt.astype('float')
-                    # crf_result_filt[crf_result_filt==0] = np.nan
-                    # crf_result_filt_inp = inpaint_nans(crf_result_filt).astype('uint8')
-                    # del crf_result_filt
-
-                    # plt.subplot(224); plt.imshow(crf_result_filt_inp, vmin=1, vmax=NUM_LABEL_CLASSES, cmap=cmap); plt.axis('off')
-                    # plt.title('d) Inpainted (final label)', loc='left', fontsize=7)
-
-                    # plt.savefig(anno_file.replace('.npz','_crf_label_filtered_labelgen.png'), dpi=200, bbox_inches='tight')
-                    # plt.close()
-                else:
-                    crf_result = rf_result_filt_inp.copy()
+                except:
+                    crf_result = mlp_result.copy()
 
             #================================
-            plt.imshow(img)
+            plt.imshow(data['orig_image'])
             plt.imshow(crf_result, alpha=0.25, vmin=0, vmax=NUM_LABEL_CLASSES, cmap=cmap) #'inferno')
             plt.axis('off')
             plt.colorbar(shrink=0.5)
-            plt.savefig(anno_file.replace('.npz','_image_label_final_labelgen.png'), dpi=200, bbox_inches='tight')
+            plt.savefig(anno_file.replace('.npz','_image_label_CRF_labelgen.png'), dpi=200, bbox_inches='tight')
             plt.close()
 
+            # crf_result = crf_result-1
 
-            if save_mode:
-                tosave = (np.arange(crf_result.max()) == crf_result[...,None]-1).astype(int)
-                savez_dict['final_label'] = tosave.astype('uint8')#crf_result_filt_inp-1
-                savez_dict['image'] = (255*img).astype('uint8')
-            del img, crf_result
+            # match = np.unique(np.argmax(mlp_result,-1))
+            # match2 = np.unique(crf_result)
+            # # print(match2)
+            # if not np.all(np.array(match)==np.array(match2)):
+            #     print("Problem with CRF solution.... reverting back to MLP solution")
+            #     crf_result = np.argmax(mlp_result,-1).copy()
+
+
+            tosave = (np.arange(crf_result.max()) == crf_result[...,None]-1).astype(int)
+            savez_dict['final_label'] = tosave.astype('uint8')#crf_result_filt_inp-1
+            savez_dict['image'] = data['orig_image'] #(255*img).astype('uint8')
+            #del img, crf_result
 
             imwrite(anno_file.replace('.npz','_label_labelgen.png'), np.argmax(savez_dict['final_label'],-1).astype('uint8'))
-            imwrite(anno_file.replace('.npz','_doodles_labelgen.png'), savez_dict['doodles'].astype('uint8'))
+            imwrite(anno_file.replace('.npz','_doodles_labelgen.png'), data['doodles'].astype('uint8'))
 
 
         ### if only one label
         else:
+            print('Only one label')
 
-            if 'orig_image' in data.keys():
-                im = np.squeeze(data['orig_image'].astype('uint8'))[:,:,:3]
+            if 'orig_image' not in data.keys():
+                data['orig_image'] = data['image']
+
+            savez_dict['color_doodles'] = data['color_doodles'].astype('uint8')
+            savez_dict['doodles'] = data['doodles'].astype('uint8')
+            savez_dict['settings'] = data['settings']
+            savez_dict['label'] = data['label'].astype('uint8')
+            v = np.unique(data['doodles']).max()
+            if v==2:
+                tmp = np.zeros_like(data['label'])
+                tmp+=1
             else:
-                im = np.squeeze(data['image'].astype('uint8'))[:,:,:3]
-
-            if save_mode:
-                savez_dict['color_doodles'] = data['color_doodles'].astype('uint8')
-                savez_dict['doodles'] = data['doodles'].astype('uint8')
-                savez_dict['settings'] = data['settings']
-                savez_dict['label'] = data['label'].astype('uint8')
-                v = np.unique(data['doodles']).max()#[0]-1
-                if v==2:
-                    tmp = np.zeros_like(data['label'])
-                    tmp+=1
-                else:
-                    tmp = np.ones_like(data['label'])*v
-                tosave = (np.arange(tmp.max()) == tmp[...,None]-1).astype(int)
-                savez_dict['final_label'] = tosave.astype('uint8').squeeze()
-                savez_dict['crf_tta'] = None
-                savez_dict['crf_tta_weights'] = None
-                savez_dict['crf_result'] =None
-                savez_dict['rf_result_spatfilt'] = None
-                savez_dict['crf_result_filt'] = None
-                savez_dict['image'] = im #data['image'].astype('uint8')
-            del data
+                tmp = np.ones_like(data['label'])*v
+            tosave = (np.arange(tmp.max()) == tmp[...,None]-1).astype(int)
+            savez_dict['final_label'] = tosave.astype('uint8').squeeze()
+            savez_dict['crf_tta'] = None
+            savez_dict['crf_tta_weights'] = None
+            savez_dict['crf_result'] =None
+            savez_dict['rf_result_spatfilt'] = None
+            savez_dict['crf_result_filt'] = None
+            savez_dict['image'] = data['orig_image'].astype('uint8')
+            #del data
 
         np.savez(anno_file.replace('.npz','_labelgen.npz'), **savez_dict )
         del savez_dict
@@ -594,7 +356,7 @@ def gen_plot_seq(orig_distance, save_mode):
             shutil.move(a_file,overdir)
 
     except:
-        print('Error when moving labegen files')
+        print('Error when moving labelgen files')
 
 
 ###==================================================================
@@ -603,38 +365,20 @@ if __name__ == '__main__':
 
     argv = sys.argv[1:]
     try:
-        opts, args = getopt.getopt(argv,"h:d:m:") #m:p:l:")
+        opts, args = getopt.getopt(argv,"h:") 
     except getopt.GetoptError:
         print('======================================')
-        print('python plot_label_generation.py [-m save mode -p make image/label overlay plots -l print label images]') #
+        print('python plot_label_generation.py') 
         print('======================================')
-        print('Example usage: python plot_label_generation.py [default -m 1 -p 0]') #, save mode mode 1 (default, minimal), make plots 0 (no), print labels 0 (no)
-        print('.... which means: save mode mode 1 (default, minimal), make image/label overlay plots 0 (no), print label images 0 (no)') #, save mode mode 1 , dont make plots,
-        print('======================================')
-
+        print('Example usage: python plot_label_generation.py')  
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
             print('======================================')
-            print('Example usage: python plot_label_generation.py [default -m 1 -p 0]') #, save mode mode 1 (default, minimal), make plots 0 (no), print labels 0 (no)
-            print('.... which means: save mode mode 1 (default, all), make plots 0 (no), print labels 0 (no)') #, save mode mode 1 , dont make plots,
+            print('Example usage: python plot_label_generation.py ') 
             print('======================================')
             sys.exit()
 
-        elif opt in ("-d"):
-            orig_distance = arg
-            orig_distance = int(orig_distance)
-        elif opt in ("-m"):
-            save_mode = arg
-            save_mode = bool(save_mode)
-
-    if 'orig_distance' not in locals():
-        orig_distance = 2
-    if 'save_mode' not in locals():
-        save_mode = True
-
-    print("save mode: %i" % (save_mode))
-    print("threshold intra-label distance: %i" % (orig_distance))
 
     #ok, dooo it
-    gen_plot_seq(orig_distance, save_mode)
+    gen_plot_seq()
