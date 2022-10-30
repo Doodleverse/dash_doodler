@@ -46,6 +46,8 @@ import matplotlib
 
 from numpy.lib.npyio import load
 from joblib import delayed, Parallel
+from PIL import Image, ImageDraw, ExifTags
+
 
 ###===========================================================
 try:
@@ -75,42 +77,96 @@ def move_files(files, outdirec):
 
 ###===========================================================
 def print_jpeg(l, i, classes):
-        NCLASSES  = len(classes)
+    NCLASSES  = len(classes)
 
-        print("Working on %s" % (l))
-        lab = np.round(io.imread(l, as_gray=True))
+    print("Working on %s" % (l))
+    lab = np.round(io.imread(l, as_gray=True))
+    lab = Image.fromarray(lab)
+    # im = io.imread(i)[:,:,0]
+    image = Image.open(i)
+
+    try:
+        for orientation in ExifTags.TAGS.keys():
+            if ExifTags.TAGS[orientation]=='Orientation':
+                break
+        exif=dict(image._getexif().items())
+
+        if exif[orientation] == 3:
+            image=image.rotate(180, expand=True)
+            lab=lab.rotate(180, expand=True)
+            print('rotating {} by 180 deg'.format(i))
+        elif exif[orientation] == 6:
+            image=image.rotate(270, expand=True)
+            lab=lab.rotate(270, expand=True)
+            print('rotating {} by 270 deg'.format(i))
+        elif exif[orientation] == 8:
+            image=image.rotate(90, expand=True)
+            print('rotating {} by 90 deg'.format(i))
+            lab=lab.rotate(90, expand=True)
+
+        if 'jpg' in i:
+            image.save(i.replace('.jpg','_image.jpg'), format='JPEG')	
+            lab.save(l.replace('_label.jpg','_label_use.jpg'), format='JPEG')	
+        elif 'jpeg' in i:
+             image.save(i.replace('.jpeg','_image.jpeg'), format='JPEG')	
+             lab.save(l.replace('_label.jpeg','_label_use.jpeg'), format='JPEG')
+        else:
+            print("error: {}".format(i))
+
+
+        im = np.array(image)[:,:,0]
+        lab = np.array(lab)
+
+    except(AttributeError, KeyError, IndexError):
+        print("No exif data")
         im = io.imread(i)[:,:,0]
 
-        class_label_names = [c.strip() for c in classes]
-
-        NUM_LABEL_CLASSES = len(class_label_names)
-
-        if NUM_LABEL_CLASSES<=10:
-            class_label_colormap = px.colors.qualitative.G10
+        if 'jpg' in i:
+            image.save(i.replace('.jpg','_image.jpg'), format='JPEG')	
+            lab.save(l.replace('_label.jpg','_label_use.jpg'), format='JPEG')	
+        elif 'jpeg' in i:
+             image.save(i.replace('.jpeg','_image.jpeg'), format='JPEG')	
+             lab.save(l.replace('_label.jpeg','_label_use.jpeg'), format='JPEG')
         else:
-            class_label_colormap = px.colors.qualitative.Light24
+            print("error: {}".format(i))
 
-        # we can't have fewer colors than classes
-        assert NUM_LABEL_CLASSES <= len(class_label_colormap)
 
-        cmap = matplotlib.colors.ListedColormap(class_label_colormap[:NUM_LABEL_CLASSES+1])
+    class_label_names = [c.strip() for c in classes]
 
-        #Make an overlay
-        plt.imshow(im)
-        plt.imshow(lab, cmap=cmap, alpha=0.6, vmin=0, vmax=NCLASSES)
-        plt.axis('off')
+    NUM_LABEL_CLASSES = len(class_label_names)
+
+    if NUM_LABEL_CLASSES<=10:
+        class_label_colormap = px.colors.qualitative.G10
+    else:
+        class_label_colormap = px.colors.qualitative.Light24
+
+    # we can't have fewer colors than classes
+    assert NUM_LABEL_CLASSES <= len(class_label_colormap)
+
+    cmap = matplotlib.colors.ListedColormap(class_label_colormap[:NUM_LABEL_CLASSES+1])
+
+    #Make an overlay
+    plt.imshow(im)
+    plt.imshow(lab, cmap=cmap, alpha=0.6, vmin=0, vmax=NCLASSES)
+    plt.axis('off')
+    if 'jpg' in i:
         plt.savefig(i.replace('.jpg','_overlay.png'), dpi=200, bbox_inches='tight')
+    elif 'jpeg' in i:
+        plt.savefig(i.replace('.jpeg','_overlay.png'), dpi=200, bbox_inches='tight')
+    else:
+        plt.close()
+
 
 ###===========================================================
 def make_jpegs():
 
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     direc = askdirectory(title='Select directory of images', initialdir=os.getcwd())
-    image_files = sorted(glob(direc+'/*.jpg'))
+    image_files = sorted(glob(direc+'/*.jp*g'))
 
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     label_direc = askdirectory(title='Select directory of label images', initialdir=direc)
-    label_files = sorted(glob(label_direc+'/*.jpg'))
+    label_files = sorted(glob(label_direc+'/*.jp*g'))
 
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     classfile = askopenfilename(title='Select file containing class (label) names', initialdir=label_direc, filetypes=[("Pick classes.txt file","*.txt")])
@@ -122,13 +178,38 @@ def make_jpegs():
 
     print('Found {} image and {} label files'.format(len(image_files),len(label_files)))
 
-    Parallel(n_jobs=-1)(delayed(print_jpeg)(l,i,c) for l,i,c in zip(label_files,image_files, classes_list))
+    Parallel(n_jobs=-2)(delayed(print_jpeg)(l,i,c) for l,i,c in zip(label_files,image_files, classes_list))
+
+    # for l,i,c in zip(label_files,image_files, classes_list):
+    #     print_jpeg(l,i,c)
 
     overdir = os.path.join(direc, 'overlays')
     make_dir(overdir)
 
     ovfiles = glob(direc+'/*_overlay.png')
     outdirec = os.path.normpath(direc + os.sep+'overlays')
+    move_files(ovfiles, outdirec)
+
+    overdir = os.path.join(direc, 'images')
+    make_dir(overdir)
+
+    ovfiles = glob(direc+'/*_image.jpg')
+    outdirec = os.path.normpath(direc + os.sep+'images')
+    move_files(ovfiles, outdirec)
+
+    ovfiles = glob(direc+'/*_image.jpeg')
+    outdirec = os.path.normpath(direc + os.sep+'images')
+    move_files(ovfiles, outdirec)
+
+    overdir = os.path.join(label_direc, 'labels')
+    make_dir(overdir)
+
+    ovfiles = glob(label_direc+'/*label_use.jpg')
+    outdirec = os.path.normpath(label_direc + os.sep+'labels')
+    move_files(ovfiles, outdirec)
+
+    ovfiles = glob(label_direc+'/*label_use.jpeg')
+    outdirec = os.path.normpath(label_direc + os.sep+'labels')
     move_files(ovfiles, outdirec)
 
 
