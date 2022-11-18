@@ -60,7 +60,28 @@ from flask_caching import Cache
 #others
 import base64, PIL.Image, json, shutil, time, logging, psutil
 from datetime import datetime
+from doodler_engine.app_funcs import uploaded_files, get_asset_files
 
+def get_unlabeled_files()-> list:
+    """Returns a sorted list of unlabeled files
+        
+        uses the environment variables UPLOAD_DIRECTORY and LABELED_DIRECTORY to determine
+        which files were are unlabeled and labeled 
+    Returns:
+        list: sorted list of unlabeled files
+    """    
+    #this file must exist - it contains a list of images labeled in this session
+    filelist = 'files_done.txt'
+    files, labeled_files = uploaded_files(filelist,UPLOAD_DIRECTORY,LABELED_DIRECTORY)
+    logging.info('File list written to %s' % (filelist))
+    files = [f.split('assets/')[-1] for f in files]
+    labeled_files = [f.split('labeled/')[-1] for f in labeled_files]
+    logging.info(f"labeled_files: {labeled_files}")
+    logging.info(f"All files: {files}")
+    unlabeled_files = list(set(files) - set(labeled_files))
+    unlabeled_files = sorted(unlabeled_files)
+    logging.info(f"Unlabeled files: {unlabeled_files}")
+    return unlabeled_files
 
 ##========================================================
 def make_and_return_default_figure(
@@ -211,7 +232,9 @@ for f in class_label_names:
 #========================================================
 ## image asset files
 #========================================================
-files = get_asset_files()
+# files = get_asset_files()
+# list of unlabeled files in assets directory
+files = get_unlabeled_files()
 
 logging.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
 logging.info('loaded files:')
@@ -642,20 +665,8 @@ def update_output(
         my_id_value='TEMPID'
 
     if callback_context=='interval-component.n_intervals':
-        #this file must exist - it contains a list of images labeled in this session
-        filelist = 'files_done.txt'
-        files, labeled_files = uploaded_files(filelist,UPLOAD_DIRECTORY,LABELED_DIRECTORY)
-
-        logging.info('File list written to %s' % (filelist))
-
-        files = [f.split('assets/')[-1] for f in files]
-        labeled_files = [f.split('labeled/')[-1] for f in labeled_files]
-
-        files = list(set(files) - set(labeled_files))
-        files = sorted(files)
-
-        options = [{'label': image, 'value': image } for image in files]
-
+        unlabeled_files = get_unlabeled_files()
+        options = [{'label': image, 'value': image } for image in unlabeled_files]
         logging.info('Checked assets and labeled lists and revised list of images yet to label')
 
     if select_image_value is not None:
